@@ -49,7 +49,7 @@ public class MoveHook implements BasicCommand{
         hook.setPosition(0);
     }
 
-    public MoveHook(Servo hook, double TimeoutMs, MyOpMode opMode){
+    public MoveHook(Servo hook, double TimeoutMs, ParallelStateMachineOpMode opMode){
         this.hook = hook;
         this.TimeoutMs = TimeoutMs;
         this.op = opMode;

@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "Drive", group = "Move")
-public class MyOpMode extends OpMode {
+@TeleOp(name = "ParallelRunHookAndDrive", group = "POC")
+public class ParallelStateMachineOpMode extends OpMode {
 
     public DcMotor topr;
     public DcMotor topl;
@@ -28,7 +28,7 @@ public class MyOpMode extends OpMode {
 
     public OpMode opMode;
 
-    MyOpMode (OpMode op) {
+    ParallelStateMachineOpMode(OpMode op) {
         opMode = op;
     }
 

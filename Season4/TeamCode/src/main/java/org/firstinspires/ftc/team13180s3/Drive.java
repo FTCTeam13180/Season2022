@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.team13180s3;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -16,7 +15,7 @@ public class Drive implements BasicCommand{
     }
 
     private OpMode op;
-    private MyOpMode.DIRECTION direction;
+    private ParallelStateMachineOpMode.DIRECTION direction;
     private double speed;
     private double cms;
     private double timeoutMs;
@@ -100,7 +99,7 @@ public class Drive implements BasicCommand{
         setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public Drive(MyOpMode opMode, MyOpMode.DIRECTION direction, double speed, double cms, double timeoutMs){
+    public Drive(ParallelStateMachineOpMode opMode, ParallelStateMachineOpMode.DIRECTION direction, double speed, double cms, double timeoutMs){
          this.topr = opMode.topr;
          this.topl = opMode.topl;
          this.rearr = opMode.rearr;
@@ -116,36 +115,36 @@ public class Drive implements BasicCommand{
         return topr.isBusy() || topl.isBusy() || rearr.isBusy() || rearl.isBusy();
     }
 
-    private void setTargetPosition(MyOpMode.DIRECTION direction, double cms) {
+    private void setTargetPosition(ParallelStateMachineOpMode.DIRECTION direction, double cms) {
         // Determine new target position, and pass to motor controller
-        if (direction == MyOpMode.DIRECTION.FORWARD) {
+        if (direction == ParallelStateMachineOpMode.DIRECTION.FORWARD) {
             topl.setTargetPosition((int) (topr.getCurrentPosition() + (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
             topr.setTargetPosition((int) (topl.getCurrentPosition() + (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
             rearl.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
             rearr.setTargetPosition((int) (rearl.getCurrentPosition() + (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
         }
-        else if (direction == MyOpMode.DIRECTION.BACKWARD) {
+        else if (direction == ParallelStateMachineOpMode.DIRECTION.BACKWARD) {
             topl.setTargetPosition((int) (topr.getCurrentPosition() - (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
             topr.setTargetPosition((int) (topl.getCurrentPosition() - (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
             rearl.setTargetPosition((int) (rearr.getCurrentPosition() - (cms * COUNTS_PER_CM * STRAIGHT_SLIPPAGE_CORRECTION)));
             rearr.setTargetPosition((int) (rearl.getCurrentPosition() - (cms * COUNTS_PER_CM) * STRAIGHT_SLIPPAGE_CORRECTION));
-        } else if (direction == MyOpMode.DIRECTION.SHIFT_RIGHT) {
+        } else if (direction == ParallelStateMachineOpMode.DIRECTION.SHIFT_RIGHT) {
             topl.setTargetPosition((int) (topr.getCurrentPosition() + (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
             topr.setTargetPosition((int) (topl.getCurrentPosition() - (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
             rearl.setTargetPosition((int) (rearr.getCurrentPosition() - (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
             rearr.setTargetPosition((int) (rearl.getCurrentPosition() + (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
-        } else if (direction == MyOpMode.DIRECTION.SHIFT_LEFT) {
+        } else if (direction == ParallelStateMachineOpMode.DIRECTION.SHIFT_LEFT) {
             topl.setTargetPosition((int) (topr.getCurrentPosition() - (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
             topr.setTargetPosition((int) (topl.getCurrentPosition() + (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
             rearl.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
             rearr.setTargetPosition((int) (rearl.getCurrentPosition() - (cms * COUNTS_PER_CM * SHIFT_SLIPPAGE_CORRECTION)));
-        } else if (direction == MyOpMode.DIRECTION.TURN_LEFT){
+        } else if (direction == ParallelStateMachineOpMode.DIRECTION.TURN_LEFT){
             topl.setTargetPosition((int) (topr.getCurrentPosition() - (cms * COUNTS_PER_DEGREE *TURN_SLIPPAGE_CORRECTION)));
             topr.setTargetPosition((int) (topl.getCurrentPosition() + (cms * COUNTS_PER_DEGREE *TURN_SLIPPAGE_CORRECTION)));
             rearl.setTargetPosition((int) (rearr.getCurrentPosition() - (cms * COUNTS_PER_DEGREE *TURN_SLIPPAGE_CORRECTION)));
             rearr.setTargetPosition((int) (rearl.getCurrentPosition() + (cms * COUNTS_PER_DEGREE *TURN_SLIPPAGE_CORRECTION)));
         }
-        else if (direction == MyOpMode.DIRECTION.TURN_RIGHT) {
+        else if (direction == ParallelStateMachineOpMode.DIRECTION.TURN_RIGHT) {
             topl.setTargetPosition((int) (topr.getCurrentPosition() + (cms * COUNTS_PER_DEGREE * TURN_SLIPPAGE_CORRECTION)));
             topr.setTargetPosition((int) (topl.getCurrentPosition() - (cms * COUNTS_PER_DEGREE * TURN_SLIPPAGE_CORRECTION)));
             rearl.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * COUNTS_PER_DEGREE * TURN_SLIPPAGE_CORRECTION)));
