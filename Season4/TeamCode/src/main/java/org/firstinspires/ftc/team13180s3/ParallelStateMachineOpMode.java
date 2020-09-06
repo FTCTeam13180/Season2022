@@ -8,6 +8,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "ParallelRunHookAndDrive", group = "POC")
 public class ParallelStateMachineOpMode extends OpMode {
 
+    public DcMotor topr;
+    public DcMotor topl;
+    public DcMotor rearr;
+    public DcMotor rearl;
     public DcMotor motor;
     public Servo servo;
     public static final double POWER = 1.0;
@@ -38,7 +42,7 @@ public class ParallelStateMachineOpMode extends OpMode {
         motor = opMode.hardwareMap.get(DcMotor.class, "motor");
 
         //initializing hook servo
-        hook = opMode.hardwareMap.get(Servo.class, "servo");
+        servo = opMode.hardwareMap.get(Servo.class, "servo");
 
         mm = new MoveMotor(this, DIRECTION.FORWARD, POWER, CMS, TIMOUTMS);
         ms = new MoveServo(servo, TIMOUTMS, this);
