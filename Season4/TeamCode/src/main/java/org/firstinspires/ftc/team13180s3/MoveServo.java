@@ -30,7 +30,7 @@ public class MoveServo implements BasicCommand{
         if(time.milliseconds() >= TimeoutMs){
             state = State.STOP;
         }
-        //every five seconds move the servo
+        //every five seconds move the servo and change the position
         else if(time.milliseconds() >= 15000){
             servo.setPosition(1);
             op.telemetry.addData("Moveservo: ", "Position Changed");
