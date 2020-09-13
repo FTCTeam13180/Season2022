@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static java.lang.Math.abs;
 
-public class Drive implements BasicCommand{
+public class Drive implements BasicCommand {
 
     enum State {
         INIT,

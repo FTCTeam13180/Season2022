@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static java.lang.Math.abs;
 
-public class MoveMotor implements BasicCommand{
+public class MoveMotor implements BasicCommand {
 
     enum State {
         INIT,

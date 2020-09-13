@@ -38,7 +38,7 @@ public class ParallelStateMachineOpMode extends OpMode {
 
     public void init(){
 
-        //initializing drive forward motors
+        //initializing drive forward motor
         motor = opMode.hardwareMap.get(DcMotor.class, "motor");
 
         //initializing hook servo

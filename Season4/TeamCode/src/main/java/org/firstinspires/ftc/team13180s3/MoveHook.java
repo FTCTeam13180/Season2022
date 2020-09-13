@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class MoveHook implements BasicCommand{
+public class MoveHook implements BasicCommand {
 
     enum State {
         INIT,
