@@ -27,29 +27,23 @@ public class ParallelStateMachineOpMode extends OpMode {
         TURN_RIGHT
     }
 
-    public OpMode opMode;
-
-    ParallelStateMachineOpMode(OpMode op) {
-        opMode = op;
-    }
-
     MoveMotor mm;
     MoveServo ms;
 
-    public void init(){
-
-        //initializing drive forward motor
-        motor = opMode.hardwareMap.get(DcMotor.class, "motor");
+    @Override
+    public void init() {
+        telemetry.addData("Status", "Initialized");
+        motor = hardwareMap.get(DcMotor.class, "motor");
 
         //initializing hook servo
-        servo = opMode.hardwareMap.get(Servo.class, "servo");
+        servo = hardwareMap.get(Servo.class, "servo");
 
         mm = new MoveMotor(this, DIRECTION.FORWARD, POWER, CMS, TIMOUTMS);
         ms = new MoveServo(servo, TIMOUTMS, this);
-
+        telemetry.addData("Status", "Initialized");
     }
 
-
+    @Override
     public void loop(){
         mm.run();
         ms.run();
