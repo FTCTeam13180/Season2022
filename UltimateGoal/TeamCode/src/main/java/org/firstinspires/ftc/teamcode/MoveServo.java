@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.team13180s3;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
