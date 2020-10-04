@@ -42,7 +42,7 @@ public class RoboNavigator {
 
     public void init() {
         topl = opMode.hardwareMap.get(DcMotor.class, "Topl");
-        topr= opMode.hardwareMap.get(DcMotor.class, "Topr");
+        topr = opMode.hardwareMap.get(DcMotor.class, "Topr");
         rearl = opMode.hardwareMap.get(DcMotor.class, "Rearl");
         rearr = opMode.hardwareMap.get(DcMotor.class, "Rearr");
         topr.setDirection(DcMotor.Direction.REVERSE);
