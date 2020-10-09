@@ -47,6 +47,8 @@ public class Detector {
 
     public void init() {
         initVuforia();
+        initTfod();
+
 
         /**
          * Activate TensorFlow Object Detection before we wait for the start command.
@@ -69,7 +71,7 @@ public class Detector {
 
         List <Recognition> recognitions= tfod.getUpdatedRecognitions();
         int retry = 0;
-        while((recognitions==null) && retry < 5){
+        while((recognitions==null) && retry < 100){
             recognitions=tfod.getUpdatedRecognitions();
             retry++;
         }
