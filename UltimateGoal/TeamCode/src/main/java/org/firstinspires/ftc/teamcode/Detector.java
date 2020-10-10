@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class Detector {
     public OpMode opMode;
+    private ElapsedTime time;
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     public static final String LABEL_FIRST_ELEMENT = "Quad";
     public static final String LABEL_SECOND_ELEMENT = "Single";
@@ -46,6 +48,7 @@ public class Detector {
     }
 
     public void init() {
+        time = new ElapsedTime();
         initVuforia();
         initTfod();
 
@@ -56,6 +59,18 @@ public class Detector {
          **/
         if (tfod != null) {
             tfod.activate();
+
+            // The TensorFlow software will scale the input images from the camera to a lower resolution.
+            // This can result in lower detection accuracy at longer distances (> 55cm or 22").
+            // If your target is at distance greater than 50 cm (20") you can adjust the magnification value
+            // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
+            // should be set to the value of the images used to create the TensorFlow Object Detection model
+            // (typically 1.78 or 16/9).
+
+            // Uncomment the following line if you want to adjust the magnification and/or the aspect ratio of the input images.
+            // https://firstinspiresst01.blob.core.windows.net/first-game-changers/ftc/remote-field-requirements.pdf
+            // Need to revisit based on field dimensions
+            tfod.setZoom(2.5, 1.78);
         }
 
     }
@@ -69,17 +84,19 @@ public class Detector {
     //To-Do: change the logic
     public List<Recognition> scan(){
 
-        List <Recognition> recognitions= tfod.getUpdatedRecognitions();
-        int retry = 0;
-        while((recognitions==null) && retry < 100){
-            recognitions=tfod.getUpdatedRecognitions();
-            retry++;
+        List <Recognition> recognitions = null;
+        if(tfod != null){
+            recognitions = tfod.getUpdatedRecognitions();
+            while((recognitions==null) && time.seconds() > 10){
+                recognitions=tfod.getUpdatedRecognitions();
+            }
+
+            if (recognitions != null)
+                opMode.telemetry.addData("Recognitions: ", recognitions.toString());
+            else
+                opMode.telemetry.addData("Recognitions: ", "null");
         }
 
-        if (recognitions != null)
-            opMode.telemetry.addData("Recognitions: ", recognitions.toString());
-        else
-            opMode.telemetry.addData("Recognitions: ", "null");
         return recognitions;
     }
 }

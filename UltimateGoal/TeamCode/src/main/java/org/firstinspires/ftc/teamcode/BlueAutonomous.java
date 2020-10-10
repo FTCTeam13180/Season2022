@@ -14,10 +14,11 @@ import java.util.List;
 public class BlueAutonomous extends OpMode {
 
     private Detector detect;
+    int numOfRings = 0;
 
-    private int ringNumber() {
+    private void numberOfRings() {
         List<Recognition> updatedRecognitions = detect.scan();
-        int rings = 0;
+        numOfRings = 0;
         int i = 0;
         if(updatedRecognitions != null) {
             for (Recognition recognition : updatedRecognitions) {
@@ -28,17 +29,19 @@ public class BlueAutonomous extends OpMode {
                     telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                             recognition.getRight(), recognition.getBottom());
                 if(recognition.getLabel() == Detector.LABEL_SECOND_ELEMENT){
-                    rings = 1;
+                    numOfRings = 1;
                 }
                 else if(recognition.getLabel() == Detector.LABEL_FIRST_ELEMENT){
-                    rings = 4;
+                    numOfRings = 4;
+                }
+                else {
+                    numOfRings = 0;
                 }
             }
         }
         else {
-            rings = 0;
+            numOfRings = 0;
         }
-        return rings;
     }
 
     @Override
@@ -50,8 +53,8 @@ public class BlueAutonomous extends OpMode {
 
     @Override
     public void init_loop(){
-        int rings = ringNumber();
-        telemetry.addData("Number of rings = ", rings);
+        numberOfRings();
+        telemetry.addData("Number of rings = ", numOfRings);
         telemetry.addData("Status", "Initialized");
     }
 
