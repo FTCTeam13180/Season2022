@@ -3,22 +3,6 @@
 package org.firstinspires.ftc.teamcode;
 
 //X Y Coordinate on Playing Field
-class Point{
-    private double X;
-    private double Y;
-    Point(double x, double y){
-        X = x;
-        Y = y;
-    }
-    public double getX(){
-        return X;
-    }
-    public double getY(){
-        return Y;
-    }
-
-}
-
 
 public class Odom_State {
     public enum State{
