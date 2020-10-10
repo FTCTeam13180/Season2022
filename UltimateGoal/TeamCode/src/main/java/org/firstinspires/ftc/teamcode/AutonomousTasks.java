@@ -20,16 +20,20 @@ public class AutonomousTasks{
     ElapsedTime time;
     double TimeoutMs;
     OpMode op;
+    int numberOfRings;
+
+    public AutonomousTasks(int numOfRings){
+        numberOfRings = numOfRings;
+    }
 
     public void init(){
         time = new ElapsedTime();
         time.reset();
     }
 
-    public void detect(){
-    }
-
-    public void moveToTargetZone() {
+    public void moveToTargetZone(int numberOfRings) {
+        // Using numberOfRings to decide which target zone to move to (A, B, C) based on their coordinates
+        // Odometry will help
     }
 
     public void moveBeforeLaunchLine() {
@@ -48,10 +52,6 @@ public class AutonomousTasks{
 
     }
 
-    public AutonomousTasks(Servo hook, double TimeoutMs, ParallelStateMachineOpMode opMode){
-        this.TimeoutMs = TimeoutMs;
-        this.op = opMode;
-    }
 
     public void run() {
 
@@ -63,7 +63,7 @@ public class AutonomousTasks{
                 break;
 
             case MOVE_TO_TARGET_ZONE:
-                moveToTargetZone();
+                moveToTargetZone(numberOfRings);
                 state = State.MOVE_BEFORE_LAUNCH_LINE;
                 break;
 

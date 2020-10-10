@@ -15,6 +15,7 @@ public class BlueAutonomous extends OpMode {
 
     private Detector detect;
     int numOfRings = 0;
+    private AutonomousTasks auto;
 
     private void numberOfRings() {
         List<Recognition> updatedRecognitions = detect.scan();
@@ -49,6 +50,8 @@ public class BlueAutonomous extends OpMode {
         telemetry.addData("Status", "Initializing");
         detect = new Detector(this);
         detect.init();
+
+        auto = new AutonomousTasks(numOfRings);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class BlueAutonomous extends OpMode {
 
     @Override
     public void loop(){
-
+        auto.run();
     }
 
 }
