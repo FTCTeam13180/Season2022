@@ -1,0 +1,11 @@
+Level 1 - Component
+Description: This is the lowest level.
+Each of the components will have their own classes which contain very basic motor movements.
+These classes are the only ones that will call the motor library functions.
+    -Chassis
+    -Intake
+    -Whacker
+    -Launcher
+    -Wobble grabber
+    -Wobble picker upper
+    -Webcam

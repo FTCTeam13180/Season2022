@@ -1,0 +1,5 @@
+Level 1.5 - State Machines
+Description: Basically a way to give power and stop giving power using the component classes. Will
+create and provide a state machine object for SerialMotion to use (serial motion will make a “new”
+state machine object and plug in the needed instance variables)
+    -ChassisStateMachine

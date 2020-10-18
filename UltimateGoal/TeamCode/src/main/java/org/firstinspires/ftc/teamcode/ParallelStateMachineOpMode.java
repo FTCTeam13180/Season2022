@@ -33,11 +33,11 @@ public class ParallelStateMachineOpMode extends OpMode {
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
+        servo = hardwareMap.get(Servo.class, "servo");
+
         motor = hardwareMap.get(DcMotor.class, "motor");
 
         //initializing hook servo
-        servo = hardwareMap.get(Servo.class, "servo");
-
         mm = new MoveMotor(this, DIRECTION.FORWARD, POWER, CMS, TIMOUTMS);
         ms = new MoveServo(servo, TIMOUTMS, this);
         telemetry.addData("Status", "Initialized");

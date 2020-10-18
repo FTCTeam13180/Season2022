@@ -1,0 +1,8 @@
+Parallel Action Classes
+A job that the robot needs to do; These classes will encompass the motion classes and put them
+together to perform an action with several motors moving at once. Examples:
+    -GetRingParallelAction
+    -MoveToLaunchPositionParallelAction
+    -LaunchParallelAction
+    -DepositRingParallelAction
+    -MoveWobbleParallelAction
