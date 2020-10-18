@@ -13,7 +13,30 @@ public class ChassisSerialMotion {
 
     public ChassisSerialMotion(ChassisComponent chassisComponent, OpMode opMode) {
         this.chassisComponent = chassisComponent;
-        chassisStateMachine = new ChassisStateMachine(chassisComponent, POWER, CMS, TIMOUTMS, opMode);
+        chassisStateMachine = new ChassisStateMachine(chassisComponent, opMode);
+
+    }
+    public void setSpeed(double s){
+        chassisStateMachine.setSpeed(s);
     }
 
+    public void setDistance(double c){
+        chassisStateMachine.setDistance(c);
+    }
+
+    public void setTimeoutMs(double ms){
+        chassisStateMachine.setTimeoutMs(ms);
+    }
+
+    public void setState(ChassisStateMachine.State st){
+        chassisStateMachine.setState(st);
+    }
+
+    public ChassisStateMachine.State getState(){
+        return chassisStateMachine.getState();
+    }
+
+    public void run(){
+        chassisStateMachine.run();
+    }
 }

@@ -20,17 +20,34 @@ public class ChassisStateMachine implements BasicCommand {
     private double timeoutMs;
     private OpMode op;
     ElapsedTime runtime;
-    State state = State.INIT;
+    private State state = State.INIT;
 
-    public ChassisStateMachine(ChassisComponent chassisComponent, double speed, double cms, double timeoutMs, OpMode op) {
+    public ChassisStateMachine(ChassisComponent chassisComponent, OpMode op) {
         this.chassisComponent = chassisComponent;
-        this.speed = speed;
-        this.cms = cms;
-        this.timeoutMs = timeoutMs;
         this.op = op;
     }
 
-    public void init(){
+    public void setSpeed(double s){
+        speed = s;
+    }
+
+    public void setDistance(double c){
+        cms = c;
+    }
+
+    public void setTimeoutMs(double ms){
+        timeoutMs = ms;
+    }
+
+    public void setState(State st){
+        state = st;
+    }
+
+
+    public State getState(){
+        return state;
+    }
+    public void init() {
 
         chassisComponent.init();
         op.telemetry.addData("Drive: ", "Resetting Encoders");

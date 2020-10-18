@@ -45,13 +45,14 @@ public class BlueAutonomous extends OpMode {
         }
     }
 
+
     @Override
     public void init() {
         telemetry.addData("Status", "Initializing");
         detect = new Detector(this);
         detect.init();
 
-        auto = new AutonomousTasks(numOfRings);
+        auto = new AutonomousTasks(this);
     }
 
     @Override
@@ -59,6 +60,7 @@ public class BlueAutonomous extends OpMode {
         numberOfRings();
         telemetry.addData("Number of rings = ", numOfRings);
         telemetry.addData("Status", "Initialized");
+        auto.setRingNumber(numOfRings);
     }
 
     @Override
