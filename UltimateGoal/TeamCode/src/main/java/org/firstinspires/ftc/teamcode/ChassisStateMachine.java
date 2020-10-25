@@ -26,20 +26,12 @@ public class ChassisStateMachine implements BasicCommand {
         this.op = op;
     }
 
-    public void setSpeed(double s){
-        speed = s;
-    }
+    public void setSpeed(double s){ speed = s; }
 
-    public void setDistance(double c){
-        cms = c;
-    }
+    public void setDistance(double c){ cms = c; }
 
     public void setTimeoutMs(double ms){
         timeoutMs = ms;
-    }
-
-    public void setState(State st){
-        state = st;
     }
 
 
@@ -49,10 +41,7 @@ public class ChassisStateMachine implements BasicCommand {
     public void init() {
 
         chassisComponent.init();
-        op.telemetry.addData("Drive: ", "Resetting Encoders");
-        chassisComponent.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        chassisComponent.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        op.telemetry.addData("Drive:", "Encoders reset");
+        op.telemetry.addData("ChassisStateMachine: ", "initialized");
 
         // Set Target Position
         chassisComponent.setTargetPosition(cms);
@@ -100,7 +89,7 @@ public class ChassisStateMachine implements BasicCommand {
 
             case EXECUTE:
                 execute();
-                if (!chassisComponent.isBusy() && (runtime.milliseconds() >= timeoutMs)) {
+                if (!chassisComponent.isBusy() || (runtime.milliseconds() >= timeoutMs)) {
                     state = State.STOP;
                 }
                 break;

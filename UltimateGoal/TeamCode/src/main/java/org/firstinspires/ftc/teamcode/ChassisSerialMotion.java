@@ -29,10 +29,6 @@ public class ChassisSerialMotion {
         chassisStateMachine.setTimeoutMs(ms);
     }
 
-    public void setState(ChassisStateMachine.State st){
-        chassisStateMachine.setState(st);
-    }
-
     public ChassisStateMachine.State getState(){
         return chassisStateMachine.getState();
     }

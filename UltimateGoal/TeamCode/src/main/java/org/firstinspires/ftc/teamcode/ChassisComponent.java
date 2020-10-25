@@ -36,7 +36,8 @@ public class ChassisComponent {
         topr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        setRunMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         opMode.telemetry.addData("Chassis:", "Initialized");
     }
 
