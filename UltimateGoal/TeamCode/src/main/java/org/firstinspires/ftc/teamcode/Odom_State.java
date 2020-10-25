@@ -26,9 +26,9 @@ public class Odom_State {
         return sleep;
     }
 
-    Odom_State(State s, double px, double py){
+    Odom_State(State s, double px, double py,double p){
         if(s==State.NextPoint) {
-            point = new Point(px, py);
+            point = new Point(px, py,p);
             state = s;
             turn = 0;
             sleep = 0;

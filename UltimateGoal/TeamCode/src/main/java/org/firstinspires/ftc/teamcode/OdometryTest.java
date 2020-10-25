@@ -1,51 +1,43 @@
 package org.firstinspires.ftc.teamcode;
-
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-public class AutonomousTasks{
+@Autonomous(name="Odometry Test",group="UlimateGoalAutonomous")
+public class OdometryTest extends OpMode {
 
     enum State {
         INIT,
         MOVE_TO_TARGET_ZONE,
-        GRAB_WOBBLE,
         MOVE_TO_LAUNCH_POSITION,
-        LAUNCH_RINGS,
-        PICK_UP_RINGS,
-        PARK_AT_LAUNCH_LINE,
         STOP
     }
 
-    AutonomousTasks.State state = AutonomousTasks.State.INIT;
+    public void init(){
+        telemetry.addLine("Not Really Initializing");
+    }
+
+    OdometryTest.State state = OdometryTest.State.INIT;
     ElapsedTime time;
     double TimeoutMs;
-    OpMode op;
-    int numberOfRings;
     Odometry odometry;
+    int numberOfRings=0; //just cuz
     ChassisSerialMotion chassisSerialMotion;
-    public static final double DISTANCE_TO_TARGET_ZONE_A = 127.64; // calculated using field specifications (80.25 - (11.5 + 18)) * 2.54
-    public static final double DISTANCE_TO_TARGET_ZONE_B = 186.06; // <-- need to be converted to coordinates
-    public static final double DISTANCE_TO_TARGET_ZONE_C = 244.48;
 
-    public AutonomousTasks(OpMode opmode){
-        op = opmode;
-    }
 
-    public void setRingNumber(int numOfRings){
-        numberOfRings = numOfRings;
-    }
-    public void init(){
+    public void initSM(){
+
         time = new ElapsedTime();
         time.reset();
-        odometry = new Odometry(op,120,45);
+        odometry = new Odometry(this,120,45);
         odometry.init();
-        chassisSerialMotion = new ChassisSerialMotion(odometry, op);
+        chassisSerialMotion = new ChassisSerialMotion(odometry, this);
+
     }
 
-    public void grabWobble(){
-        //close servo
-    }
 
     public void moveToTargetZone() {
         chassisSerialMotion.moveToTarget(numberOfRings);
@@ -56,38 +48,35 @@ public class AutonomousTasks{
 
     }
 
-    public void launchRings() {
-
-    }
-
-    public void pickUpRings() {
-    }
-
-    public void parkAtLaunchLine() {
-    }
 
     public void stop (){
+        telemetry.addData("auto katham",time.milliseconds());
+        telemetry.update();
 
     }
 
 
-    public void run() {
+    public void loop() {
 
         switch(state){
 
             case INIT:
-                init();
-                state = State.GRAB_WOBBLE;
+                telemetry.addLine("Initializing");
+                telemetry.update();
+                initSM();
+                state = State.MOVE_TO_TARGET_ZONE;
+                telemetry.addLine("Initialized");
+                telemetry.update();
                 break;
 
-            case GRAB_WOBBLE:
-                grabWobble();
-                state = State.MOVE_TO_TARGET_ZONE;
-                break;
 
             case MOVE_TO_TARGET_ZONE:
+                telemetry.addData("Going to Target Zone",chassisSerialMotion.getState());
+                telemetry.update();
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                     state = State.MOVE_TO_LAUNCH_POSITION;
+                    telemetry.addData("At Target Zone",chassisSerialMotion.getState());
+                    telemetry.update();
                     break;
                 }
                 if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
@@ -97,8 +86,12 @@ public class AutonomousTasks{
                 break;
 
             case MOVE_TO_LAUNCH_POSITION:
+                telemetry.addData("Going to Launch Zone",chassisSerialMotion.getState());
+                telemetry.update();
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.LAUNCH_RINGS;
+                    state = State.STOP;
+                    telemetry.addData("At Launch Zone",chassisSerialMotion.getState());
+                    telemetry.update();
                     break;
                 }
                 if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
@@ -106,23 +99,7 @@ public class AutonomousTasks{
                 }
                 chassisSerialMotion.run();
                 break;
-
-            case LAUNCH_RINGS:
-                launchRings();
-                state = State.PICK_UP_RINGS;
-                break;
-
-            case PICK_UP_RINGS:
-                pickUpRings();
-                state = State.PARK_AT_LAUNCH_LINE;
-                break;
-
-            case PARK_AT_LAUNCH_LINE:
-                parkAtLaunchLine();
-                state = State.STOP;
-                break;
-
-            case STOP:
+          case STOP:
                 stop();
                 break;
 

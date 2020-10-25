@@ -1,12 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "TestChassis", group ="autonomousGroup1")
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+@TeleOp(name = "TestChassis", group ="teleop")
 public class TestChassis extends LinearOpMode {
     DcMotor frontL;
     DcMotor frontR;
@@ -17,9 +24,32 @@ public class TestChassis extends LinearOpMode {
     DcMotor horiz;
     double cntsPerRotation = 1440;
     double wheelDiameter = 3.5/2.54;
-    @Override
-    public void runOpMode(){
+    BNO055IMU imu;
+    public void initIMU(){
+        BNO055IMU.Parameters param = new BNO055IMU.Parameters();
+        param.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
+        param.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ523;
+        //param.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        param.calibrationDataFile = "BNO055IMUCalibration.json";
+        param.loggingEnabled      = true;
+        param.loggingTag          = "IMU";
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(param);
 
+        // Wait for gyroscope to be calibrated
+        telemetry.addLine ("Starting Gyro Calibration");
+        telemetry.update();
+        while(!imu.isGyroCalibrated()) {}
+        telemetry.addLine ("Completed Gyro Calibration");
+        Orientation imu_orientation =
+                imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
+        double imu_radian = imu_orientation.firstAngle;
+        telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
+
+        telemetry.update();
+    }
+    public void runOpMode(){
+        initIMU();
         frontL = hardwareMap.get(DcMotor.class, "Topl");
         frontR= hardwareMap.get(DcMotor.class, "Topr");
         rearL = hardwareMap.get(DcMotor.class, "Rearl");
@@ -33,59 +63,79 @@ public class TestChassis extends LinearOpMode {
         rearL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         int n = (int) ((72/(Math.PI*wheelDiameter))*cntsPerRotation);
         double delay_reduction = 1500;
         n-=delay_reduction;
         double percentAtSlowSpeed = 0.2;
-        double power;
+        double power=0.8;
         double fastPower = 1.0;
         double slowPower = 0.7;
         double straightMargin = 125;
         boolean slow = true;
         double sideReduction = 0.90;
         int slowedSide = 0; //-1: /left, 0: even, 1: right
+        setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ElapsedTime runtime = new ElapsedTime();
 
         waitForStart();
         runtime.reset();
-        power = slowPower;
-        setChassisPower(power);
         while(opModeIsActive()){
-            double r = frontR.getCurrentPosition();
-            double l = rearL.getCurrentPosition();
-            telemetry.addData("Right Encoder",r);
-            telemetry.addData("Left Encoder",l);
-            telemetry.addData("reduced side (L:-1, M:0, R:1): ", slowedSide);
-            telemetry.addData("difference (r-l)",r-l);
-            telemetry.addData("Target: ",n);
-            telemetry.update();
-            if(((r<percentAtSlowSpeed*n || l<percentAtSlowSpeed*n))&&slow){
-                slow=false;
-                power = fastPower;
+            double y = gamepad1.left_stick_y*-1;
+            double x = gamepad1.left_stick_x;
+            double currentAngle = normalizeIMU(imu.getAngularOrientation().firstAngle);
+            if(gamepad1.right_bumper){setChassisPower(1,-1);}
+            else if(gamepad1.left_bumper){setChassisPower(-1,1);}
+
+            else if(Math.hypot(x,y)>0.1) {
+                telemetry.addLine("In there ahaha");
+                double mag = Math.hypot(x,y);
+
+                double target = normalizeTarget(y,x);
+                telemetry.addData("Target: ",Math.toDegrees(target));
+                double delta = target - currentAngle;
+                if(delta<0)delta+=2*Math.PI;
+                telemetry.addData("Delta: ",Math.toDegrees(delta));
+
+                delta = 90-delta;
+                x = Math.cos(delta)*mag;
+                y = Math.sin(delta)*mag;
+
+                double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+
+                frontR.setPower(power*(((y-x)/cap)));
+                frontL.setPower(power*((y+x)/cap));
+                rearR.setPower(power*((y+x)/cap));
+                rearL.setPower(power*((y-x)/cap));
+
             }
 
-            if(l-r>straightMargin && slowedSide!=-1){
-                setChassisPower(sideReduction * power, power);
-                slowedSide = -1;
-            }
-            else if(r-l>straightMargin && slowedSide!=1){
-                setChassisPower(power, sideReduction*power);
-                slowedSide = 1;
-            }
-            else if ( (r-l<straightMargin) && ((l-r)<straightMargin) && slowedSide!=0){
-                setChassisPower(power);
-                slowedSide = 0;
-            }
-            if(r>=n || l>=n){
-                stopMotor();
-            }
+
+            else{stopMotor();telemetry.addLine("not in there f");}
+            telemetry.addData("Right Encoder",frontR.getCurrentPosition());
+            telemetry.addData("Left Encoder",rearL.getCurrentPosition());
+            telemetry.addData("frontl Encoder",frontL.getCurrentPosition());
+            telemetry.addData("rearr encoder",rearR.getCurrentPosition());
+            telemetry.addData("Angle",Math.toDegrees(currentAngle));
+            telemetry.update();
 
         }
     }
+
+    public static double normalizeTarget(double y, double x){
+        double delta = Math.atan2(y, x);
+        if(delta<0) delta+= 2*Math.PI;
+        delta = 2.5*Math.PI - delta;
+        if(delta>2*Math.PI) delta -=2*Math.PI;
+        return delta;
+    }
+    public static double normalizeIMU(double theta){
+        theta =-theta;
+        return (theta<0)? 2*Math.PI+theta: theta;
+    }
+
     public void stopMotor(){
         rearL.setPower(0);
         rearR.setPower(0);
@@ -94,6 +144,40 @@ public class TestChassis extends LinearOpMode {
 
 
     }
+    /*
+    public void straightLine(double cms, double power){
+        setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        double r = frontR.getCurrentPosition();
+        double l = rearL.getCurrentPosition();
+        telemetry.addData("Right Encoder",r);
+        telemetry.addData("Left Encoder",l);
+        telemetry.addData("reduced side (L:-1, M:0, R:1): ", slowedSide);
+        telemetry.addData("difference (r-l)",r-l);
+        telemetry.addData("Target: ",n);
+        telemetry.update();
+        if(((r<percentAtSlowSpeed*n || l<percentAtSlowSpeed*n))&&slow){
+            slow=false;
+            power = fastPower;
+        }
+
+        if(l-r>straightMargin && slowedSide!=-1){
+            setChassisPower(sideReduction * power, power);
+            slowedSide = -1;
+        }
+        else if(r-l>straightMargin && slowedSide!=1){
+            setChassisPower(power, sideReduction*power);
+            slowedSide = 1;
+        }
+        else if ( (r-l<straightMargin) && ((l-r)<straightMargin) && slowedSide!=0){
+            setChassisPower(power);
+            slowedSide = 0;
+        }
+        if(r>=n || l>=n){
+            stopMotor();
+        }
+    }
+    */
+
     public void setChassisPower(double p){
         rearL.setPower(p);
         rearR.setPower(p);
