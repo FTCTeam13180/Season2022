@@ -9,22 +9,16 @@ public class ChassisSerialMotion {
     public static final double CMS = 60 * 2.54;
     public static final double TIMOUTMS = 20000;
 
-    private ChassisComponent chassisComponent;
+    private Odometry odometry;
     private ChassisStateMachine chassisStateMachine;
 
-    public ChassisSerialMotion(ChassisComponent chassisComponent, OpMode opMode) {
-        this.chassisComponent = chassisComponent;
-        chassisStateMachine = new ChassisStateMachine(chassisComponent, opMode);
+    public ChassisSerialMotion(Odometry odom, OpMode opMode) {
+        this.odometry = odom;
+        chassisStateMachine = new ChassisStateMachine(odometry, opMode);
 
     }
-    public void setSpeed(double s){
-        chassisStateMachine.setSpeed(s);
-    }
-
-    public void setDistance(double c){
-        chassisStateMachine.setDistance(c);
-    }
-
+    public void moveToTarget(int numRings){ chassisStateMachine.moveToTargetZone(numRings); }
+    public void moveToLaunch(){chassisStateMachine.moveToLaunch();}
     public void setTimeoutMs(double ms){
         chassisStateMachine.setTimeoutMs(ms);
     }
