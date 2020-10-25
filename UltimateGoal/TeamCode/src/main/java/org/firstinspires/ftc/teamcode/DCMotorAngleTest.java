@@ -17,14 +17,19 @@ public class DCMotorAngleTest extends LinearOpMode {
     public void runOpMode() {
         motor = hardwareMap.get(DcMotor.class, "launcher");
         runtime = new ElapsedTime();
-        runtime.reset();
+
         telemetry.setAutoClear(false);
         telemetry.addData("Status", "In init, Elapsed Time = " + runtime.milliseconds());
+
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
+        runtime.reset();
+
         while (opModeIsActive()) {
             gamepad_y = gamepad1.left_stick_y;
 
-            if (gamepad_y > 0.5) {
-                motor.setPower(1);
+            if (Math.abs(gamepad_y) > 0.1) {
+                motor.setPower(gamepad_y);
             }
             else {
                 motor.setPower(0);
