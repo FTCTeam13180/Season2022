@@ -182,4 +182,3 @@ public class AutonomousTasks{
     }
 }
 
-// if we don't hit all the power shots when we launch the rings, will we come back to them?
