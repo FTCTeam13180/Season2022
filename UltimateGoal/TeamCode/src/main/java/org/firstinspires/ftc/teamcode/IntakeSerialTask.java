@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.StateMachine;
-
 public class IntakeSerialTask {
     public static final double POWER = 1.0;
 
@@ -13,6 +11,7 @@ public class IntakeSerialTask {
     public IntakeSerialTask(IntakeComponent intakeComponent, OpMode opMode) {
         this.intakeComponent = intakeComponent;
         intakeStateMachine = new IntakeStateMachine(intakeComponent, opMode);
+
 
     }
     public void setPower (double POWER) {intakeStateMachine.setPower(POWER);}
