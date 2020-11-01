@@ -85,16 +85,16 @@ public class ChassisStateMachine implements BasicCommand {
     public void moveToLaunch(){
         //owo
 
-        points = new ArrayList<Point>();
-        points.add(new Point(90,120,power));
-        finished = new boolean[points.size()];
+       points = new ArrayList<Point>();
+       points.add(new Point( 90,120,power));
+       finished = new boolean[points.size()];
+
     }
 
     public State getState(){
         return state;
     }
     public void init() {
-
 
 
 
@@ -159,3 +159,4 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
 }
+
