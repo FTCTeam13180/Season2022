@@ -10,9 +10,12 @@ public class AutonomousTasks{
         INIT,
         MOVE_TO_TARGET_ZONE,
         GRAB_WOBBLE,
-        MOVE_TO_LAUNCH_POSITION,
-        LAUNCH_RINGS,
+        MOVE_TO_POWER_SHOT_LAUNCH_POSITION,
+        LAUNCH_RINGS_AT_POWER_SHOTS,
         PICK_UP_RINGS,
+        MOVE_SECOND_WOBBLE_TO_TARGET_ZONE,
+        MOVE_TO_HIGH_GOAL_LAUNCH_POSITION,
+        LAUNCH_RINGS_AT_HIGH_GOAL,
         PARK_AT_LAUNCH_LINE,
         STOP
     }
@@ -22,14 +25,11 @@ public class AutonomousTasks{
     double TimeoutMs;
     OpMode op;
     int numberOfRings;
+    int whackedRingCount;
     Odometry odometry;
     ChassisSerialMotion chassisSerialMotion;
-<<<<<<< HEAD
-    public static final double DISTANCE_TO_TARGET_ZONE_A = 127.64; // calculated using field specifications (80.25 - (11.5 + 18)) * 2.54
-    public static final double DISTANCE_TO_TARGET_ZONE_B = 186.06; // <-- need to be converted to coordinates
-    public static final double DISTANCE_TO_TARGET_ZONE_C = 244.48;
-=======
->>>>>>> parent of 9367593... updated autonomous tasks with whacker and launcher
+    LauncherSerialTask launcherSerialTask;
+    WhackerSerialTask whackerSerialTask;
 
     public AutonomousTasks(OpMode opmode){
         op = opmode;
@@ -39,6 +39,7 @@ public class AutonomousTasks{
         numberOfRings = numOfRings;
     }
     public void init(){
+        op.telemetry.addData("Status", "Initializing");
         time = new ElapsedTime();
         time.reset();
         odometry = new Odometry(op,120,45);
@@ -47,27 +48,49 @@ public class AutonomousTasks{
     }
 
     public void grabWobble(){
-        //close servo
+        //move to wobble and pick it up
     }
 
     public void moveToTargetZone() {
         chassisSerialMotion.moveToTarget(numberOfRings);
     }
 
-    public void moveToLaunchPosition() {
+    public void moveToPowerShotLaunchPosition() {
         chassisSerialMotion.moveToLaunch();
 
     }
 
-<<<<<<< HEAD
-    public void launchRings() {
-=======
     public void launchRingsAtPowerShots() {
->>>>>>> parent of 9367593... updated autonomous tasks with whacker and launcher
+        launcherSerialTask.setPower(1);
+        if(whackedRingCount < 3){
+            whackerSerialTask.run();
+            /*
+            Every time a ring is launched at a power shot, the robot must slightly turn towards the next power shot
+            (possibly parallel - can retract whacker while turning to next power shot)
+            if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.RETRACT){ <-- if getTarget is Retract, switch to Extend
+                whackerSerialTask.setTarget(WhackerStateMachine.Target.EXTEND;
+                whackedRingCount++;
+            }
+            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
+                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
+             */
 
+
+        }
+        else if(whackedRingCount >= 3){
+            launcherSerialTask.setPower(0);
+        }
     }
 
     public void pickUpRings() {
+    }
+
+    public void moveToHighGoalLaunchPosition() {
+        //move to the position to launch rings into the high goal
+    }
+
+    public void launchRingsAtHighGoal(){
+
     }
 
     public void parkAtLaunchLine() {
@@ -77,6 +100,15 @@ public class AutonomousTasks{
 
     }
 
+    /*
+    (The robot starts already holding a wobble and three rings, and the number of rings will be detected before start is pressed)
+    1) Move to the position for shooting at the power shots
+    2) Launch all three rings at the power shots
+    3) Move to the correct target zone (based on number of rings) and drop the wobble there
+    4) If there is 0 or 1 ring, pick up the other wobble and drop it in the correct target zone
+       If there are 4 rings, pick up three and shoot them into the high goal
+    5) Park on the white launch line
+     */
 
     public void run() {
 
@@ -84,10 +116,8 @@ public class AutonomousTasks{
 
             case INIT:
                 init();
-<<<<<<< HEAD
-                state = State.GRAB_WOBBLE;
-=======
-                state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
+//                state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
+                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                 break;
 
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
@@ -103,8 +133,15 @@ public class AutonomousTasks{
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
-                launchRingsAtPowerShots();
-                state = State.MOVE_TO_TARGET_ZONE;
+                if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
+//                    state = State.MOVE_TO_TARGET_ZONE;
+                      state = State.GRAB_WOBBLE;
+                    break;
+                }
+                if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
+                    launchRingsAtPowerShots();
+                }
+                launcherSerialTask.run();
                 break;
 
             case MOVE_TO_TARGET_ZONE:
@@ -121,43 +158,44 @@ public class AutonomousTasks{
                     moveToTargetZone();
                 }
                 chassisSerialMotion.run();
->>>>>>> parent of 9367593... updated autonomous tasks with whacker and launcher
                 break;
 
             case GRAB_WOBBLE:
                 grabWobble();
-                state = State.MOVE_TO_TARGET_ZONE;
+     //           state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
+                state = State.PICK_UP_RINGS;
                 break;
 
-            case MOVE_TO_TARGET_ZONE:
+            case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.MOVE_TO_LAUNCH_POSITION;
+                    state = State.PARK_AT_LAUNCH_LINE;
                     break;
                 }
-                if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
+                if(chassisSerialMotion.getState() != ChassisStateMachine.State.EXECUTE){
                     moveToTargetZone();
                 }
                 chassisSerialMotion.run();
                 break;
 
-            case MOVE_TO_LAUNCH_POSITION:
+            case PICK_UP_RINGS:
+                pickUpRings();
+                //state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
+                state=State.LAUNCH_RINGS_AT_HIGH_GOAL;
+                break;
+
+            case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.LAUNCH_RINGS;
+                    state = State.LAUNCH_RINGS_AT_HIGH_GOAL;
                     break;
                 }
                 if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
-                    moveToLaunchPosition();
+                    moveToHighGoalLaunchPosition();
                 }
                 chassisSerialMotion.run();
                 break;
 
-            case LAUNCH_RINGS:
-                launchRings();
-                state = State.PICK_UP_RINGS;
-                break;
-
-            case PICK_UP_RINGS:
-                pickUpRings();
+            case LAUNCH_RINGS_AT_HIGH_GOAL:
+                launchRingsAtHighGoal();
                 state = State.PARK_AT_LAUNCH_LINE;
                 break;
 
@@ -174,5 +212,3 @@ public class AutonomousTasks{
         }
     }
 }
-
-
