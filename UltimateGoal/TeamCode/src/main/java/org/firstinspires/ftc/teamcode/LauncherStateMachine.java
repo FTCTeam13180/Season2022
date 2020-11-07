@@ -3,19 +3,24 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class LauncherStateMachine implements BasicCommand {
+public class LauncherStateMachine {
 
     enum State {
         INIT,
-        EXECUTE,
+        POWERING_UP,
+        REACHED_MAX,
         STOP
     }
 
     LauncherComponent launcherComponent;
+    private double timeInterval;
+    private static final double poweringUpTimeIntervel = 2000;
     private OpMode op;
     private static final double timeoutMs = 30000;
     private double power;
     ElapsedTime runtime;
+    ElapsedTime executingTime;
+    ElapsedTime powerUpTimer;
     private State state = State.INIT;
 
     public LauncherStateMachine(LauncherComponent launcherComponent, OpMode op){
@@ -32,6 +37,11 @@ public class LauncherStateMachine implements BasicCommand {
         power = p;
     }
 
+    /** How long you want the launcher to keep spinning
+     * Set in milliseconds - so 5 sec would be 5000
+     */
+    public void setRunningTime (double t) { timeInterval = t;}
+
     public State getState() {
         return state;
     }
@@ -43,7 +53,13 @@ public class LauncherStateMachine implements BasicCommand {
         runtime.reset();
     }
 
-    public void execute() {
+    public void powerUp() {
+        launcherComponent.givePower(power);
+        powerUpTimer = new ElapsedTime();
+        executingTime = new ElapsedTime();
+    }
+
+    public void reachedMax(){
         launcherComponent.givePower(power);
     }
     //will set power of the launcher to 0, thus stopping it
@@ -59,15 +75,20 @@ public class LauncherStateMachine implements BasicCommand {
 
             case INIT:
                 init();
-                state = LauncherStateMachine.State.EXECUTE;
+                state = State.POWERING_UP;
                 break;
 
-            case EXECUTE:
-                execute();
-                if (!launcherComponent.isbusy() || (runtime.milliseconds() >= timeoutMs)) {
-                    state = LauncherStateMachine.State.STOP;
+            case POWERING_UP:
+                powerUp();
+                if (powerUpTimer.milliseconds() > poweringUpTimeIntervel || runtime.milliseconds() > timeoutMs){
+                    state = State.REACHED_MAX;
                 }
                 break;
+            case REACHED_MAX:
+                reachedMax();
+                if(executingTime.milliseconds() > timeInterval || runtime.milliseconds() > timeoutMs){
+                    state = State.STOP;
+                }
 
             case STOP:
                 stop();

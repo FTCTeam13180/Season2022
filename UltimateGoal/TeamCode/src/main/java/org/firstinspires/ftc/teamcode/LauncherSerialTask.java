@@ -10,6 +10,10 @@ public class LauncherSerialTask {
         this.launcherComponent = lc;
         launcherStateMachine = new LauncherStateMachine(lc, op);
     }
+    //in milliseconds - so 8 sec = 8000 input
+    public void setRunningTime (double milliseconds) {
+        launcherStateMachine.setRunningTime(milliseconds);
+    }
     public void setPower (double power){
         launcherStateMachine.setPower(power);
     }
