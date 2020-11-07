@@ -64,17 +64,17 @@ public class OdometryTest extends OpMode {
                 telemetry.addLine("Initializing");
                 telemetry.update();
                 initSM();
-                state = State.MOVE_TO_LAUNCH_POSITION;
+                state = State.MOVE_TO_TARGET_ZONE;
                 telemetry.addLine("Initialized");
                 telemetry.update();
                 break;
 
-/*
+
             case MOVE_TO_TARGET_ZONE:
                 telemetry.addData("Going to Target Zone",chassisSerialMotion.getState());
                 telemetry.update();
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.STOP;
+                    state = State.MOVE_TO_LAUNCH_POSITION;
                     telemetry.addData("At Target Zone",chassisSerialMotion.getState());
                     telemetry.update();
                     break;
@@ -84,7 +84,7 @@ public class OdometryTest extends OpMode {
                 }
                 chassisSerialMotion.run();
                 break;
-*/
+
             case MOVE_TO_LAUNCH_POSITION:
                 telemetry.addData("Going to Launch Zone",chassisSerialMotion.getState());
                 telemetry.update();
@@ -99,7 +99,6 @@ public class OdometryTest extends OpMode {
                 }
                 chassisSerialMotion.run();
                 break;
-
           case STOP:
                 stop();
                 break;

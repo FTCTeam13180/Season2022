@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.sax.StartElementListener;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,10 +10,10 @@ class Point{
     private double X;
     private double Y;
     private double power;
-    Point(double x, double y, double p){
+    Point(double x, double y, double power){
         X = x;
         Y = y;
-        power = p;
+        power = this.power;
     }
     public double getX(){
         return X;
@@ -43,7 +41,7 @@ public class ChassisStateMachine implements BasicCommand {
     private double timeoutMs;
     private OpMode op;
     ElapsedTime runtime;
-    double power = 0.3;
+    double power = 0.9;
     private State state = State.INIT;
     private ArrayList <Point> points;
     private boolean finished[];
@@ -53,6 +51,9 @@ public class ChassisStateMachine implements BasicCommand {
         this.op = op;
     }
 
+    public void setSpeed(double s){ speed = s; }
+
+    public void setDistance(double c){ cms = c; }
 
     public void setTimeoutMs(double ms){
         timeoutMs = ms;
@@ -85,9 +86,7 @@ public class ChassisStateMachine implements BasicCommand {
         //owo
 
         points = new ArrayList<Point>();
-        points.add(new Point(180,180,power));
-        op.telemetry.addData("power",power);
-        op.telemetry.update();
+        points.add(new Point(90,120,power));
         finished = new boolean[points.size()];
     }
 
@@ -95,6 +94,7 @@ public class ChassisStateMachine implements BasicCommand {
         return state;
     }
     public void init() {
+
 
 
 
@@ -108,21 +108,21 @@ public class ChassisStateMachine implements BasicCommand {
         runtime = new ElapsedTime();
         runtime.reset();
     }
-    // 1 0 0 0
+
     public void execute(){
         for(int i = 0;i<points.size();i++){
             Point current = points.get(i);
-            if(finished[i]) continue;
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
-            if(( (odometry.frontR.getCurrentPosition()>odometry.y_cnts) || (odometry.frontL.getCurrentPosition()>odometry.y_cnts) ) && (odometry.rearL.getCurrentPosition()>odometry.x_cnts)){
-                odometry.stopChassisMotor();
-                finished[i]=true;
-                odometry.setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                odometry.start_X=current.getX();
-                odometry.start_Y=current.getY();
-                continue;
+            if(finished[i]) continue;
+            else{
+                if(( (odometry.frontR.getCurrentPosition()>odometry.y_cnts) || (odometry.rearL.getCurrentPosition()>odometry.y_cnts) ) && (odometry.rearR.getCurrentPosition()>odometry.x_cnts)){
+                    odometry.stopChassisMotor();
+                    finished[i]=true;
+                    odometry.setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    continue;
+                }
+                break;
             }
-            break;
         }
     }
     public void stop(){

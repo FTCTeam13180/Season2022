@@ -82,8 +82,7 @@ public class AutonomousTasks{
 
             case GRAB_WOBBLE:
                 grabWobble();
-                state = State.LAUNCH_RINGS;
-                //           state = State.MOVE_TO_TARGET_ZONE;    'still finishing odom' - rohan
+                state = State.MOVE_TO_TARGET_ZONE;
                 break;
 
             case MOVE_TO_TARGET_ZONE:

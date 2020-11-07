@@ -24,34 +24,33 @@ public class Odometry{
 
     //constants
     double wheel_diameter = 9.60798; //cm
-    double cntsPerRotation = 3440;
+    double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
     // Odometry position variables
     double global_X;
     double global_Y;
-    double start_X;
-    double start_Y;
+
     double y_cnts;
     double x_cnts;
 
 
 
     DcMotor frontR, rearR, rearL, frontL;
-    Odometry (OpMode op, double init_x, double init_y){
+    Odometry (OpMode op, double start_x, double start_y){
         opMode=op;
-        global_X=start_X=init_x;
-        global_Y=start_Y=init_y;
+        global_X=start_x;
+        global_Y=start_y;
     }
     public void init(){
         initDriveHardwareMap();
         initIMU();
     }
     public void initDriveHardwareMap(){
-        frontR = opMode.hardwareMap.dcMotor.get("Topr");
-        frontL = opMode.hardwareMap.dcMotor.get("Topl");
-        rearR = opMode.hardwareMap.dcMotor.get("Rearr");
-        rearL = opMode.hardwareMap.dcMotor.get("Rearl");
+        frontR = opMode.hardwareMap.dcMotor.get("TopR");
+        frontL = opMode.hardwareMap.dcMotor.get("TopL");
+        rearR = opMode.hardwareMap.dcMotor.get("BackR");
+        rearL = opMode.hardwareMap.dcMotor.get("BackL");
 
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -68,7 +67,8 @@ public class Odometry{
         rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rearL.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearR.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontR.setDirection(DcMotorSimple.Direction.REVERSE);
         frontL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         opMode.telemetry.addData("Status", "Hardware Map Init Complete");
@@ -106,30 +106,17 @@ public class Odometry{
 
 
     public void moveTo(double theta, double magnitude, double power){
-        opMode.telemetry.addLine("MoveTo");
-        opMode.telemetry.addData("theta",theta);
-        opMode.telemetry.addData("mag",magnitude);
-        opMode.telemetry.addData("power",power);
-        theta = Math.toRadians(theta);
+        setChassisMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double x = Math.cos(theta)*magnitude;
         double y = Math.sin(theta)*magnitude;
-
         double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
-        opMode.telemetry.addData("frontR_speed: ", power*(((y-x)/cap)));
-        opMode.telemetry.addData("frontL_speed: ", power*(((y+x)/cap)));
-        opMode.telemetry.update();
         x_cnts = x*cntsPerCm;
         y_cnts = y*cntsPerCm;
-
-
         /*
-
         frontR: right encoder
         rearL: left encoder
         rearR: back encoder
-
          */
-
         frontR.setPower(power*(((y-x)/cap)));
         frontL.setPower(power*((y+x)/cap));
         rearR.setPower(power*((y+x)/cap));
@@ -174,26 +161,12 @@ public class Odometry{
 
     }
     public void nextPoint(double x, double y,double power){
-
-        global_Y = start_Y + frontR.getCurrentPosition()/cntsPerCm;
-        global_X = start_X + rearR.getCurrentPosition()/cntsPerCm;
-
-        opMode.telemetry.addData("global_Y: ", global_Y);
-        opMode.telemetry.addData("global_X: ", global_X);
-        opMode.telemetry.addData("target_x: ", x);
-        opMode.telemetry.addData("target_y: ", y);
-
-
         double mag = Math.hypot(global_X-x,global_Y-y);
         double currentAngle = normalizeIMU(IMU.getAngularOrientation().firstAngle);
-        double target = Math.toDegrees(normalizeTarget(global_Y-y,global_X-x));
+        double target = normalizeTarget(global_Y-y,global_X-x);
         double delta = target - currentAngle;
-
         if(delta<0)delta+=2*Math.PI;
         delta = 90-delta;
-        opMode.telemetry.addData("R: ", mag);
-        opMode.telemetry.addData("theta: ", delta);
-        opMode.telemetry.update();
         moveTo(delta, mag,power);
     }
     public static double normalizeTarget(double y, double x){
