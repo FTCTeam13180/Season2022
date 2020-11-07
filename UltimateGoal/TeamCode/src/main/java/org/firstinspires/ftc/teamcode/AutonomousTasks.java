@@ -25,8 +25,11 @@ public class AutonomousTasks{
     double TimeoutMs;
     OpMode op;
     int numberOfRings;
+    int whackedRingCount;
     Odometry odometry;
     ChassisSerialMotion chassisSerialMotion;
+    LauncherSerialTask launcherSerialTask;
+    WhackerSerialTask whackerSerialTask;
 
     public AutonomousTasks(OpMode opmode){
         op = opmode;
@@ -58,7 +61,26 @@ public class AutonomousTasks{
     }
 
     public void launchRingsAtPowerShots() {
+        launcherSerialTask.setPower(1);
+        if(whackedRingCount < 3){
+            whackerSerialTask.run();
+            /*
+            Every time a ring is launched at a power shot, the robot must slightly turn towards the next power shot
+            (possibly parallel - can retract whacker while turning to next power shot)
 
+            if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.RETRACT){ <-- if getTarget is Retract, switch to Extend
+                whackerSerialTask.setTarget(WhackerStateMachine.Target.EXTEND;
+                whackedRingCount++;
+            }
+            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
+                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
+             */
+
+
+        }
+        else if(whackedRingCount >= 3){
+            launcherSerialTask.setPower(0);
+        }
     }
 
     public void pickUpRings() {
@@ -111,8 +133,14 @@ public class AutonomousTasks{
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
-                launchRingsAtPowerShots();
-                state = State.MOVE_TO_TARGET_ZONE;
+                if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
+                    state = State.MOVE_TO_TARGET_ZONE;
+                    break;
+                }
+                if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
+                    launchRingsAtPowerShots();
+                }
+                launcherSerialTask.run();
                 break;
 
             case MOVE_TO_TARGET_ZONE:
