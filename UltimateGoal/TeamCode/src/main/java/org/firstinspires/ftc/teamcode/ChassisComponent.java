@@ -11,10 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 // Not really needed - Rohan
 
 public class ChassisComponent {
-    public OpMode opMode;
-    ChassisComponent(OpMode op) {
-        opMode = op;
-    }
+    private OpMode opMode;
 
     private DcMotor topl;
     private DcMotor topr;
@@ -25,6 +22,9 @@ public class ChassisComponent {
     double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
+    ChassisComponent(OpMode op) {
+        opMode = op;
+    }
 
     public void init(){
         topr = opMode.hardwareMap.dcMotor.get("TopR");
@@ -41,7 +41,7 @@ public class ChassisComponent {
         rearr.setDirection(DcMotorSimple.Direction.REVERSE);
         topr.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        opMode.telemetry.addData("Status", "Chassis Component Initialized");
+        opMode.telemetry.addData("Chassis Component", "Initialized");
         opMode.telemetry.update();
     }
 
@@ -82,6 +82,20 @@ public class ChassisComponent {
 
     public void shiftLeft(double power){
         mecanumDrive(-power, 0, power);
+    }
+
+    public void spinRight(double power){
+        topr.setPower(-Math.abs(power));
+        rearr.setPower(-Math.abs(power));
+        topl.setPower(Math.abs(power));
+        rearl.setPower(Math.abs(power));
+    }
+
+    public void spinLeft(double power){
+        topr.setPower(Math.abs(power));
+        rearr.setPower(Math.abs(power));
+        topl.setPower(-Math.abs(power));
+        rearl.setPower(-Math.abs(power));
     }
 
     public void logCurrentPosition () {
