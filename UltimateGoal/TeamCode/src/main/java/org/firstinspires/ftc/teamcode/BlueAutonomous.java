@@ -16,6 +16,7 @@ public class BlueAutonomous extends OpMode {
     private Detector detect;
     int numOfRings = 0;
     private AutonomousTasks auto;
+    Odometry odometry;
 
     private void numberOfRings() {
         List<Recognition> updatedRecognitions = detect.scan();
@@ -48,16 +49,22 @@ public class BlueAutonomous extends OpMode {
 
     @Override
     public void init() {
+       // telemetry.setAutoClear(false);
         telemetry.addData("Status", "Initializing");
-        detect = new Detector(this);
-        detect.init();
+        //detect = new Detector(this);
+        //detect.init();
 
-        auto = new AutonomousTasks(this);
+        odometry = new Odometry(this,120,45);
+        odometry.init();
+        telemetry.addData("Status", "Odometry Initialized");
+
+        auto = new AutonomousTasks(this, odometry);
     }
 
     @Override
     public void init_loop(){
-        numberOfRings();
+        //numberOfRings();
+        numOfRings = 1;
         telemetry.addData("Number of rings = ", numOfRings);
         telemetry.addData("Status", "Initialized");
         auto.setRingNumber(numOfRings);

@@ -110,8 +110,10 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
     public void execute(){
+        op.telemetry.addData("ChassisStateMachine:", "In Execute");
         for(int i = 0;i<points.size();i++){
             Point current = points.get(i);
+            // current.getPower() -> 0
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
             if(finished[i]) continue;
             else{

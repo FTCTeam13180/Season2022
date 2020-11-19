@@ -31,19 +31,18 @@ public class AutonomousTasks{
     LauncherSerialTask launcherSerialTask;
     WhackerSerialTask whackerSerialTask;
 
-    public AutonomousTasks(OpMode opmode){
+    public AutonomousTasks(OpMode opmode, Odometry odometry){
         op = opmode;
+        this.odometry = odometry;
     }
 
     public void setRingNumber(int numOfRings){
         numberOfRings = numOfRings;
     }
     public void init(){
-        op.telemetry.addData("Status", "Initializing");
+        op.telemetry.addData("AutonomousTask", "Initializing");
         time = new ElapsedTime();
         time.reset();
-        odometry = new Odometry(op,120,45);
-        odometry.init();
         chassisSerialMotion = new ChassisSerialMotion(odometry, op);
     }
 
@@ -116,13 +115,14 @@ public class AutonomousTasks{
 
             case INIT:
                 init();
-//                state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
-                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
+                state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
+//                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                 break;
 
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
+                    //state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
+                    state = State.MOVE_TO_TARGET_ZONE;
                     chassisSerialMotion.run(); //so that the STOP state in ChassisStateMachine can run
                     break;
                 }
@@ -135,7 +135,7 @@ public class AutonomousTasks{
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
 //                    state = State.MOVE_TO_TARGET_ZONE;
-                      state = State.GRAB_WOBBLE;
+//                      state = State.GRAB_WOBBLE;
                     break;
                 }
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
@@ -162,8 +162,8 @@ public class AutonomousTasks{
 
             case GRAB_WOBBLE:
                 grabWobble();
-     //           state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
-                state = State.PICK_UP_RINGS;
+                state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
+     //           state = State.PICK_UP_RINGS;
                 break;
 
             case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
@@ -179,13 +179,14 @@ public class AutonomousTasks{
 
             case PICK_UP_RINGS:
                 pickUpRings();
-                //state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
-                state=State.LAUNCH_RINGS_AT_HIGH_GOAL;
+                state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
+                //state=State.LAUNCH_RINGS_AT_HIGH_GOAL;
                 break;
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.LAUNCH_RINGS_AT_HIGH_GOAL;
+                   // state = State.LAUNCH_RINGS_AT_HIGH_GOAL;
+                    state = State.PARK_AT_LAUNCH_LINE;
                     break;
                 }
                 if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){

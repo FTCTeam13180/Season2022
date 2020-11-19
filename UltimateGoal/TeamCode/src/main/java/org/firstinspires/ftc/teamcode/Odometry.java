@@ -47,6 +47,7 @@ public class Odometry{
         initIMU();
     }
     public void initDriveHardwareMap(){
+        opMode.telemetry.addData("Status", "Initializing Odometry");
         frontR = opMode.hardwareMap.dcMotor.get("TopR");
         frontL = opMode.hardwareMap.dcMotor.get("TopL");
         rearR = opMode.hardwareMap.dcMotor.get("BackR");
@@ -72,7 +73,7 @@ public class Odometry{
         frontL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         opMode.telemetry.addData("Status", "Hardware Map Init Complete");
-        opMode.telemetry.update();
+        //opMode.telemetry.update();
     }
     public void initIMU(){
         BNO055IMU.Parameters param = new BNO055IMU.Parameters();
@@ -95,7 +96,7 @@ public class Odometry{
         double imu_radian = imu_orientation.firstAngle;
         opMode.telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
 
-        opMode.telemetry.update();
+        //opMode.telemetry.update();
     }
     //______________________________________________________________________________________________
 
