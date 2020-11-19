@@ -12,7 +12,7 @@ public class LauncherStateMachine {
         STOP
     }
 
-    LauncherComponent launcherComponent;
+    private LauncherComponent launcherComponent;
     private double timeInterval;
     private static final double poweringUpTimeIntervel = 2000;
     private OpMode op;

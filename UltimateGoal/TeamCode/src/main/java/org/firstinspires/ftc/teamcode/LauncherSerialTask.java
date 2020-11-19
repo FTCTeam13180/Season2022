@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 public class LauncherSerialTask {
     private LauncherComponent launcherComponent;
     private LauncherStateMachine launcherStateMachine;
+    OpMode op;
 
     public LauncherSerialTask (LauncherComponent lc, OpMode op) {
         this.launcherComponent = lc;
@@ -20,5 +21,7 @@ public class LauncherSerialTask {
     public LauncherStateMachine.State getState() {
         return launcherStateMachine.getState();
     }
-    public void run() {launcherStateMachine.run();}
+
+    public void run() {
+        launcherStateMachine.run();}
 }
