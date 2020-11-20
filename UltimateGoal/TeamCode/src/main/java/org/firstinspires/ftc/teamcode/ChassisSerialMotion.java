@@ -26,6 +26,7 @@ public class ChassisSerialMotion {
     public ChassisStateMachine.State getState(){
         return chassisStateMachine.getState();
     }
+    public void setState(ChassisStateMachine.State s){chassisStateMachine.setState(s);}
 
     public void run(){
         chassisStateMachine.run();

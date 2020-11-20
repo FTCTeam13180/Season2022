@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.sax.StartElementListener;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,10 +12,10 @@ class Point{
     private double X;
     private double Y;
     private double power;
-    Point(double x, double y, double power){
+    Point(double x, double y, double p){
         X = x;
         Y = y;
-        power = this.power;
+        power = p;
     }
     public double getX(){
         return X;
@@ -41,7 +43,7 @@ public class ChassisStateMachine implements BasicCommand {
     private double timeoutMs;
     private OpMode op;
     ElapsedTime runtime;
-    double power = 0.9;
+    double power = 1.0;
     private State state = State.INIT;
     private ArrayList <Point> points;
     private boolean finished[];
@@ -51,9 +53,6 @@ public class ChassisStateMachine implements BasicCommand {
         this.op = op;
     }
 
-    public void setSpeed(double s){ speed = s; }
-
-    public void setDistance(double c){ cms = c; }
 
     public void setTimeoutMs(double ms){
         timeoutMs = ms;
@@ -86,17 +85,19 @@ public class ChassisStateMachine implements BasicCommand {
         //owo
 
         points = new ArrayList<Point>();
-        points.add(new Point(90,120,power));
+        points.add(new Point(150,210,power));
+        points.add(new Point(90,150,power));
+        points.add(new Point(120,300,power));
+        op.telemetry.addData("power",power);
+        //op.telemetry.update();
         finished = new boolean[points.size()];
     }
 
     public State getState(){
         return state;
     }
+
     public void init() {
-
-
-
 
         op.telemetry.addData("Drive: ", "Resetting Encoders");
         odometry.setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -112,19 +113,22 @@ public class ChassisStateMachine implements BasicCommand {
     public void execute(){
         op.telemetry.addData("ChassisStateMachine:", "In Execute");
         for(int i = 0;i<points.size();i++){
+            if(finished[i]) continue;
             Point current = points.get(i);
             // current.getPower() -> 0
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
-            if(finished[i]) continue;
-            else{
-                if(( (odometry.frontR.getCurrentPosition()>odometry.y_cnts) || (odometry.rearL.getCurrentPosition()>odometry.y_cnts) ) && (odometry.rearR.getCurrentPosition()>odometry.x_cnts)){
-                    odometry.stopChassisMotor();
-                    finished[i]=true;
-                    odometry.setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    continue;
-                }
-                break;
+            if( odometry.isFinished(current.getX(),current.getY()) ){
+                odometry.stopChassisMotor();
+                op.telemetry.addData("finished: ",i);
+
+                //op.telemetry.update();
+                odometry.last_X = odometry.global_X;
+                odometry.last_Y = odometry.global_Y;
+                finished[i]=true;
+
+                continue;
             }
+            break;
         }
     }
     public void stop(){
@@ -132,8 +136,8 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
     public ChassisStateMachine(ParallelStateMachineOpMode opMode, ParallelStateMachineOpMode.DIRECTION direction,  double timeoutMs){
-         this.timeoutMs = timeoutMs;
-         op = opMode;
+        this.timeoutMs = timeoutMs;
+        op = opMode;
     }
 
 
@@ -142,7 +146,6 @@ public class ChassisStateMachine implements BasicCommand {
         switch(state){
 
             case INIT:
-                init();
                 state = State.EXECUTE;
                 break;
 
@@ -152,6 +155,7 @@ public class ChassisStateMachine implements BasicCommand {
                 if (finished[points.size()-1]) {
                     state = State.STOP;
                 }
+
                 break;
 
             case STOP:

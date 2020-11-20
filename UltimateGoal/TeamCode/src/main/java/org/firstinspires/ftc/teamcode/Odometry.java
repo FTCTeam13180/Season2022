@@ -3,7 +3,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -23,13 +22,17 @@ public class Odometry{
     BNO055IMU IMU;
 
     //constants
-    double wheel_diameter = 9.60798; //cm
-    double cntsPerRotation = 1440;
+    double wheel_diameter = 10; //cm
+    double cntsPerRotation = 3440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
     // Odometry position variables
     double global_X;
     double global_Y;
+    double init_X;
+    double init_Y;
+    double last_X;
+    double last_Y;
 
     double y_cnts;
     double x_cnts;
@@ -37,10 +40,11 @@ public class Odometry{
 
 
     DcMotor frontR, rearR, rearL, frontL;
-    Odometry (OpMode op, double start_x, double start_y){
+    Odometry (OpMode op, double i_x, double i_y){
         opMode=op;
-        global_X=start_x;
-        global_Y=start_y;
+        global_X = this.init_X = last_X = i_x;
+        global_Y = this.init_Y = last_Y = i_y;
+
     }
     public void init(){
         initDriveHardwareMap();
@@ -48,29 +52,27 @@ public class Odometry{
     }
     public void initDriveHardwareMap(){
         opMode.telemetry.addData("Status", "Initializing Odometry");
-        frontR = opMode.hardwareMap.dcMotor.get("TopR");
-        frontL = opMode.hardwareMap.dcMotor.get("TopL");
-        rearR = opMode.hardwareMap.dcMotor.get("BackR");
-        rearL = opMode.hardwareMap.dcMotor.get("BackL");
+
+        frontR = opMode.hardwareMap.dcMotor.get("Topr");
+        frontL = opMode.hardwareMap.dcMotor.get("Topl");
+        rearR = opMode.hardwareMap.dcMotor.get("Rearr");
+        rearL = opMode.hardwareMap.dcMotor.get("Rearl");
 
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        frontR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rearR.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontR.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontL.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearL.setDirection(DcMotor.Direction.REVERSE);
+        frontL.setDirection(DcMotor.Direction.REVERSE);
 
         opMode.telemetry.addData("Status", "Hardware Map Init Complete");
         //opMode.telemetry.update();
@@ -102,22 +104,37 @@ public class Odometry{
 
 
     /**
-    * MOTION METHODS BELOW
-    **/
+     * MOTION METHODS BELOW
+     **/
 
 
-    public void moveTo(double theta, double magnitude, double power){
-        setChassisMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        double x = Math.cos(theta)*magnitude;
-        double y = Math.sin(theta)*magnitude;
-        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+    public void moveTo(double r, double theta, double power){
+        opMode.telemetry.addLine("MoveTo");
+        opMode.telemetry.addData("theta",theta);
+        opMode.telemetry.addData("mag", r);
+        opMode.telemetry.addData("power",power);
+        theta = Math.toRadians(theta);
+        double x = Math.cos(theta)*r;
+        double y = Math.sin(theta)*r;
+        double m = Math.max(Math.abs(x),Math.abs(y));
         x_cnts = x*cntsPerCm;
         y_cnts = y*cntsPerCm;
+
+        x/=m;
+        y/=m;
+        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+        opMode.telemetry.addData("frontR_speed: ", power*(((y-x)/cap)));
+        opMode.telemetry.addData("frontL_speed: ", power*(((y+x)/cap)));
+    //    opMode.telemetry.update();
+
+
+
         /*
         frontR: right encoder
         rearL: left encoder
         rearR: back encoder
          */
+
         frontR.setPower(power*(((y-x)/cap)));
         frontL.setPower(power*((y+x)/cap));
         rearR.setPower(power*((y+x)/cap));
@@ -133,7 +150,6 @@ public class Odometry{
         frontR.setPower(p);
         rearL.setPower(p);
         rearR.setPower(p);
-
     }
     public void setChassisPower(double l,double r){
         frontL.setPower(l);
@@ -161,15 +177,41 @@ public class Odometry{
         rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
+
+
+    /**
+     * Creates vector by converting current & target positions into polar coordinates accounting for angle with origin at current position
+     * Output is resultant polar coordinate (r,theta) which is inputted into MoveTo() which executes motion
+     **/
+
     public void nextPoint(double x, double y,double power){
-        double mag = Math.hypot(global_X-x,global_Y-y);
-        double currentAngle = normalizeIMU(IMU.getAngularOrientation().firstAngle);
-        double target = normalizeTarget(global_Y-y,global_X-x);
-        double delta = target - currentAngle;
-        if(delta<0)delta+=2*Math.PI;
-        delta = 90-delta;
-        moveTo(delta, mag,power);
+
+        global_Y = init_Y + (frontR.getCurrentPosition()/cntsPerCm);
+        global_X = init_X - (frontL.getCurrentPosition()/cntsPerCm);
+
+        opMode.telemetry.addData("global_Y: ", global_Y);
+        opMode.telemetry.addData("global_X: ", global_X);
+        opMode.telemetry.addData("target_x: ", x);
+        opMode.telemetry.addData("target_y: ", y);
+      //  opMode.telemetry.update();
+
+
+        double r = Math.hypot(global_X-x,global_Y-y);
+        double currentAngle = Math.toDegrees(normalizeIMU(IMU.getAngularOrientation().firstAngle));
+        double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
+        opMode.telemetry.addData("current: ",currentAngle);
+        opMode.telemetry.addData("target: ",target);
+        double theta = target - currentAngle;
+
+        if(theta<0)theta+=360;
+        theta = 90-theta;
+        opMode.telemetry.addData("r: ", r);
+        opMode.telemetry.addData("theta: ", theta);
+
+        //    opMode.telemetry.update();
+        moveTo(r,theta,power);
     }
+
     public static double normalizeTarget(double y, double x){
         double delta = Math.atan2(y, x);
         if(delta<0) delta+= 2*Math.PI;
@@ -182,8 +224,16 @@ public class Odometry{
         return (theta<0)? 2*Math.PI+theta: theta;
     }
 
+    public boolean isFinished(double x, double y){
 
-
+        //double xDelta = Math.abs(global_X-last_X);
+        //double yDelta = Math.abs(global_Y-last_Y);
+        double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
+        double target_mag = Math.hypot(x-last_X,y-last_Y);
+        opMode.telemetry.addData("current - mag",current_mag);
+        opMode.telemetry.addData("target - mag",target_mag);
+        return (current_mag>=target_mag);
+    }
 
 
 }

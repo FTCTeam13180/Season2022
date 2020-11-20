@@ -22,8 +22,9 @@ public class TestChassis extends LinearOpMode {
     DcMotor verticalLeft;
     DcMotor verticalRight;
     DcMotor horiz;
-    double cntsPerRotation = 1440;
-    double wheelDiameter = 3.5/2.54;
+    double cntsPerRotation = 3440;
+    double wheelDiameter = 10;
+    double cntspercm = (1/(Math.PI*wheelDiameter))*cntsPerRotation;
     BNO055IMU imu;
     public void initIMU(){
         BNO055IMU.Parameters param = new BNO055IMU.Parameters();
@@ -55,8 +56,8 @@ public class TestChassis extends LinearOpMode {
         rearL = hardwareMap.get(DcMotor.class, "Rearl");
         rearR = hardwareMap.get(DcMotor.class, "Rearr");
 
-        frontR.setDirection(DcMotor.Direction.REVERSE);
-        rearR.setDirection(DcMotor.Direction.REVERSE);
+        frontL.setDirection(DcMotor.Direction.REVERSE);
+        rearL.setDirection(DcMotor.Direction.REVERSE);
 
         frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -65,11 +66,13 @@ public class TestChassis extends LinearOpMode {
 
 
 
-        int n = (int) ((72/(Math.PI*wheelDiameter))*cntsPerRotation);
-        double delay_reduction = 1500;
-        n-=delay_reduction;
+        int n = (int) (cntsPerRotation/(Math.PI*wheelDiameter));
+
+        //double delay_reduction = 1500;
+        //n-=delay_reduction;
+
         double percentAtSlowSpeed = 0.2;
-        double power=0.8;
+        double power=1.0;
         double fastPower = 1.0;
         double slowPower = 0.7;
         double straightMargin = 125;
@@ -79,48 +82,65 @@ public class TestChassis extends LinearOpMode {
         setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ElapsedTime runtime = new ElapsedTime();
-
         waitForStart();
         runtime.reset();
+
+        double curX = 150;
+        double curY = 210;
+        double targetX=120;
+        double targetY=45;
         while(opModeIsActive()){
-            double y = gamepad1.left_stick_y*-1;
-            double x = gamepad1.left_stick_x;
-            double currentAngle = normalizeIMU(imu.getAngularOrientation().firstAngle);
-            if(gamepad1.right_bumper){setChassisPower(1,-1);}
-            else if(gamepad1.left_bumper){setChassisPower(-1,1);}
+            double currentAngle = Math.toDegrees(normalizeIMU(imu.getAngularOrientation().firstAngle));
+            telemetry.addData("curAngle",currentAngle);
+            double mag = Math.hypot(targetX-curX,targetY-curY);
+            double target = Math.toDegrees(normalizeTarget(targetY-curY,targetX-curX));
+            telemetry.addData("Target: ",target);
+            double delta = target - currentAngle;
+            if(delta<0)delta+=360;
+            delta = 90-delta;
+            telemetry.addData("Delta degrees: ",delta);
+            delta = Math.toRadians(delta);
+            telemetry.addData("Delta radians: ",delta);
+            double x = Math.cos(delta)*mag;
+            double y = Math.sin(delta)*mag;
+            double m = Math.max(Math.abs(x),Math.abs(y));
+            double x_cnts = x*cntspercm;
+            double y_cnts = y*cntspercm;
 
-            else if(Math.hypot(x,y)>0.1) {
-                telemetry.addLine("In there ahaha");
-                double mag = Math.hypot(x,y);
-
-                double target = normalizeTarget(y,x);
-                telemetry.addData("Target: ",Math.toDegrees(target));
-                double delta = target - currentAngle;
-                if(delta<0)delta+=2*Math.PI;
-                telemetry.addData("Delta: ",Math.toDegrees(delta));
-
-                delta = 90-delta;
-                x = Math.cos(delta)*mag;
-                y = Math.sin(delta)*mag;
-
-                double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
-
-                frontR.setPower(power*(((y-x)/cap)));
-                frontL.setPower(power*((y+x)/cap));
-                rearR.setPower(power*((y+x)/cap));
-                rearL.setPower(power*((y-x)/cap));
-
-            }
-
-
-            else{stopMotor();telemetry.addLine("not in there f");}
-            telemetry.addData("Right Encoder",frontR.getCurrentPosition());
-            telemetry.addData("Left Encoder",rearL.getCurrentPosition());
-            telemetry.addData("frontl Encoder",frontL.getCurrentPosition());
-            telemetry.addData("rearr encoder",rearR.getCurrentPosition());
-            telemetry.addData("Angle",Math.toDegrees(currentAngle));
+            x/=m;
+            y/=m;
+            telemetry.addData("Delta: ",Math.toDegrees(delta));
+            telemetry.addData("x",x);
+            telemetry.addData("y",y);
+            telemetry.addData("Ycnts",y_cnts);
+            telemetry.addData("Xcnts",x_cnts);
             telemetry.update();
+            sleep(1000);
 
+            double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+            frontR.setPower(power*(((y-x)/cap)));
+            frontL.setPower(power*((y+x)/cap));
+            rearR.setPower(power*((y+x)/cap));
+            rearL.setPower(power*((y-x)/cap));
+
+
+            while(((Math.abs(frontL.getCurrentPosition())<Math.abs(x_cnts) || Math.abs(frontR.getCurrentPosition())<Math.abs(y_cnts)))&&opModeIsActive()){
+                telemetry.addData("mag",mag);
+                telemetry.addData("targetTheta",delta);
+                telemetry.addData("Ycnts",y_cnts);
+                telemetry.addData("Xcnts",x_cnts);
+                telemetry.addData("frontR",power*(((y-x)/cap)));
+                telemetry.addData("frontL",power*((y+x)/cap));
+                telemetry.addData("Right Encoder",frontR.getCurrentPosition());
+                telemetry.addData("Left Encoder",rearL.getCurrentPosition());
+                telemetry.addData("frontl Encoder",-frontL.getCurrentPosition());
+                telemetry.addData("rearr encoder",rearR.getCurrentPosition());
+                telemetry.addData("Angle",Math.toDegrees(currentAngle));
+                telemetry.update();
+            }
+            stopMotor();
+            sleep(10000);
+            break;
         }
     }
 
@@ -159,7 +179,6 @@ public class TestChassis extends LinearOpMode {
             slow=false;
             power = fastPower;
         }
-
         if(l-r>straightMargin && slowedSide!=-1){
             setChassisPower(sideReduction * power, power);
             slowedSide = -1;
@@ -203,4 +222,114 @@ public class TestChassis extends LinearOpMode {
         rearL.setMode(r);
         rearR.setMode(r);
     }
+
 }
+
+
+/***
+ TEST DIFF ENCODER DISTANCES VVV
+ ***/
+
+/*
+            telemetry.addData("n: ",n);
+            telemetry.update();
+            if(gamepad2.dpad_up){
+                telemetry.addLine("A");
+                telemetry.update();
+                setChassisPower(1.0);
+                while(frontR.getCurrentPosition()<60*n){
+                    telemetry.addData("dist ",frontR.getCurrentPosition());
+                    telemetry.update();
+                }
+                    setChassisPower(0);
+                    setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            if(gamepad2.dpad_right){
+                telemetry.addData("Y",120*n);
+                telemetry.addData("cur",frontR.getCurrentPosition());
+                telemetry.update();
+                setChassisPower(1.0);
+                while(frontR.getCurrentPosition()<120*n){
+                    telemetry.addData("dist ",frontR.getCurrentPosition());
+                    telemetry.update();
+                }
+                setChassisPower(0);
+                setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+            if(gamepad2.dpad_down){
+                telemetry.addLine("X");
+                telemetry.update();
+                setChassisPower(1.0);
+                while(frontR.getCurrentPosition()<180*n){
+                    telemetry.addData("dist ",frontR.getCurrentPosition());
+                    telemetry.update();
+                }
+                setChassisPower(0);
+                setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            }
+ */
+
+
+
+/**
+ * TEST IMU vv
+ **/
+
+/*
+ /*
+            double y = gamepad1.left_stick_y*-1;
+            double x = gamepad1.left_stick_x;
+            if(gamepad2.dpad_up){
+                frontL.setPower(1.0);
+                frontR.setPower(0.0);
+                rearL.setPower(0.0);
+                rearR.setPower(0.0);
+            }
+            else if(gamepad2.dpad_down){
+                frontL.setPower(0.0);
+                frontR.setPower(1.0);
+                rearL.setPower(0.0);
+                rearR.setPower(0.0);
+            }
+            else if(gamepad2.dpad_left){
+                frontL.setPower(0.0);
+                frontR.setPower(0.0);
+                rearL.setPower(1.0);
+                rearR.setPower(0.0);
+            }
+            else if(gamepad2.dpad_right){
+                frontL.setPower(0.0);
+                frontR.setPower(0.0);
+                rearL.setPower(0.0);
+                rearR.setPower(1.0);
+            }
+            if(gamepad2.b){
+                frontL.setPower(0.0);
+                frontR.setPower(0.0);
+                rearL.setPower(0.0);
+                rearR.setPower(0.0);
+            }
+            double currentAngle = normalizeIMU(imu.getAngularOrientation().firstAngle);
+            if(gamepad1.right_bumper){setChassisPower(1,-1);}
+            else if(gamepad1.left_bumper){setChassisPower(-1,1);}
+            else if(Math.hypot(x,y)>0.1) {
+                telemetry.addLine("In there ahaha");
+                double mag = Math.hypot(x,y);
+                double target = normalizeTarget(y,x);
+                telemetry.addData("Target: ",Math.toDegrees(target));
+                double delta = target - currentAngle;
+                if(delta<0)delta+=2*Math.PI;
+                telemetry.addData("Delta: ",Math.toDegrees(delta));
+                delta = 90-delta;
+                x = Math.cos(delta)*mag;
+                y = Math.sin(delta)*mag;
+                double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+                frontR.setPower(power*(((y-x)/cap)));
+                frontL.setPower(power*((y+x)/cap));
+                rearR.setPower(power*((y+x)/cap));
+                rearL.setPower(power*((y-x)/cap));
+            }
+ */
