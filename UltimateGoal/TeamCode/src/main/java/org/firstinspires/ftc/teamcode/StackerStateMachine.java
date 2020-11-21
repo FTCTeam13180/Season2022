@@ -6,15 +6,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class StackerStateMachine {
     enum State {
         INIT,
-        EXECUTE,
+        STACKER_UP,
+        WHACKING,
+        STACKER_DOWN,
         STOP
     }
-    enum Target{
-        LAUNCHING,
-        RECEIVING
-    }
+
     private StackerComponent stackerComponent;
-    private Target target;
+    private int whacks;
     private OpMode op;
     private static final double timeoutMs = 30000;
 
@@ -25,13 +24,18 @@ public class StackerStateMachine {
         this.stackerComponent = stackerComponent;
         this.op = op;
     }
-    //in order for this program to run, a target, either launching or receiving, needs to be passed
-    public void setTarget(Target t){
-        target = t;
+
+    /*
+    must pass a "whacks" for the number of times we want to whack; ex if there are 3 rings in the
+    stacker box, enter 3 for setWhacks
+     */
+    public void setWhacks (int w){
+        whacks = w;
     }
     public State getState(){
         return state;
     }
+
     public void init(){
         stackerComponent.init();
         op.telemetry.addData("StackerStateMachine: ", "initialized");
@@ -39,38 +43,60 @@ public class StackerStateMachine {
         runtime = new ElapsedTime();
         runtime.reset();
     }
-
-    public void execute(){
-        switch (target){
-            case LAUNCHING:
-                stackerComponent.launchPosition();
-                break;
-            case RECEIVING:
-                stackerComponent.receivingPosition();
-                break;
+    public void stackerUp(){
+        stackerComponent.stackerUp();
+        op.telemetry.addData("StackerStateMachine: ", "stacker moved up");
+    }
+    public void whacking(){
+        int i = 0;
+        while (i < whacks){
+            i++;
+            stackerComponent.safeWhack();
+            op.telemetry.addData("StackerStateMachine: ", "whacked " + i + " times");
         }
     }
+    public void stackerDown(){
+        stackerComponent.stackerDown();
+        op.telemetry.addData("StackerStateMachine: ", "stacker moved down");
+    }
+
     public void stop(){
         op.telemetry.addData("StackerStateMachine", "Finished");
     }
-    public boolean isbusy(){
-        return stackerComponent.isBusy();
+    public boolean isStackerbusy(){
+        return stackerComponent.isStackerBusy();
+    }
+    public boolean isWhackerbusy(){
+        return stackerComponent.isWhackerBusy();
     }
     public void run(){
         switch(state){
 
             case INIT:
                 init();
-                state = StackerStateMachine.State.EXECUTE;
+                state = State.STACKER_UP;
                 break;
 
-            case EXECUTE:
-                execute();
-                if (!stackerComponent.isBusy() || (runtime.milliseconds() >= timeoutMs)) {
-                    state = StackerStateMachine.State.STOP;
+            case STACKER_UP:
+                stackerUp();
+                if (!stackerComponent.isStackerBusy() || (runtime.milliseconds() >= timeoutMs)) {
+                    state = State.WHACKING;
                 }
                 break;
 
+            case WHACKING:
+                whacking();
+                if(!stackerComponent.isWhackerBusy() || (runtime.milliseconds() >= timeoutMs)){
+                    state = State.STACKER_DOWN;
+                }
+               break;
+
+            case STACKER_DOWN:
+                stackerDown();
+                if (!stackerComponent.isStackerBusy() || (runtime.milliseconds() >= timeoutMs)) {
+                state = State.STOP;
+            }
+                break;
             case STOP:
                 stop();
                 break;

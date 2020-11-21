@@ -41,17 +41,25 @@ public class StackerComponent {
         }
     }
     public void unsafeWhackerOut() {
-        whacker.setPosition(WHACKER_OUT);
         whackerPosition = WHACKER_OUT;
+        whacker.setPosition(WHACKER_OUT);
     }
     public void unsafeWhackerIn(){
-        whacker.setPosition(WHACKER_IN);
         whackerPosition = WHACKER_IN;
+        whacker.setPosition(WHACKER_IN);
     }
 
     //likely will not work - servo doesn't give any position between the ones that were set
-    public boolean isBusy(){
-        if (stacker.getPosition() < STACKER_UP || stacker.getPosition() > STACKER_DOWN){
+    public boolean isStackerBusy(){
+        if (stacker.getPosition() != stackerPosition || stacker.getPosition() > STACKER_DOWN){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    public boolean isWhackerBusy(){
+        if (whacker.getPosition() < whackerPosition || whacker.getPosition() > STACKER_DOWN){
             return true;
         }
         else{

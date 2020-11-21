@@ -11,8 +11,8 @@ public class StackerSerialTask {
         stackerStateMachine = new StackerStateMachine(sc, op);
     }
     //must set target to either launching or receiving
-    public void setTarget (StackerStateMachine.Target t){
-        stackerStateMachine.setTarget(t);
+    public void setWhacks (int t){
+        stackerStateMachine.setWhacks(t);
     }
     public StackerStateMachine.State getState() {
         return stackerStateMachine.getState();
