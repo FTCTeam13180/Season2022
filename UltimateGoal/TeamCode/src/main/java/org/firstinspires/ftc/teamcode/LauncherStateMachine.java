@@ -29,14 +29,14 @@ public class LauncherStateMachine {
     }
 
     /** Different powers will be needed to hit the power shots or reach the top goal.
-     *  For now, power is not a constant, and can be set for testing what speed is needed
-     *  to get the ring to each target. It will later be turned into a constant once
-     *  we figure out what the exact optimal speeds are for each.
+     *  For now, power is a constant: 1.0.
+     *  This is tentative and subject to change through further testing,
+     *  which is why this method has been commented.
+     *  If we need a method that can give differnt powers, we will uncomment and use this.
      */
-    public void setPower(double p) {
-        power = p;
-    }
+   // public void setPower(double p) {power = p;}
 
+    
     /** How long you want the launcher to keep spinning
      * Set in milliseconds - so 5 sec would be 5000
      */
@@ -54,13 +54,13 @@ public class LauncherStateMachine {
     }
 
     public void powerUp() {
-        launcherComponent.givePower(power);
+        launcherComponent.shoot();
         powerUpTimer = new ElapsedTime();
         executingTime = new ElapsedTime();
     }
 
     public void reachedMax(){
-        launcherComponent.givePower(power);
+        launcherComponent.shoot();
     }
     //will set power of the launcher to 0, thus stopping it
     public void stop(){

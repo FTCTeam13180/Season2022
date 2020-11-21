@@ -15,9 +15,8 @@ public class LauncherSerialTask {
     public void setRunningTime (double milliseconds) {
         launcherStateMachine.setRunningTime(milliseconds);
     }
-    public void setPower (double power){
-        launcherStateMachine.setPower(power);
-    }
+    //public void setPower (double power){launcherStateMachine.setPower(power);}
+
     public LauncherStateMachine.State getState() {
         return launcherStateMachine.getState();
     }
