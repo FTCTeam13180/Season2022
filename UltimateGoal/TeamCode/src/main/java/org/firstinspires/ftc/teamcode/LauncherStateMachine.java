@@ -36,7 +36,7 @@ public class LauncherStateMachine {
      */
    // public void setPower(double p) {power = p;}
 
-    
+
     /** How long you want the launcher to keep spinning
      * Set in milliseconds - so 5 sec would be 5000
      */
