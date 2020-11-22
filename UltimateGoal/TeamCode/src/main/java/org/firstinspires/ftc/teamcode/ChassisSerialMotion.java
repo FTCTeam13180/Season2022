@@ -18,7 +18,10 @@ public class ChassisSerialMotion {
 
     }
     public void moveToTarget(int numRings){ chassisStateMachine.moveToTargetZone(numRings); }
-    public void moveToLaunch(){chassisStateMachine.moveToLaunch();}
+    public void moveToPowerShot(){chassisStateMachine.moveToPowerShot();}
+    public void moveToWobble(){ chassisStateMachine.moveToWobble(); }
+    public void moveToRings(){chassisStateMachine.moveToRings();}
+    public void moveToGoal(){chassisStateMachine.moveToGoal();}
     public void setTimeoutMs(double ms){
         chassisStateMachine.setTimeoutMs(ms);
     }

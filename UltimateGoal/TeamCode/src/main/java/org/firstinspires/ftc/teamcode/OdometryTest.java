@@ -11,8 +11,12 @@ public class OdometryTest extends OpMode {
 
     enum State {
         INIT,
-        MOVE_TO_TARGET_ZONE,
-        MOVE_TO_LAUNCH_POSITION,
+        MOVE_TO_TARGET_ZONE_1,
+        MOVE_TO_TARGET_ZONE_2,
+        MOVE_TO_POWERSHOT,
+        MOVE_TO_WOBBLE,
+        MOVE_TO_GOAL,
+        MOVE_TO_RINGS,
         STOP
     }
 
@@ -39,11 +43,18 @@ public class OdometryTest extends OpMode {
         chassisSerialMotion.moveToTarget(numberOfRings);
     }
 
-    public void moveToLaunchPosition() {
-        chassisSerialMotion.moveToLaunch();
-
+    public void moveToPowerShot() {
+        chassisSerialMotion.moveToPowerShot();
     }
-
+    public void moveToWobble(){
+        chassisSerialMotion.moveToWobble();
+    }
+    public void moveToRings(){
+        chassisSerialMotion.moveToRings();
+    }
+    public void moveToGoal(){
+        chassisSerialMotion.moveToGoal();
+    }
 
     public void stop (){
         telemetry.addData("auto katham",time.milliseconds());
@@ -58,38 +69,86 @@ public class OdometryTest extends OpMode {
             case INIT:
                 telemetry.addLine("Finished INIT state");
                 //telemetry.update();
-                state = State.MOVE_TO_LAUNCH_POSITION;
+                state = State.MOVE_TO_POWERSHOT;
 
                 break;
 
-/*
-            case MOVE_TO_TARGET_ZONE:
-                telemetry.addData("Going to Target Zone",chassisSerialMotion.getState());
-                telemetry.update();
+            case MOVE_TO_POWERSHOT:
+
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.STOP;
-                    telemetry.addData("At Target Zone",chassisSerialMotion.getState());
-                    telemetry.update();
-                    break;
-                }
-                if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
-                    moveToTargetZone();
-                }
-                chassisSerialMotion.run();
-                break;
-*/
-            case MOVE_TO_LAUNCH_POSITION:
- //               telemetry.addData("Going to Launch Zone",chassisSerialMotion.getState());
-                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.STOP;
- //                   telemetry.addData("At Launch Zone",chassisSerialMotion.getState());
+                    state = State.MOVE_TO_TARGET_ZONE_1;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
 
                     //telemetry.update();
                     break;
                 }
+
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    moveToLaunchPosition();
+                    moveToPowerShot();
+                }
+                chassisSerialMotion.run();
+                break;
+
+            case MOVE_TO_TARGET_ZONE_1:
+
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state = State.MOVE_TO_WOBBLE;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToTargetZone();
+                }
+                chassisSerialMotion.run();
+                break;
+
+            case MOVE_TO_WOBBLE:
+
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state = State.MOVE_TO_TARGET_ZONE_2;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToWobble();
+                }
+                chassisSerialMotion.run();
+                break;
+            case MOVE_TO_TARGET_ZONE_2:
+
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state = State.MOVE_TO_RINGS;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToTargetZone();
+                }
+                chassisSerialMotion.run();
+                break;
+
+            case MOVE_TO_RINGS:
+
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state = State.MOVE_TO_GOAL;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToRings();
+                }
+                chassisSerialMotion.run();
+                break;
+
+            case MOVE_TO_GOAL:
+
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state = State.STOP;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToGoal();
                 }
                 chassisSerialMotion.run();
                 break;

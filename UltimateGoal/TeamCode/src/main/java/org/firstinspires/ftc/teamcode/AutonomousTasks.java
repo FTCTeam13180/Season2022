@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import java.util.List;
 
 public class AutonomousTasks{
 
@@ -27,24 +29,67 @@ public class AutonomousTasks{
     int numberOfRings;
     int whackedRingCount;
     Odometry odometry;
+
     ChassisSerialMotion chassisSerialMotion;
     LauncherSerialTask launcherSerialTask;
     WhackerSerialTask whackerSerialTask;
+    private Detector detect;
+    int numOfRings = 0;
 
-    public AutonomousTasks(OpMode opmode, Odometry odometry){
+    public AutonomousTasks(OpMode opmode){
         op = opmode;
-        this.odometry = odometry;
     }
 
     public void setRingNumber(int numOfRings){
         numberOfRings = numOfRings;
     }
+
     public void init(){
         op.telemetry.addData("AutonomousTask", "Initializing");
+        odometry = new Odometry(op, 120,45);
+        odometry.init();
         time = new ElapsedTime();
         time.reset();
-        chassisSerialMotion = new ChassisSerialMotion(odometry, op);
     }
+
+    /**
+     *  Before Auto Loop
+     */
+
+
+    public void numberOfRings() {
+        List<Recognition> updatedRecognitions = detect.scan();
+        numOfRings = 0;
+        int i = 0;
+        if(updatedRecognitions != null) {
+            for (Recognition recognition : updatedRecognitions) {
+                //Recognition recognition = updatedRecognitions.get(0);
+                op.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                op.telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                        recognition.getLeft(), recognition.getTop());
+                op.telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                        recognition.getRight(), recognition.getBottom());
+                if(recognition.getLabel() == Detector.LABEL_SECOND_ELEMENT){
+                    numOfRings = 1;
+                }
+                else if(recognition.getLabel() == Detector.LABEL_FIRST_ELEMENT){
+                    numOfRings = 4;
+                }
+                else {
+                    numOfRings = 0;
+                }
+            }
+        }
+        else {
+            numOfRings = 0;
+        }
+        op.telemetry.addData("Number of rings = ", numOfRings);
+    }
+
+
+    /**
+    * Auto Loop
+    **/
 
     public void grabWobble(){
         //move to wobble and pick it up
@@ -55,7 +100,7 @@ public class AutonomousTasks{
     }
 
     public void moveToPowerShotLaunchPosition() {
-        chassisSerialMotion.moveToLaunch();
+        chassisSerialMotion.moveToPowerShot();
 
     }
 
@@ -76,16 +121,19 @@ public class AutonomousTasks{
 
 
         }
+
         else if(whackedRingCount >= 3){
             launcherSerialTask.setPower(0);
         }
+
     }
 
     public void pickUpRings() {
+
     }
 
     public void moveToHighGoalLaunchPosition() {
-        //move to the position to launch rings into the high goal
+        chassisSerialMotion.moveToGoal();
     }
 
     public void launchRingsAtHighGoal(){
@@ -93,6 +141,7 @@ public class AutonomousTasks{
     }
 
     public void parkAtLaunchLine() {
+
     }
 
     public void stop (){
@@ -114,25 +163,27 @@ public class AutonomousTasks{
         switch(state){
 
             case INIT:
-                init();
+
                 state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
 //                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                 break;
 
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
+
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    //state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                     state = State.MOVE_TO_TARGET_ZONE;
-                    chassisSerialMotion.run(); //so that the STOP state in ChassisStateMachine can run
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
-                if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
+
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
                     moveToPowerShotLaunchPosition(); //this cannot be called multiple times
                 }
                 chassisSerialMotion.run();
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
+
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
 //                    state = State.MOVE_TO_TARGET_ZONE;
 //                      state = State.GRAB_WOBBLE;
@@ -146,15 +197,19 @@ public class AutonomousTasks{
 
             case MOVE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state=State.STOP;
+                    /*
                     if(numberOfRings == 0 || numberOfRings == 1){
                         state = State.GRAB_WOBBLE;
                     }
                     else if(numberOfRings == 4){
                         state = State.PICK_UP_RINGS;
                     }
+      */
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
-                if(chassisSerialMotion.getState() != ChassisStateMachine.State.EXECUTE){
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
                     moveToTargetZone();
                 }
                 chassisSerialMotion.run();
@@ -167,17 +222,20 @@ public class AutonomousTasks{
                 break;
 
             case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
+
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                     state = State.PARK_AT_LAUNCH_LINE;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
-                if(chassisSerialMotion.getState() != ChassisStateMachine.State.EXECUTE){
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
                     moveToTargetZone();
                 }
                 chassisSerialMotion.run();
                 break;
 
             case PICK_UP_RINGS:
+
                 pickUpRings();
                 state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
                 //state=State.LAUNCH_RINGS_AT_HIGH_GOAL;
@@ -185,11 +243,11 @@ public class AutonomousTasks{
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                   // state = State.LAUNCH_RINGS_AT_HIGH_GOAL;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     state = State.PARK_AT_LAUNCH_LINE;
                     break;
                 }
-                if(chassisSerialMotion.getState()!=ChassisStateMachine.State.EXECUTE){
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
                     moveToHighGoalLaunchPosition();
                 }
                 chassisSerialMotion.run();

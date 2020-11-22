@@ -62,13 +62,21 @@ public class ChassisStateMachine implements BasicCommand {
     public void setState(State st){
         state = st;
     }
-
+    public void moveToWobble(){
+        points = new ArrayList<Point>();
+        points.add(new Point(60,60,power));
+        finished = new boolean[points.size()];
+    }
+    public void moveToRings(){
+        points = new ArrayList<Point>();
+        points.add(new Point(90,120,power));
+        finished = new boolean[points.size()];
+    }
     public void moveToTargetZone(int numRings){
         points= new ArrayList<Point>();
-        points.add(new Point(150,180,power));
         if(numRings==0){
             //A
-            points.add(new Point(60,240,power));
+            points.add(new Point(45,210,power));
         }
         else if(numRings==1){
             //B
@@ -76,18 +84,23 @@ public class ChassisStateMachine implements BasicCommand {
         }
         else{
             //C
-            points.add(new Point(60,330,power));
+            points.add(new Point(45,330,power));
         }
         finished = new boolean[points.size()];
     }
 
-    public void moveToLaunch(){
-        //owo
+    public void moveToPowerShot(){
+
 
         points = new ArrayList<Point>();
+        points.add(new Point(180,60,power));
         points.add(new Point(150,210,power));
-        points.add(new Point(90,150,power));
-        points.add(new Point(120,300,power));
+        //op.telemetry.update();
+        finished = new boolean[points.size()];
+    }
+    public void moveToGoal(){
+        points = new ArrayList<Point>();
+        points.add(new Point(90,210,power));
         op.telemetry.addData("power",power);
         //op.telemetry.update();
         finished = new boolean[points.size()];
@@ -98,18 +111,11 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
     public void init() {
-
-        op.telemetry.addData("Drive: ", "Resetting Encoders");
-        odometry.setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        odometry.setChassisMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        op.telemetry.addData("Drive:", "Encoders reset");
-
-
         // reset the timeout time and start motion.
         runtime = new ElapsedTime();
         runtime.reset();
     }
-
+// 1 0 0 0
     public void execute(){
         op.telemetry.addData("ChassisStateMachine:", "In Execute");
         for(int i = 0;i<points.size();i++){
@@ -118,7 +124,7 @@ public class ChassisStateMachine implements BasicCommand {
             // current.getPower() -> 0
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
             if( odometry.isFinished(current.getX(),current.getY()) ){
-                odometry.stopChassisMotor();
+                //odometry.stopChassisMotor();
                 op.telemetry.addData("finished: ",i);
 
                 //op.telemetry.update();

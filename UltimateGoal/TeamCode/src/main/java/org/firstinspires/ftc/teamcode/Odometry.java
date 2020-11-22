@@ -233,7 +233,6 @@ public class Odometry{
         opMode.telemetry.addData("current - mag",current_mag);
         opMode.telemetry.addData("target - mag",target_mag);
         return (current_mag>=target_mag);
+
     }
-
-
 }
