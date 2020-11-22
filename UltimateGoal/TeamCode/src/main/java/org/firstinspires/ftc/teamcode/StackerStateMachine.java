@@ -73,7 +73,6 @@ public class StackerStateMachine {
         switch(state){
 
             case INIT:
-                init();
                 state = State.STACKER_UP;
                 break;
 

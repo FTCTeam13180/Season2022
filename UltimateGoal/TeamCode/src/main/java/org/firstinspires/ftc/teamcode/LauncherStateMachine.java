@@ -74,7 +74,6 @@ public class LauncherStateMachine {
         switch(state){
 
             case INIT:
-                init();
                 state = State.POWERING_UP;
                 break;
 
