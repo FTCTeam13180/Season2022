@@ -2,32 +2,32 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Teleop", group = "POC")
 public class Teleop extends LinearOpMode {
     private OpMode op;
     private LauncherComponent launcherComponent;
+    private LauncherStateMachine launcherStateMachine;
     private IntakeComponent intakeComponent;
 
-    //ToDo Merge whacker and stacker into a single class
-    private WhackerComponent whackerComponent;
+    ElapsedTime runningTime;
     private StackerComponent stackerComponent;
+    private StackerStateMachine stackerStateMachine;
 
 
     public void runOpMode(){
         launcherComponent.init();
+        launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
         intakeComponent.init();
-        whackerComponent.init();
         stackerComponent.init();
+        stackerStateMachine = new StackerStateMachine(stackerComponent, op);
         waitForStart();
 
         //Gamepad Controls, not including Chassis movements yet since chassis
         //still needs some cleaning up
         //ToDo: Move to combined classes; there should be only two booleans
-        boolean whacker_extend;
-        boolean whacker_back;
-        boolean stacker_up;
-        boolean stacker_down;
+
 
         /*
         GamePad 1: Navigator
@@ -43,10 +43,24 @@ public class Teleop extends LinearOpMode {
         dpad down - stacker down
          */
         while(opModeIsActive()){
-            whacker_extend = gamepad1.left_bumper;
-            whacker_back = gamepad1.right_bumper;
-            stacker_up = gamepad1.dpad_up;
-            stacker_down = gamepad1.dpad_down;
+
+            /* the stacker box controls; these are manual, meaning they will do
+            exactly what you tell them to do. There is another button for the
+            full, safe launching mechanism.
+             */
+            if (gamepad1.left_bumper) {
+                stackerComponent.unsafeWhackerOut();
+            }
+            if (gamepad1.right_bumper){
+                stackerComponent.unsafeWhackerIn();
+            }
+            if(gamepad1.dpad_up){
+                stackerComponent.stackerUp();
+            }
+            if (gamepad1.dpad_down){
+                stackerComponent.stackerDown();
+            }
+
 
             //if less than 0 (pushed up) then FIRE!
             //if greater than 0 (pushed down) then reverse launcher to pull inward
@@ -70,6 +84,27 @@ public class Teleop extends LinearOpMode {
             }
             else if (gamepad1.left_stick_y == 0){
                 intakeComponent.stop();
+            }
+
+            /* full shooting command
+                1. starting the launcher; setting it with a runtime of 10 sec
+                2. setting the number of whacks to 3
+                3. Stacker moves up
+                4. If the launcher has reached max speed; then start whacking
+                5. Once we're finished whacking, move the stacker (now empty) down
+                6. Stop the launcher
+             */
+            if(gamepad1.a){
+                runningTime = new ElapsedTime();
+                runningTime.reset();
+                launcherStateMachine.setRunningTime(10000);
+                launcherStateMachine.run();
+                stackerStateMachine.setWhacks(3);
+
+                if (launcherStateMachine.getState() == LauncherStateMachine.State.REACHED_MAX ){
+                    stackerStateMachine.run();
+                }
+                launcherStateMachine.stop();
             }
 
 
