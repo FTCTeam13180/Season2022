@@ -17,7 +17,6 @@ public class LauncherStateMachine {
     private static final double poweringUpTimeIntervel = 2000;
     private OpMode op;
     private static final double timeoutMs = 30000;
-    private double power;
     ElapsedTime runtime;
     ElapsedTime executingTime;
     ElapsedTime powerUpTimer;
@@ -46,21 +45,26 @@ public class LauncherStateMachine {
         return state;
     }
     public void init(){
-        launcherComponent.init();
         op.telemetry.addData("LauncherStateMachine: ", "initialized");
 
         runtime = new ElapsedTime();
         runtime.reset();
+
+        powerUpTimer = new ElapsedTime();
+        powerUpTimer.reset();
+        executingTime = new ElapsedTime();
+        executingTime.reset();
     }
 
     public void powerUp() {
         launcherComponent.shoot();
-        powerUpTimer = new ElapsedTime();
-        executingTime = new ElapsedTime();
+
+        op.telemetry.addData("LauncherStateMachine", "Powered Up");
     }
 
     public void reachedMax(){
         launcherComponent.shoot();
+        op.telemetry.addData("LauncherStateMachine", "Reached MAX");
     }
     //will set power of the launcher to 0, thus stopping it
     public void stop(){
@@ -74,6 +78,7 @@ public class LauncherStateMachine {
         switch(state){
 
             case INIT:
+                init();
                 state = State.POWERING_UP;
                 break;
 
@@ -83,12 +88,13 @@ public class LauncherStateMachine {
                     state = State.REACHED_MAX;
                 }
                 break;
+
             case REACHED_MAX:
                 reachedMax();
                 if(executingTime.milliseconds() > timeInterval || runtime.milliseconds() > timeoutMs){
                     state = State.STOP;
                 }
-
+                break;
             case STOP:
                 stop();
                 break;
