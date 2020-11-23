@@ -44,10 +44,13 @@ public class AutonomousTasks{
         numberOfRings = numOfRings;
     }
 
+    //ToDo: add init for other components
     public void init(){
         op.telemetry.addData("AutonomousTask", "Initializing");
         odometry = new Odometry(op, 120,45);
         odometry.init();
+        detect = new Detector(op);
+        detect.init();
         time = new ElapsedTime();
         time.reset();
     }
@@ -175,14 +178,15 @@ public class AutonomousTasks{
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
 
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    chassisSerialMotion.run();  //<-- so that STOP in ChassisStateMachine can run
                     state = State.MOVE_TO_TARGET_ZONE;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
 
-                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    moveToPowerShotLaunchPosition(); //this cannot be called multiple times
-                }
+              //  if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+              //    moveToPowerShotLaunchPosition(); ToDo: set points at initialization; points cannot be set multiple times
+             //   }
                 chassisSerialMotion.run();
                 break;
 
