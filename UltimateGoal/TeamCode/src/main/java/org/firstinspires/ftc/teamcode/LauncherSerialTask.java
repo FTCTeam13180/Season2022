@@ -20,7 +20,9 @@ public class LauncherSerialTask {
     public LauncherStateMachine.State getState() {
         return launcherStateMachine.getState();
     }
-
+    public void init(){
+        launcherComponent.init();
+    }
     public void run() {
         launcherStateMachine.run();}
 }

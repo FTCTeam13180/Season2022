@@ -28,11 +28,16 @@ public class AutonomousTasks{
     OpMode op;
     int numberOfRings;
     int whackedRingCount;
-    Odometry odometry;
+
 
     ChassisSerialMotion chassisSerialMotion;
     LauncherSerialTask launcherSerialTask;
     WhackerSerialTask whackerSerialTask;
+
+    Odometry odometry;
+    LauncherComponent launcherComponent;
+
+
     private Detector detect;
     int numOfRings = 0;
 
@@ -48,6 +53,7 @@ public class AutonomousTasks{
         op.telemetry.addData("AutonomousTask", "Initializing");
         odometry = new Odometry(op, 120,45);
         odometry.init();
+        chassisSerialMotion = new ChassisSerialMotion(odometry, op);
         time = new ElapsedTime();
         time.reset();
     }
@@ -105,7 +111,7 @@ public class AutonomousTasks{
     }
 
     public void launchRingsAtPowerShots() {
-        launcherSerialTask.setPower(1);
+   //     launcherSerialTask.setPower(1);
         if(whackedRingCount < 3){
             whackerSerialTask.run();
             /*
@@ -123,7 +129,7 @@ public class AutonomousTasks{
         }
 
         else if(whackedRingCount >= 3){
-            launcherSerialTask.setPower(0);
+     //       launcherSerialTask.setPower(0);
         }
 
     }

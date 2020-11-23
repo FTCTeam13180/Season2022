@@ -23,8 +23,9 @@ public class BlueAutonomous extends OpMode {
 
     @Override
     public void init_loop(){
-        auto.numberOfRings();
-        auto.setRingNumber(auto.numOfRings);
+        //auto.numberOfRings();
+        //auto.setRingNumber(auto.numOfRings);
+        auto.numberOfRings=1;
     }
 
     @Override
