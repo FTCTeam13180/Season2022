@@ -32,7 +32,7 @@ public class AutonomousTasks{
 
     ChassisSerialMotion chassisSerialMotion;
     LauncherSerialTask launcherSerialTask;
-    WhackerSerialTask whackerSerialTask;
+    StackerSerialTask stackerSerialTask;
     private Detector detect;
     int numOfRings = 0;
 
@@ -105,26 +105,30 @@ public class AutonomousTasks{
     }
 
     public void launchRingsAtPowerShots() {
-        launcherSerialTask.setPower(1);
-        if(whackedRingCount < 3){
-            whackerSerialTask.run();
-            /*
-            Every time a ring is launched at a power shot, the robot must slightly turn towards the next power shot
-            (possibly parallel - can retract whacker while turning to next power shot)
-            if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.RETRACT){ <-- if getTarget is Retract, switch to Extend
-                whackerSerialTask.setTarget(WhackerStateMachine.Target.EXTEND;
-                whackedRingCount++;
+        stackerSerialTask.setWhacks(3);
+        while(stackerSerialTask.getState() != StackerStateMachine.State.STOP){
+            stackerSerialTask.run();
+            launcherSerialTask.setRunningTime(8000);
+
+            while(launcherSerialTask.getState() != LauncherStateMachine.State.STOP){
+                launcherSerialTask.run();
+
             }
-            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
-                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
-             */
+
+           /*
+           Every time a ring is launched at a power shot, the robot must slightly turn towards the next power shot
+           (possibly parallel - can retract whacker while turning to next power shot)
+           if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.RETRACT){ <-- if getTarget is Retract, switch to Extend
+               whackerSerialTask.setTarget(WhackerStateMachine.Target.EXTEND;
+               whackedRingCount++;
+           }
+           else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
+               whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
+            */
 
 
         }
-
-        else if(whackedRingCount >= 3){
-            launcherSerialTask.setPower(0);
-        }
+        launcherSerialTask.setRunningTime(0);
 
     }
 
