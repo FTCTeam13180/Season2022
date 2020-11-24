@@ -56,7 +56,7 @@ public class Teleop extends LinearOpMode {
          */
         while(opModeIsActive()){
             if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                chassisComponent.mecanumDrive(gamepad1.right_stick_x, gamepad1.right_stick_y );
+                chassisComponent.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y );
             }
             else if(Math.abs(gamepad1.right_stick_x) > 0.1) {
                 if (gamepad1.right_stick_x > 0) {
@@ -73,7 +73,7 @@ public class Teleop extends LinearOpMode {
             exactly what you tell them to do. There is another button for the
             full, safe launching mechanism.
              */
-            if(gamepad2.b){
+            if(gamepad2.x){
                 stackerComponent.stackerDump();
             }
             if (gamepad2.left_bumper) {
@@ -103,19 +103,16 @@ public class Teleop extends LinearOpMode {
             }
 
             //wobble arm controls
-            if(gamepad2.right_bumper){
+            if(gamepad2.dpad_right){
                 grabberComponent.armDown();
-            }
-            if(gamepad2.left_bumper){
-                grabberComponent.armUp();
-            }
-
-            if(gamepad2.right_trigger > 0.5){
                 grabberComponent.clawOpen();
             }
-            if(gamepad2.left_trigger > 0.5){
+            if(gamepad2.dpad_left){
                 grabberComponent.clawClose();
+                grabberComponent.armUp();
+
             }
+
 
             //if less than 0 (pushed up) then intake
             //if greater than 0 (pushed down) then push out
