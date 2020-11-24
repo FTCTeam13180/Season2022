@@ -58,7 +58,7 @@ public class Teleop extends LinearOpMode {
             if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
                 chassisComponent.mecanumDrive(gamepad1.right_stick_x, gamepad1.right_stick_y );
             }
-            else if(Math.abs(gamepad1.right_stick_x) > 0.5) {
+            else if(Math.abs(gamepad1.right_stick_x) > 0.1) {
                 if (gamepad1.right_stick_x > 0) {
                     chassisComponent.spinRight(gamepad1.right_stick_x);
                 }
