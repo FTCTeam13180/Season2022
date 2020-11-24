@@ -54,6 +54,8 @@ public class Teleop extends LinearOpMode {
                 chassisComponent.mecanumDrive(gamepad1.right_stick_x, gamepad1.right_stick_y );
             }
 
+            else
+                chassisComponent.stop();
             /* the stacker box controls; these are manual, meaning they will do
             exactly what you tell them to do. There is another button for the
             full, safe launching mechanism.
