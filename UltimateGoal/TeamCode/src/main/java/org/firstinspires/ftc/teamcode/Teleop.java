@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "Teleop", group = "POC")
 public class Teleop extends LinearOpMode {
     private OpMode op;
+    private ChassisComponent chassisComponent;
     private LauncherComponent launcherComponent;
     private LauncherStateMachine launcherStateMachine;
     private IntakeComponent intakeComponent;
@@ -17,11 +18,17 @@ public class Teleop extends LinearOpMode {
 
 
     public void runOpMode(){
+        chassisComponent = new ChassisComponent(op);
+        chassisComponent.init();
+
+        launcherComponent = new LauncherComponent(op);
         launcherComponent.init();
-        launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
+       // launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
+        intakeComponent = new IntakeComponent(op);
         intakeComponent.init();
+        stackerComponent = new StackerComponent(op);
         stackerComponent.init();
-        stackerStateMachine = new StackerStateMachine(stackerComponent, op);
+      //  stackerStateMachine = new StackerStateMachine(stackerComponent, op);
         waitForStart();
 
         //Gamepad Controls, not including Chassis movements yet since chassis
@@ -94,6 +101,7 @@ public class Teleop extends LinearOpMode {
                 5. Once we're finished whacking, move the stacker (now empty) down
                 6. Stop the launcher
              */
+            /*
             if(gamepad1.a){
                 runningTime = new ElapsedTime();
                 runningTime.reset();
@@ -106,6 +114,8 @@ public class Teleop extends LinearOpMode {
                 }
                 launcherStateMachine.stop();
             }
+            */
+
 
 
         }
