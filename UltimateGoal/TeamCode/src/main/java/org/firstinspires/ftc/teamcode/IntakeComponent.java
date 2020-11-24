@@ -3,7 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class IntakeComponent {
-    private final double INTAKE_POWER = 1.0;
+    private final double INTAKE_POWER = 0.85;
     private OpMode opMode;
 
     IntakeComponent(OpMode op) {

@@ -18,6 +18,7 @@ public class ChassisComponent {
     private DcMotor rearr;
     private DcMotor rearl;
     //no gear reduction ratio as of now
+    final static double power_scale = 0;
     double wheel_diameter = 9.60798; //cm
     double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
@@ -60,7 +61,7 @@ public class ChassisComponent {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
-    public void mecanumDrive(double x, double y, double power_scale){
+    public void mecanumDrive(double x, double y){
         double power = Math.sqrt(x * x + y * y);
         topr.setPower(power_scale*(y-x)/power);
         topl.setPower(power_scale*(x+y)/power);
@@ -69,19 +70,19 @@ public class ChassisComponent {
     }
 
     public void moveForward(double power){
-        mecanumDrive(0, power, power);
+        mecanumDrive(0, power);
     }
 
     public void moveBackward(double power){
-        mecanumDrive(0, -power, power);
+        mecanumDrive(0, -power);
     }
 
     public void shiftRight(double power){
-        mecanumDrive(power, 0, power);
+        mecanumDrive(power, 0);
     }
 
     public void shiftLeft(double power){
-        mecanumDrive(-power, 0, power);
+        mecanumDrive(-power, 0);
     }
 
     public void spinRight(double power){

@@ -18,16 +18,16 @@ public class Teleop extends LinearOpMode {
 
 
     public void runOpMode(){
-        chassisComponent = new ChassisComponent(op);
+        chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
 
-        launcherComponent = new LauncherComponent(op);
+        launcherComponent = new LauncherComponent(this);
         launcherComponent.init();
        // launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
-        intakeComponent = new IntakeComponent(op);
+        intakeComponent = new IntakeComponent(this);
         intakeComponent.init();
-        stackerComponent = new StackerComponent(op);
-        stackerComponent.init();
+        stackerComponent = new StackerComponent(this);
+
       //  stackerStateMachine = new StackerStateMachine(stackerComponent, op);
         waitForStart();
 
@@ -50,46 +50,49 @@ public class Teleop extends LinearOpMode {
         dpad down - stacker down
          */
         while(opModeIsActive()){
+            if(Math.abs(gamepad1.right_stick_y) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1){
+                chassisComponent.mecanumDrive(gamepad1.right_stick_x, gamepad1.right_stick_y );
+            }
 
             /* the stacker box controls; these are manual, meaning they will do
             exactly what you tell them to do. There is another button for the
             full, safe launching mechanism.
              */
-            if (gamepad1.left_bumper) {
+            if (gamepad2.left_bumper) {
                 stackerComponent.unsafeWhackerOut();
             }
-            if (gamepad1.right_bumper){
+            if (gamepad2.right_bumper){
                 stackerComponent.unsafeWhackerIn();
             }
-            if(gamepad1.dpad_up){
+            if(gamepad2.dpad_up){
                 stackerComponent.stackerUp();
             }
-            if (gamepad1.dpad_down){
+            if (gamepad2.dpad_down){
                 stackerComponent.stackerDown();
             }
 
 
             //if less than 0 (pushed up) then FIRE!
             //if greater than 0 (pushed down) then reverse launcher to pull inward
-            if(gamepad1.right_stick_y < 0){
+            if(gamepad2.right_stick_y > 0){
                 launcherComponent.shoot();
             }
-            else if (gamepad1.right_stick_y > 0){
+            else if (gamepad2.right_stick_y < 0){
                 launcherComponent.reverse();
             }
-            else if (gamepad1.right_stick_y == 0){
+            else if (gamepad2.right_stick_y == 0){
                 launcherComponent.stop();
             }
 
             //if less than 0 (pushed up) then intake
             //if greater than 0 (pushed down) then push out
-            if(gamepad1.left_stick_y < 0){
+            if(gamepad2.left_stick_y < 0){
                 intakeComponent.in();
             }
-            else if(gamepad1.left_stick_y > 0){
+            else if(gamepad2.left_stick_y > 0){
                 intakeComponent.expel();
             }
-            else if (gamepad1.left_stick_y == 0){
+            else if (gamepad2.left_stick_y == 0){
                 intakeComponent.stop();
             }
 
