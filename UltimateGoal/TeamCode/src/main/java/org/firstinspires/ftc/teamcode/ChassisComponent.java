@@ -18,7 +18,7 @@ public class ChassisComponent {
     private DcMotor rearr;
     private DcMotor rearl;
     //no gear reduction ratio as of now
-    final static double power_scale = 0.1;
+    final static double power_scale = 1.0;
     double wheel_diameter = 9.60798; //cm
     double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
