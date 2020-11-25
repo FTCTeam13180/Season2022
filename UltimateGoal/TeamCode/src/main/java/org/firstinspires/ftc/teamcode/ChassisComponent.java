@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * Created by Yash Pradhan on 10/4/20
@@ -17,6 +23,7 @@ public class ChassisComponent {
     private DcMotor topr;
     private DcMotor rearr;
     private DcMotor rearl;
+    BNO055IMU IMU;
     //no gear reduction ratio as of now
     final static double power_scale = 1.0;
     double wheel_diameter = 9.60798; //cm
@@ -46,7 +53,29 @@ public class ChassisComponent {
         opMode.telemetry.update();
     }
 
+    public void initIMU(){
+        BNO055IMU.Parameters param = new BNO055IMU.Parameters();
+        param.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
+        param.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ523;
+        //param.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        param.calibrationDataFile = "BNO055IMUCalibration.json";
+        param.loggingEnabled      = true;
+        param.loggingTag          = "IMU";
+        IMU = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        IMU.initialize(param);
 
+        // Wait for gyroscope to be calibrated
+        opMode.telemetry.addLine ("Starting Gyro Calibration");
+        opMode.telemetry.update();
+        while(!IMU.isGyroCalibrated()) {}
+        opMode.telemetry.addLine ("Completed Gyro Calibration");
+        Orientation imu_orientation =
+                IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
+        double imu_radian = imu_orientation.firstAngle;
+        opMode.telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
+
+        //opMode.telemetry.update();
+    }
     public void setRunMode(DcMotor.RunMode runMode) {
         topl.setMode(runMode);
         topr.setMode(runMode);
@@ -67,6 +96,16 @@ public class ChassisComponent {
         topl.setPower(power_scale*(x+y)/power);
         rearr.setPower(power_scale*(x+y)/power);
         rearl.setPower(power_scale*(y-x)/power);
+    }
+
+    public void fieldCentricDrive(double x, double y){
+        double power = Math.sqrt(x * x + y * y);
+        double controlAngle = Math.atan2(y, x);
+        double robotAngle = (IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle);
+        double newAngle = controlAngle + robotAngle;
+        double newY = (0 - Math.sin(newAngle)) * power;
+        double newX = (0 - Math.cos(newAngle)) * power;
+        mecanumDrive(newX, newY);
     }
 
     public void moveForward(double power){

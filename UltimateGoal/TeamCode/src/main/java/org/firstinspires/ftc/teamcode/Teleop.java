@@ -24,6 +24,7 @@ public class Teleop extends LinearOpMode {
 
         chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
+        chassisComponent.initIMU();
 
         launcherComponent = new LauncherComponent(this);
         launcherComponent.init();
@@ -55,19 +56,47 @@ public class Teleop extends LinearOpMode {
         dpad down - stacker down
          */
         while(opModeIsActive()){
-            if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                chassisComponent.mecanumDrive(gamepad1.left_stick_x, gamepad1.left_stick_y );
+            if(gamepad1.a) {
+                chassisComponent.initIMU();
             }
-            else if(Math.abs(gamepad1.right_stick_x) > 0.1) {
-                if (gamepad1.right_stick_x > 0) {
-                    chassisComponent.spinRight(gamepad1.right_stick_x);
+            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+                || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
+
+                if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y );
                 }
-                if (gamepad1.right_stick_x < 0) {
-                    chassisComponent.spinLeft(gamepad1.right_stick_x);
+                if (Math.abs(gamepad1.right_stick_x) > 0.1) {
+                    if (gamepad1.right_stick_x > 0) {
+                        chassisComponent.spinRight(gamepad1.right_stick_x);
+                    }
+                    if (gamepad1.right_stick_x < 0) {
+                        chassisComponent.spinLeft(gamepad1.right_stick_x);
+                    }
                 }
             }
-            else
+            else {
                 chassisComponent.stop();
+            }
+
+            if(gamepad1.dpad_up){
+                chassisComponent.moveForward(1);
+            }
+            if(gamepad1.dpad_down){
+                chassisComponent.moveBackward(1);
+            }
+
+
+            //if less than 0 (pushed up) then intake
+            //if greater than 0 (pushed down) then push out
+            if(gamepad1.right_bumper){
+                intakeComponent.in();
+            }
+            else if(gamepad1.left_bumper){
+                intakeComponent.expel();
+            }
+            else {
+                intakeComponent.stop();
+            }
 
             /* the stacker box controls; these are manual, meaning they will do
             exactly what you tell them to do. There is another button for the
@@ -77,11 +106,13 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.stackerDump();
             }
             if (gamepad2.left_bumper) {
-                stackerComponent.unsafeWhackerOut();
+                stackerComponent.safeWhack();
             }
+
             if (gamepad2.right_bumper){
-                stackerComponent.unsafeWhackerIn();
+                stackerComponent.toggleWhacker();
             }
+
             if(gamepad2.dpad_up){
                 stackerComponent.stackerUp();
             }
@@ -104,27 +135,22 @@ public class Teleop extends LinearOpMode {
 
             //wobble arm controls
             if(gamepad2.dpad_right){
-                grabberComponent.armDown();
                 grabberComponent.clawOpen();
             }
             if(gamepad2.dpad_left){
                 grabberComponent.clawClose();
-                grabberComponent.armUp();
-
+            }
+            if(Math.abs(gamepad2.left_stick_y) > 0.1 ){
+                if(gamepad2.left_stick_y < 0){
+                    grabberComponent.armUp();
+                }
+                if(gamepad2.left_stick_y > 0){
+                    grabberComponent.armDown();
+                }
             }
 
 
-            //if less than 0 (pushed up) then intake
-            //if greater than 0 (pushed down) then push out
-            if(gamepad1.right_bumper){
-                intakeComponent.in();
-            }
-            else if(gamepad1.left_bumper){
-                intakeComponent.expel();
-            }
-            else {
-                intakeComponent.stop();
-            }
+
 
             /* full shooting command
                 1. starting the launcher; setting it with a runtime of 10 sec
@@ -134,8 +160,8 @@ public class Teleop extends LinearOpMode {
                 5. Once we're finished whacking, move the stacker (now empty) down
                 6. Stop the launcher
              */
-            /*
-            if(gamepad1.a){
+
+            if(gamepad2.a){
                 runningTime = new ElapsedTime();
                 runningTime.reset();
                 launcherStateMachine.setRunningTime(10000);
@@ -147,7 +173,7 @@ public class Teleop extends LinearOpMode {
                 }
                 launcherStateMachine.stop();
             }
-            */
+
 
 
 

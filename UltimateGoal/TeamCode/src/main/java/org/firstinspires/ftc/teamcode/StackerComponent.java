@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class StackerComponent {
     private static final double STACKER_DOWN = 0.25;
     private static final double STACKER_DUMP = 1;
-    private static final double STACKER_UP = 0.6;
+    private static final double STACKER_UP = 0.42;
     private static final double WHACKER_OUT = 0;
     private static final double WHACKER_IN = 1;
     private Servo stacker;
@@ -41,7 +41,7 @@ public class StackerComponent {
     public void safeWhack(){
         if(stackerPosition == STACKER_UP){
             unsafeWhackerOut();
-            //TODO: Add a sleep function to allow whacker to fully move
+
             unsafeWhackerIn();
         }
     }
@@ -52,6 +52,20 @@ public class StackerComponent {
     public void unsafeWhackerIn(){
         whackerPosition = WHACKER_IN;
         whacker.setPosition(WHACKER_IN);
+    }
+
+    public void toggleWhacker() {
+        if (whackerPosition == WHACKER_IN)
+            unsafeWhackerOut();
+        else
+            unsafeWhackerIn();
+    }
+
+    public double getStackerPosition(){
+        return stackerPosition;
+    }
+    public double getWhackerPosition(){
+        return whackerPosition;
     }
 
     //likely will not work - servo doesn't give any position between the ones that were set
