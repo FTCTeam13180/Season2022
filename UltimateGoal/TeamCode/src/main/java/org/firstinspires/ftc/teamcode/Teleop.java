@@ -74,15 +74,14 @@ public class Teleop extends LinearOpMode {
                     }
                 }
             }
-            else {
-                chassisComponent.stop();
-            }
-
-            if(gamepad1.dpad_up){
+            else if (gamepad1.dpad_up) {
                 chassisComponent.moveForward(1);
             }
-            if(gamepad1.dpad_down){
+            else if (gamepad1.dpad_down) {
                 chassisComponent.moveBackward(1);
+            }
+            else {
+                chassisComponent.stop();
             }
 
 
@@ -105,20 +104,21 @@ public class Teleop extends LinearOpMode {
             if(gamepad2.x){
                 stackerComponent.stackerDump();
             }
+            else if (gamepad2.right_bumper){
+                stackerComponent.toggleWhacker();
+            }
+            else if(gamepad2.dpad_up){
+                stackerComponent.stackerUp();
+            }
+            else if (gamepad2.dpad_down){
+                stackerComponent.stackerDown();
+            }
+
             if (gamepad2.left_bumper) {
                 stackerComponent.safeWhack();
             }
 
-            if (gamepad2.right_bumper){
-                stackerComponent.toggleWhacker();
-            }
 
-            if(gamepad2.dpad_up){
-                stackerComponent.stackerUp();
-            }
-            if (gamepad2.dpad_down){
-                stackerComponent.stackerDown();
-            }
 
 
             //if less than 0 (pushed up) then FIRE!
@@ -129,7 +129,7 @@ public class Teleop extends LinearOpMode {
             else if (gamepad2.right_stick_y < 0){
                 launcherComponent.reverse();
             }
-            else if (gamepad2.right_stick_y == 0){
+            else {
                 launcherComponent.stop();
             }
 
@@ -137,7 +137,7 @@ public class Teleop extends LinearOpMode {
             if(gamepad2.dpad_right){
                 grabberComponent.clawOpen();
             }
-            if(gamepad2.dpad_left){
+            else if(gamepad2.dpad_left){
                 grabberComponent.clawClose();
             }
             if(Math.abs(gamepad2.left_stick_y) > 0.1 ){
