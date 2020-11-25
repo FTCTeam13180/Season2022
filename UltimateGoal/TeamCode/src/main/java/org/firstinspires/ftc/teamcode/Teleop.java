@@ -28,32 +28,40 @@ public class Teleop extends LinearOpMode {
 
         launcherComponent = new LauncherComponent(this);
         launcherComponent.init();
-       // launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
+        launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
+
         intakeComponent = new IntakeComponent(this);
         intakeComponent.init();
+
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();
+        stackerStateMachine = new StackerStateMachine(stackerComponent, op);
 
-      //  stackerStateMachine = new StackerStateMachine(stackerComponent, op);
         waitForStart();
-
-        //Gamepad Controls, not including Chassis movements yet since chassis
-        //still needs some cleaning up
-        //ToDo: Move to combined classes; there should be only two booleans
 
 
         /*
         GamePad 1: Navigator
-        GamePad 2: Internal motors
-        right joystick - launcher:
-            up = shoot, down = reverse
-        left joystick - intake:
-            up = pull in, down = push out
+            left stick - field centric controls
+            right stick - turning (only push to left or right)
+            dpad up - move completely forward
+            dpad down - move completely backward
+            right bumper - intake IN
+            left bumper - intake OUT
 
-        left bumper - whack out
-        right bumper - whack in
-        dpad up - stacker up
-        dpad down - stacker down
+        GamePad 2: Internal motors
+            right joystick - launcher:
+                up = shoot, down = reverse
+            right bumper - toggle whacker
+            left bumper - full safeWhacker out and then in
+            dpad up - stacker box up
+            dpad down - stacker box down
+            x - dump
+
+            dpad right - claw open
+            dpad left - claw close
+            left stick - arm up/down based on stick up and down
+
          */
         while(opModeIsActive()){
             if(gamepad1.a) {
@@ -63,30 +71,33 @@ public class Teleop extends LinearOpMode {
                 || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
 
                 if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, gamepad1.left_stick_y );
+                    chassisComponent.fieldCentricDrive(-gamepad1.left_stick_x, -gamepad1.left_stick_y );
                 }
                 if (Math.abs(gamepad1.right_stick_x) > 0.1) {
                     if (gamepad1.right_stick_x > 0) {
-                        chassisComponent.spinRight(gamepad1.right_stick_x);
+                        chassisComponent.spinLeft(gamepad1.right_stick_x);
                     }
                     if (gamepad1.right_stick_x < 0) {
-                        chassisComponent.spinLeft(gamepad1.right_stick_x);
+                        chassisComponent.spinRight(gamepad1.right_stick_x);
                     }
                 }
             }
             else if (gamepad1.dpad_up) {
-                chassisComponent.moveForward(1);
+                chassisComponent.moveBackward(1);
             }
             else if (gamepad1.dpad_down) {
-                chassisComponent.moveBackward(1);
+                chassisComponent.moveForward(1);
+            }
+            else if (gamepad1.y) {
+                //test method for anything we want
+            }
+            else if (gamepad1.x) {
+                //test method for anything we want
             }
             else {
                 chassisComponent.stop();
             }
 
-
-            //if less than 0 (pushed up) then intake
-            //if greater than 0 (pushed down) then push out
             if(gamepad1.right_bumper){
                 intakeComponent.in();
             }
@@ -97,10 +108,8 @@ public class Teleop extends LinearOpMode {
                 intakeComponent.stop();
             }
 
-            /* the stacker box controls; these are manual, meaning they will do
-            exactly what you tell them to do. There is another button for the
-            full, safe launching mechanism.
-             */
+
+            //gamepad 2
             if(gamepad2.x){
                 stackerComponent.stackerDump();
             }
@@ -113,16 +122,10 @@ public class Teleop extends LinearOpMode {
             else if (gamepad2.dpad_down){
                 stackerComponent.stackerDown();
             }
-
             if (gamepad2.left_bumper) {
                 stackerComponent.safeWhack();
             }
 
-
-
-
-            //if less than 0 (pushed up) then FIRE!
-            //if greater than 0 (pushed down) then reverse launcher to pull inward
             if(gamepad2.right_stick_y > 0){
                 launcherComponent.shoot();
             }
@@ -148,9 +151,6 @@ public class Teleop extends LinearOpMode {
                     grabberComponent.armDown();
                 }
             }
-
-
-
 
             /* full shooting command
                 1. starting the launcher; setting it with a runtime of 10 sec

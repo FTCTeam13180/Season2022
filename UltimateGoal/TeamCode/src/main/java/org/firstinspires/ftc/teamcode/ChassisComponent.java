@@ -46,8 +46,8 @@ public class ChassisComponent {
         rearr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rearl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        rearr.setDirection(DcMotorSimple.Direction.REVERSE);
-        topr.setDirection(DcMotorSimple.Direction.REVERSE);
+        topl.setDirection(DcMotorSimple.Direction.REVERSE);
+        rearl.setDirection(DcMotorSimple.Direction.REVERSE);
 
         opMode.telemetry.addData("Chassis Component", "Initialized");
         opMode.telemetry.update();
@@ -70,7 +70,7 @@ public class ChassisComponent {
         while(!IMU.isGyroCalibrated()) {}
         opMode.telemetry.addLine ("Completed Gyro Calibration");
         Orientation imu_orientation =
-                IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
+                IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         double imu_radian = imu_orientation.firstAngle;
         opMode.telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
 
@@ -91,6 +91,22 @@ public class ChassisComponent {
     }
 
     public void mecanumDrive(double x, double y){
+        // need to roundoff near 1.0 values to avoid unnecessary veering
+        if (x > 0.9) {
+            x = 1.0;
+            y = 0;
+        }
+        else if ( x < -0.9) {
+            x = -1.0;
+            y = 0;
+        } else if (y > 0.9) {
+            y = 1.0;
+            x = 0;
+        }
+        else if (y < -0.9){
+            y = -1.0;
+            x = 0;
+        }
         double power = Math.sqrt(x * x + y * y);
         topr.setPower(power_scale*(y-x)/power);
         topl.setPower(power_scale*(x+y)/power);
@@ -100,20 +116,21 @@ public class ChassisComponent {
 
     public void fieldCentricDrive(double x, double y){
         double power = Math.sqrt(x * x + y * y);
+
         double controlAngle = Math.atan2(y, x);
-        double robotAngle = (IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).firstAngle);
-        double newAngle = controlAngle + robotAngle;
+        double robotAngle = (IMU.getAngularOrientation().firstAngle);
+        double newAngle = controlAngle + robotAngle + Math.PI;
         double newY = (0 - Math.sin(newAngle)) * power;
         double newX = (0 - Math.cos(newAngle)) * power;
         mecanumDrive(newX, newY);
     }
 
     public void moveForward(double power){
-        mecanumDrive(0, power);
+        mecanumDrive(0, Math.abs(power));
     }
 
     public void moveBackward(double power){
-        mecanumDrive(0, -power);
+        mecanumDrive(0, -Math.abs(power));
     }
 
     public void shiftRight(double power){
