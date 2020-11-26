@@ -127,6 +127,14 @@ public class ChassisStateMachine implements BasicCommand {
         // reset the timeout time and start motion.
         runtime = new ElapsedTime();
         runtime.reset();
+
+        //move to power shot
+        points = new ArrayList<Point>();
+        points.add(new Point(180,60,power));
+        points.add(new Point(150,210,power));
+        //op.telemetry.update();
+        finished = new boolean[points.size()];
+
     }
 // 1 0 0 0
     public void execute(){
@@ -166,6 +174,7 @@ public class ChassisStateMachine implements BasicCommand {
         switch(state){
 
             case INIT:
+                init();
                 state = State.EXECUTE;
                 break;
 

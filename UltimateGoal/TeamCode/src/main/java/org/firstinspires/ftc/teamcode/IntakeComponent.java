@@ -10,10 +10,10 @@ public class IntakeComponent {
         opMode = op;
     }
 
-    private DcMotor intake;
+    DcMotor intake;
 
     public void init() {
-        intake = opMode.hardwareMap.get(DcMotor.class, "Intake");
+        intake = opMode.hardwareMap.dcMotor.get("Intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intake.setDirection(DcMotor.Direction.FORWARD);
         opMode.telemetry.addData("Intake:", "Initialized");

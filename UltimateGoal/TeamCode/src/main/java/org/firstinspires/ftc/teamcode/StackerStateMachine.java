@@ -37,7 +37,6 @@ public class StackerStateMachine {
     }
 
     public void init(){
-        stackerComponent.init();
         op.telemetry.addData("StackerStateMachine: ", "initialized");
 
         runtime = new ElapsedTime();
