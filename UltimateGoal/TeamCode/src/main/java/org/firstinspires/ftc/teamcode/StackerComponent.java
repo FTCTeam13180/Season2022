@@ -1,20 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class StackerComponent {
     private static final double STACKER_DOWN = 0;
-    private static final double STACKER_UP = 1;
-    private static final double WHACKER_OUT = 1;
-    private static final double WHACKER_IN = 0;
+    private static final double STACKER_DUMP = 1;
+    private static final double STACKER_UP = 0.2;
+    private static final double WHACKER_OUT = 0;
+    private static final double WHACKER_IN = 1;
     private Servo stacker;
     private Servo whacker;
     private double stackerPosition;
     private double whackerPosition;
-    private OpMode opmode;
+    private LinearOpMode opmode;
 
-    StackerComponent (OpMode op) {
+    StackerComponent (LinearOpMode op) {
         opmode = op;
     }
 
@@ -25,6 +26,10 @@ public class StackerComponent {
         whacker.setPosition(WHACKER_IN);
     }
 
+    public void stackerDump(){
+        stackerPosition = STACKER_DUMP;
+        stacker.setPosition(stackerPosition);
+    }
     public void stackerUp(){
         stackerPosition = STACKER_UP;
         stacker.setPosition(stackerPosition);
@@ -36,7 +41,7 @@ public class StackerComponent {
     public void safeWhack(){
         if(stackerPosition == STACKER_UP){
             unsafeWhackerOut();
-            //TODO: Add a sleep function to allow whacker to fully move
+            opmode.sleep(500);
             unsafeWhackerIn();
         }
     }
@@ -49,9 +54,23 @@ public class StackerComponent {
         whacker.setPosition(WHACKER_IN);
     }
 
+    public void toggleWhacker() {
+        if (whackerPosition == WHACKER_IN)
+            unsafeWhackerOut();
+        else
+            unsafeWhackerIn();
+    }
+
+    public double getStackerPosition(){
+        return stackerPosition;
+    }
+    public double getWhackerPosition(){
+        return whackerPosition;
+    }
+
     //likely will not work - servo doesn't give any position between the ones that were set
     public boolean isStackerBusy(){
-        if (stacker.getPosition() != stackerPosition || stacker.getPosition() > STACKER_DOWN){
+        if (stacker.getPosition() != stackerPosition){
             return true;
         }
         else{
@@ -59,7 +78,7 @@ public class StackerComponent {
         }
     }
     public boolean isWhackerBusy(){
-        if (whacker.getPosition() < whackerPosition || whacker.getPosition() > STACKER_DOWN){
+        if (whacker.getPosition() < whackerPosition){
             return true;
         }
         else{
