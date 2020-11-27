@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.sax.StartElementListener;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
@@ -188,7 +185,6 @@ public class ChassisStateMachine implements BasicCommand {
                 break;
 
             case STOP:
-                stop();
                 break;
         }
     }

@@ -22,52 +22,56 @@ public class AutonomousTasks{
         STOP
     }
 
-    AutonomousTasks.State state = AutonomousTasks.State.INIT;
+    private AutonomousTasks.State state = AutonomousTasks.State.INIT;
+    private OpMode op;
+
+    private Odometry odometry;
+    private ChassisComponent chassisComponent;
+    private ChassisSerialMotion chassisSerialMotion;
+
+    private LauncherComponent launcherComponent;
+    private LauncherSerialTask launcherSerialTask;
+
+    private StackerComponent stackerComponent;
+    private StackerSerialTask stackerSerialTask;
+
+    private GrabberComponent grabberComponent;
+    private IntakeComponent intakeComponent;
+    private Detector detect;
+
     ElapsedTime time;
     double TimeoutMs;
-    OpMode op;
-    int numberOfRings;
-    int whackedRingCount;
 
-    Odometry odometry;
-    ChassisComponent chassisComponent;
-    ChassisSerialMotion chassisSerialMotion;
-
-    LauncherComponent launcherComponent;
-    LauncherSerialTask launcherSerialTask;
-
-    StackerComponent stackerComponent;
-    StackerSerialTask stackerSerialTask;
-
-    GrabberComponent grabberComponent;
-    IntakeComponent intakeComponent;
-
-    //should not be used anymore
-    WhackerSerialTask whackerSerialTask;
-
-    private Detector detect;
     int numOfRings = 0;
+    int whackedRingCount;
 
     public AutonomousTasks(OpMode opmode){
         op = opmode;
-    }
-    public void setRingNumber(int numOfRings){
-        numberOfRings = numOfRings;
     }
 
     //ToDo: add init for other components
     public void init(){
         op.telemetry.addData("AutonomousTask", "Initializing");
+
         odometry = new Odometry(op, 120,45);
         odometry.init();
+        chassisComponent = new ChassisComponent(op);
         chassisComponent.init();
         chassisSerialMotion = new ChassisSerialMotion(odometry, op);
+
+        launcherComponent = new LauncherComponent(op);
         launcherComponent.init();
         launcherSerialTask = new LauncherSerialTask(launcherComponent, op);
+
+        stackerComponent = new StackerComponent(op);
         stackerComponent.init();
         stackerSerialTask = new StackerSerialTask(stackerComponent, op);
+
+        grabberComponent = new GrabberComponent(op);
         grabberComponent.init();
+        intakeComponent = new IntakeComponent(op);
         intakeComponent.init();
+
         detect = new Detector(op);
         detect.init();
         time = new ElapsedTime();
@@ -80,13 +84,11 @@ public class AutonomousTasks{
      */
 
 
-    public void numberOfRings() {
+    public void detectNumberOfRings() {
         List<Recognition> updatedRecognitions = detect.scan();
-        numOfRings = 0;
         int i = 0;
         if(updatedRecognitions != null) {
             for (Recognition recognition : updatedRecognitions) {
-                //Recognition recognition = updatedRecognitions.get(0);
                 op.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                 op.telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                         recognition.getLeft(), recognition.getTop());
@@ -119,7 +121,7 @@ public class AutonomousTasks{
     }
 
     public void moveToTargetZone() {
-        chassisSerialMotion.moveToTarget(numberOfRings);
+        chassisSerialMotion.moveToTarget(numOfRings);
     }
 
     public void moveToPowerShotLaunchPosition() {
@@ -128,7 +130,6 @@ public class AutonomousTasks{
     }
 
     public void launchRingsAtPowerShots() {
-   //   launcherSerialTask.setPower(1);
         stackerSerialTask.setWhacks(3);
         while(stackerSerialTask.getState() != StackerStateMachine.State.STOP){
             stackerSerialTask.run();
@@ -148,7 +149,7 @@ public class AutonomousTasks{
            }
            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
-            */
+            
 
 
         }
@@ -200,7 +201,6 @@ public class AutonomousTasks{
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
 
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    chassisSerialMotion.run();  //<-- so that STOP in ChassisStateMachine can run
                     state = State.MOVE_TO_TARGET_ZONE;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
@@ -215,8 +215,8 @@ public class AutonomousTasks{
             case LAUNCH_RINGS_AT_POWER_SHOTS:
 
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
-//                    state = State.MOVE_TO_TARGET_ZONE;
-//                      state = State.GRAB_WOBBLE;
+                    state = State.MOVE_TO_TARGET_ZONE;
+                    state = State.GRAB_WOBBLE;
                     break;
                 }
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
@@ -229,10 +229,10 @@ public class AutonomousTasks{
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                     state=State.STOP;
                     /*
-                    if(numberOfRings == 0 || numberOfRings == 1){
+                    if(numOfRings == 0 || numOfRings == 1){
                         state = State.GRAB_WOBBLE;
                     }
-                    else if(numberOfRings == 4){
+                    else if(numOfRings == 4){
                         state = State.PICK_UP_RINGS;
                     }
       */
