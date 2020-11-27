@@ -72,6 +72,19 @@ public class ChassisStateMachine implements BasicCommand {
         points.add(new Point(90,120,power));
         finished = new boolean[points.size()];
     }
+    public void smoothSpline(){
+        points = new ArrayList<Point>();
+        points.add(new Point(120,120,power));
+        points.add(new Point(125,125,power));
+        points.add(new Point(130,135,power));
+        points.add(new Point(135,150,power));
+        points.add(new Point(140,170,power));
+        points.add(new Point(145,195,power));
+        points.add(new Point(150,225,power));
+        points.add(new Point(155,260,power));
+
+        finished = new boolean[points.size()];
+    }
     public void moveToTargetZone(int numRings){
         points= new ArrayList<Point>();
         if(numRings==0){
@@ -129,16 +142,17 @@ public class ChassisStateMachine implements BasicCommand {
         for(int i = 0;i<points.size();i++){
             if(finished[i]) continue;
             Point current = points.get(i);
-            // current.getPower() -> 0
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
             if( odometry.isFinished(current.getX(),current.getY()) ){
-                //odometry.stopChassisMotor();
+                finished[i]=true;
+                if(finished[points.size()-1]) {
+                    odometry.stopChassisMotor();
+                }
                 op.telemetry.addData("finished: ",i);
 
                 //op.telemetry.update();
                 odometry.last_X = odometry.global_X;
                 odometry.last_Y = odometry.global_Y;
-                finished[i]=true;
 
                 continue;
             }

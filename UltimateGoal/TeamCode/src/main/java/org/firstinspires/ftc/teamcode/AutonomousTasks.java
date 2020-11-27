@@ -28,10 +28,16 @@ public class AutonomousTasks{
     OpMode op;
     int numberOfRings;
     int whackedRingCount;
-    Odometry odometry;
+
 
     ChassisSerialMotion chassisSerialMotion;
     LauncherSerialTask launcherSerialTask;
+    WhackerSerialTask whackerSerialTask;
+
+    Odometry odometry;
+    LauncherComponent launcherComponent;
+
+
     StackerSerialTask stackerSerialTask;
     private Detector detect;
     int numOfRings = 0;
@@ -49,6 +55,7 @@ public class AutonomousTasks{
         op.telemetry.addData("AutonomousTask", "Initializing");
         odometry = new Odometry(op, 120,45);
         odometry.init();
+        chassisSerialMotion = new ChassisSerialMotion(odometry, op);
         detect = new Detector(op);
         detect.init();
         time = new ElapsedTime();
@@ -108,6 +115,15 @@ public class AutonomousTasks{
     }
 
     public void launchRingsAtPowerShots() {
+   //     launcherSerialTask.setPower(1);
+        if(whackedRingCount < 3) {
+            whackerSerialTask.run();
+            /*
+            Every time a ring is launched at a power shot, the robot must slightly turn towards the next power shot
+            (possibly parallel - can retract whacker while turning to next power shot)
+            if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.RETRACT){ <-- if getTarget is Retract, switch to Extend
+                whackerSerialTask.setTarget(WhackerStateMachine.Target.EXTEND;
+                whackedRingCount++;
         stackerSerialTask.setWhacks(3);
         while(stackerSerialTask.getState() != StackerStateMachine.State.STOP){
             stackerSerialTask.run();
@@ -128,8 +144,9 @@ public class AutonomousTasks{
            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
             */
-
-
+        }
+        else if(whackedRingCount >= 3){
+     //       launcherSerialTask.setPower(0);
         }
         launcherSerialTask.setRunningTime(0);
 
