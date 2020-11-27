@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Teleop extends LinearOpMode {
     private OpMode op;
     private ChassisComponent chassisComponent;
-    private LauncherComponent launcherComponent;
-    private GrabberComponent grabberComponent;
-    private LauncherStateMachine launcherStateMachine;
     private IntakeComponent intakeComponent;
+    private GrabberComponent grabberComponent;
+    private LauncherComponent launcherComponent;
+    private LauncherStateMachine launcherStateMachine;
+
 
     ElapsedTime runningTime;
     private StackerComponent stackerComponent;
@@ -42,6 +43,7 @@ public class Teleop extends LinearOpMode {
 
         /*
         GamePad 1: Navigator
+            a - reset the imu at current robot orientation
             left stick - field centric controls
             right stick - turning (only push to left or right)
             dpad up - move completely forward

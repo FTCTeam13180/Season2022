@@ -29,23 +29,28 @@ public class AutonomousTasks{
     int numberOfRings;
     int whackedRingCount;
 
-
+    Odometry odometry;
+    ChassisComponent chassisComponent;
     ChassisSerialMotion chassisSerialMotion;
+
+    LauncherComponent launcherComponent;
     LauncherSerialTask launcherSerialTask;
+
+    StackerComponent stackerComponent;
+    StackerSerialTask stackerSerialTask;
+
+    GrabberComponent grabberComponent;
+    IntakeComponent intakeComponent;
+
+    //should not be used anymore
     WhackerSerialTask whackerSerialTask;
 
-    Odometry odometry;
-    LauncherComponent launcherComponent;
-
-
-    StackerSerialTask stackerSerialTask;
     private Detector detect;
     int numOfRings = 0;
 
     public AutonomousTasks(OpMode opmode){
         op = opmode;
     }
-
     public void setRingNumber(int numOfRings){
         numberOfRings = numOfRings;
     }
@@ -55,11 +60,19 @@ public class AutonomousTasks{
         op.telemetry.addData("AutonomousTask", "Initializing");
         odometry = new Odometry(op, 120,45);
         odometry.init();
+        chassisComponent.init();
         chassisSerialMotion = new ChassisSerialMotion(odometry, op);
+        launcherComponent.init();
+        launcherSerialTask = new LauncherSerialTask(launcherComponent, op);
+        stackerComponent.init();
+        stackerSerialTask = new StackerSerialTask(stackerComponent, op);
+        grabberComponent.init();
+        intakeComponent.init();
         detect = new Detector(op);
         detect.init();
         time = new ElapsedTime();
         time.reset();
+        op.telemetry.addData("AutonomousTasks", "Initialized");
     }
 
     /**
