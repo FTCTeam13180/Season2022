@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class StackerComponent {
@@ -13,9 +13,9 @@ public class StackerComponent {
     private Servo whacker;
     private double stackerPosition;
     private double whackerPosition;
-    private LinearOpMode opmode;
+    private OpMode opmode;
 
-    StackerComponent (LinearOpMode op) {
+    StackerComponent (OpMode op) {
         opmode = op;
     }
 
@@ -38,10 +38,17 @@ public class StackerComponent {
         stackerPosition = STACKER_DOWN;
         stacker.setPosition(stackerPosition);
     }
+    public void sleep(long milliseconds){
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
     public void safeWhack(){
         if(stackerPosition == STACKER_UP){
             unsafeWhackerOut();
-            opmode.sleep(500);
+            sleep(500);
             unsafeWhackerIn();
         }
     }
@@ -60,6 +67,7 @@ public class StackerComponent {
         else
             unsafeWhackerIn();
     }
+
 
     public double getStackerPosition(){
         return stackerPosition;

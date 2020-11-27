@@ -149,7 +149,7 @@ public class AutonomousTasks{
            }
            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
-            
+
 
 
         }

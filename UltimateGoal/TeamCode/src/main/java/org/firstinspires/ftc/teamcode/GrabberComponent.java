@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class GrabberComponent {
@@ -13,9 +13,9 @@ public class GrabberComponent {
     private Servo claw;
     private double armPosition;
     private double clawPosition;
-    private LinearOpMode opmode;
+    private OpMode opmode;
 
-    GrabberComponent (LinearOpMode op) {
+    GrabberComponent (OpMode op) {
         opmode = op;
     }
     public void init(){
@@ -44,15 +44,22 @@ public class GrabberComponent {
         clawPosition = CLAW_CLOSE;
         claw.setPosition(clawPosition);
     }
+    public void sleep(long milliseconds){
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
     public void safeWobbleGrabAndUp(){
         armDown();
-        opmode.sleep(500);
+        sleep(500);
         clawClose();
         armUp();
     }
     public void safeWobbleDownAndRelease(){
         armDown();
-        opmode.sleep(750);
+        sleep(750);
         clawOpen();
         armUp();
     }
