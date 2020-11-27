@@ -44,6 +44,7 @@ public class AutonomousTasks{
 
     int numOfRings = 0;
     int whackedRingCount;
+    boolean psFinished[]= new boolean[3];
 
     public AutonomousTasks(OpMode opmode){
         op = opmode;
@@ -113,8 +114,8 @@ public class AutonomousTasks{
 
 
     /**
-    * Auto Loop
-    **/
+     * Auto Loop
+     **/
 
     public void grabWobble(){
         //move to wobble and pick it up
@@ -129,7 +130,7 @@ public class AutonomousTasks{
 
     }
 
-    public void launchRingsAtPowerShots() {
+    public void launchRingAtPowerShots() {
         stackerSerialTask.setWhacks(3);
         while(stackerSerialTask.getState() != StackerStateMachine.State.STOP){
             stackerSerialTask.run();
@@ -151,13 +152,13 @@ public class AutonomousTasks{
                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
 
 
-
+*/
         }
 
-        launcherSerialTask.setRunningTime(0);
+//        launcherSerialTask.setRunningTime(0);
 
     }
-
+/*
     public void pickUpRings() {
 
     }
@@ -188,7 +189,7 @@ public class AutonomousTasks{
     5) Park on the white launch line
      */
 
-    public void run() {
+    public void run(){
 
         switch(state){
 
@@ -206,22 +207,31 @@ public class AutonomousTasks{
                     break;
                 }
 
-              //  if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-              //    moveToPowerShotLaunchPosition(); ToDo: set points at initialization; points cannot be set multiple times
-             //   }
+                //  if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                //    moveToPowerShotLaunchPosition(); ToDo: set points at initialization; points cannot be set multiple times
+                //   }
                 chassisSerialMotion.run();
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
+                if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
+                    launchRingsAtPowerShots();
+                }
+                for(int ps=0;ps<3;ps++){
+                    if(psFinished[ps]) continue;
+
+                }
+
+
+
+
 
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
                     state = State.MOVE_TO_TARGET_ZONE;
                     state = State.GRAB_WOBBLE;
                     break;
                 }
-                if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
-                    launchRingsAtPowerShots();
-                }
+
                 launcherSerialTask.run();
                 break;
 
@@ -248,7 +258,7 @@ public class AutonomousTasks{
             case GRAB_WOBBLE:
                 grabWobble();
                 state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
-     //           state = State.PICK_UP_RINGS;
+                //           state = State.PICK_UP_RINGS;
                 break;
 
             case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
@@ -266,7 +276,7 @@ public class AutonomousTasks{
 
             case PICK_UP_RINGS:
 
-                pickUpRings();
+//                pickUpRings();
                 state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
                 //state=State.LAUNCH_RINGS_AT_HIGH_GOAL;
                 break;
@@ -278,23 +288,23 @@ public class AutonomousTasks{
                     break;
                 }
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    moveToHighGoalLaunchPosition();
+                    //                  moveToHighGoalLaunchPosition();
                 }
                 chassisSerialMotion.run();
                 break;
 
             case LAUNCH_RINGS_AT_HIGH_GOAL:
-                launchRingsAtHighGoal();
+                //               launchRingsAtHighGoal();
                 state = State.PARK_AT_LAUNCH_LINE;
                 break;
 
             case PARK_AT_LAUNCH_LINE:
-                parkAtLaunchLine();
+                //             parkAtLaunchLine();
                 state = State.STOP;
                 break;
 
             case STOP:
-                stop();
+                //           stop();
                 break;
 
 
