@@ -66,6 +66,14 @@ public class Teleop extends LinearOpMode {
 
          */
         while(opModeIsActive()){
+            if(gamepad1.x) {
+                Odometry odometry = new Odometry (this, 180, 60);
+                odometry.init();
+                odometry.initIMU();
+                odometry.nextPoint(180,160, 0.5);
+                sleep (2000);
+                odometry.stopChassisMotor();
+            }
             if(gamepad1.a) {
                 chassisComponent.initIMU();
             }
