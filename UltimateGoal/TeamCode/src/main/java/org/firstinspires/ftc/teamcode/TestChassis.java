@@ -90,7 +90,7 @@ public class TestChassis extends LinearOpMode {
         double targetX=120;
         double targetY=45;
         while(opModeIsActive()){
-            double currentAngle = Math.toDegrees(normalizeIMU(imu.getAngularOrientation().firstAngle));
+            double currentAngle = Math.toDegrees(normalizeIMU(imu.getAngularOrientation().thirdAngle));
             telemetry.addData("curAngle",currentAngle);
             double mag = Math.hypot(targetX-curX,targetY-curY);
             double target = Math.toDegrees(normalizeTarget(targetY-curY,targetX-curX));
