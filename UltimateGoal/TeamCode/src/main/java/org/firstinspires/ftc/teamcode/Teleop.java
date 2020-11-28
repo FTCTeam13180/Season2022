@@ -71,6 +71,7 @@ public class Teleop extends LinearOpMode {
                 odometry.init();
                 odometry.initIMU();
                 odometry.nextPoint(180,160, 0.5);
+                telemetry.update();
                 sleep (2000);
                 odometry.stopChassisMotor();
             }
