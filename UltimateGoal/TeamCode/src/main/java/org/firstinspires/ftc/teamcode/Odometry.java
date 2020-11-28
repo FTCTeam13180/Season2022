@@ -53,10 +53,10 @@ public class Odometry{
     public void initDriveHardwareMap(){
         opMode.telemetry.addData("Status", "Initializing Odometry");
 
-        frontR = opMode.hardwareMap.dcMotor.get("Topr");
-        frontL = opMode.hardwareMap.dcMotor.get("Topl");
-        rearR = opMode.hardwareMap.dcMotor.get("Rearr");
-        rearL = opMode.hardwareMap.dcMotor.get("Rearl");
+        frontR = opMode.hardwareMap.dcMotor.get("TopR");
+        frontL = opMode.hardwareMap.dcMotor.get("TopL");
+        rearR = opMode.hardwareMap.dcMotor.get("BackR");
+        rearL = opMode.hardwareMap.dcMotor.get("BackL");
 
         frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
