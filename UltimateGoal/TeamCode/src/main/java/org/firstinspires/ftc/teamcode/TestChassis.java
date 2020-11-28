@@ -92,45 +92,15 @@ public class TestChassis extends LinearOpMode {
         while(opModeIsActive()){
             double currentAngle = Math.toDegrees(normalizeIMU(imu.getAngularOrientation().firstAngle));
             telemetry.addData("curAngle",currentAngle);
-            double mag = Math.hypot(targetX-curX,targetY-curY);
-            double target = Math.toDegrees(normalizeTarget(targetY-curY,targetX-curX));
-            telemetry.addData("Target: ",target);
-            double delta = target - currentAngle;
-            if(delta<0)delta+=360;
-            delta = 90-delta;
-            telemetry.addData("Delta degrees: ",delta);
-            delta = Math.toRadians(delta);
-            telemetry.addData("Delta radians: ",delta);
-            double x = Math.cos(delta)*mag;
-            double y = Math.sin(delta)*mag;
-            double m = Math.max(Math.abs(x),Math.abs(y));
-            double x_cnts = x*cntspercm;
-            double y_cnts = y*cntspercm;
-
-            x/=m;
-            y/=m;
-            telemetry.addData("Delta: ",Math.toDegrees(delta));
-            telemetry.addData("x",x);
-            telemetry.addData("y",y);
-            telemetry.addData("Ycnts",y_cnts);
-            telemetry.addData("Xcnts",x_cnts);
-            telemetry.update();
-            sleep(1000);
-
-            double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
-            frontR.setPower(power*(((y-x)/cap)));
-            frontL.setPower(power*((y+x)/cap));
-            rearR.setPower(power*((y+x)/cap));
-            rearL.setPower(power*((y-x)/cap));
+            
+            frontR.setPower(-0.2);
+            frontL.setPower(0.8);
+            rearR.setPower(0.8);
+            rearL.setPower(-0.2);
 
 
-            while(((Math.abs(frontL.getCurrentPosition())<Math.abs(x_cnts) || Math.abs(frontR.getCurrentPosition())<Math.abs(y_cnts)))&&opModeIsActive()){
-                telemetry.addData("mag",mag);
-                telemetry.addData("targetTheta",delta);
-                telemetry.addData("Ycnts",y_cnts);
-                telemetry.addData("Xcnts",x_cnts);
-                telemetry.addData("frontR",power*(((y-x)/cap)));
-                telemetry.addData("frontL",power*((y+x)/cap));
+            while(((Math.abs(frontL.getCurrentPosition())<Math.abs(6000) || Math.abs(frontR.getCurrentPosition())<Math.abs(6000)))&&opModeIsActive()){
+
                 telemetry.addData("Right Encoder",frontR.getCurrentPosition());
                 telemetry.addData("Left Encoder",rearL.getCurrentPosition());
                 telemetry.addData("frontl Encoder",-frontL.getCurrentPosition());
