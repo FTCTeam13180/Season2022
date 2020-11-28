@@ -211,9 +211,9 @@ public class AutonomousTasks{
                     break;
                 }
 
-                //  if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                //    moveToPowerShotLaunchPosition(); ToDo: set points at initialization; points cannot be set multiple times
-                //   }
+                  if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                   moveToPowerShotLaunchPosition();
+                   }
                 chassisSerialMotion.run();
                 break;
 
@@ -260,15 +260,14 @@ public class AutonomousTasks{
 
             case MOVE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state=State.STOP;
-                    /*
+
                     if(numOfRings == 0 || numOfRings == 1){
                         state = State.GRAB_WOBBLE;
                     }
                     else if(numOfRings == 4){
                         state = State.PICK_UP_RINGS;
                     }
-      */
+
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
