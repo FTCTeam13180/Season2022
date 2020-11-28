@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -51,10 +49,10 @@ public class TestChassis extends LinearOpMode {
     }
     public void runOpMode(){
         initIMU();
-        frontL = hardwareMap.get(DcMotor.class, "Topl");
-        frontR= hardwareMap.get(DcMotor.class, "Topr");
-        rearL = hardwareMap.get(DcMotor.class, "Rearl");
-        rearR = hardwareMap.get(DcMotor.class, "Rearr");
+        frontL = hardwareMap.get(DcMotor.class, "TopL");
+        frontR= hardwareMap.get(DcMotor.class, "TopR");
+        rearL = hardwareMap.get(DcMotor.class, "BackL");
+        rearR = hardwareMap.get(DcMotor.class, "BackR");
 
         frontL.setDirection(DcMotor.Direction.REVERSE);
         rearL.setDirection(DcMotor.Direction.REVERSE);
@@ -92,11 +90,6 @@ public class TestChassis extends LinearOpMode {
         while(opModeIsActive()){
             double currentAngle = Math.toDegrees(normalizeIMU(imu.getAngularOrientation().thirdAngle));
             telemetry.addData("curAngle",currentAngle);
-            
-            frontR.setPower(-0.2);
-            frontL.setPower(0.8);
-            rearR.setPower(0.8);
-            rearL.setPower(-0.2);
 
 
             while(((Math.abs(frontL.getCurrentPosition())<Math.abs(6000) || Math.abs(frontR.getCurrentPosition())<Math.abs(6000)))&&opModeIsActive()){

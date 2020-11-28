@@ -187,7 +187,7 @@ public class Odometry{
     public void nextPoint(double x, double y,double power){
 
         global_Y = init_Y + (frontR.getCurrentPosition()/cntsPerCm);
-        global_X = init_X - (frontL.getCurrentPosition()/cntsPerCm);
+        global_X = init_X + (frontL.getCurrentPosition()/cntsPerCm);
 
         opMode.telemetry.addData("global_Y: ", global_Y);
         opMode.telemetry.addData("global_X: ", global_X);
