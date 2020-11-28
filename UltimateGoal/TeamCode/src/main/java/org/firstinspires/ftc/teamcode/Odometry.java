@@ -197,7 +197,7 @@ public class Odometry{
 
 
         double r = Math.hypot(global_X-x,global_Y-y);
-        double currentAngle = Math.toDegrees(normalizeIMU(IMU.getAngularOrientation().firstAngle));
+        double currentAngle = Math.toDegrees(normalizeIMU(IMU.getAngularOrientation().thirdAngle));
         double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
         opMode.telemetry.addData("current: ",currentAngle);
         opMode.telemetry.addData("target: ",target);

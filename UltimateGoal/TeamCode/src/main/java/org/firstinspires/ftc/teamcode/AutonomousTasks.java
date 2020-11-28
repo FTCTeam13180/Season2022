@@ -54,7 +54,7 @@ public class AutonomousTasks{
     public void init(){
         op.telemetry.addData("AutonomousTask", "Initializing");
 
-        odometry = new Odometry(op, 120,45);
+        odometry = new Odometry(op, 97,48);
         odometry.init();
         chassisComponent = new ChassisComponent(op);
         chassisComponent.init();
