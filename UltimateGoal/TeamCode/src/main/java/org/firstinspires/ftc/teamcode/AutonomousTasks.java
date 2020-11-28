@@ -44,7 +44,7 @@ public class AutonomousTasks{
 
     int numOfRings = 0;
     int whackedRingCount;
-    boolean psFinished[]= new boolean[3];
+    boolean psFinished[][]= new boolean[3][2];
 
     public AutonomousTasks(OpMode opmode){
         op = opmode;
@@ -124,6 +124,9 @@ public class AutonomousTasks{
     public void moveToTargetZone() {
         chassisSerialMotion.moveToTarget(numOfRings);
     }
+    public void shiftPowershot(int ps) {
+        chassisSerialMotion.shiftPowershot(ps);
+    }
 
     public void moveToPowerShotLaunchPosition() {
         chassisSerialMotion.moveToPowerShot();
@@ -150,6 +153,7 @@ public class AutonomousTasks{
            }
            else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
                whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
+
 
 
 */
@@ -214,11 +218,31 @@ public class AutonomousTasks{
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
-                if(launcherSerialTask.getState() == LauncherStateMachine.State.POWERING_UP){
-                    launchRingsAtPowerShots();
-                }
+
                 for(int ps=0;ps<3;ps++){
-                    if(psFinished[ps]) continue;
+                    if(psFinished[ps][1]) continue;
+                    if(launcherSerialTask.getState() == LauncherStateMachine.State.REACHED_MAX){
+                        if(!psFinished[ps][0]){
+                            //whack
+                            //wait
+                            //once finished:
+                            psFinished[ps][0]=true;
+                        }
+                        else{
+                            if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                                psFinished[ps][1]=true;
+                                chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                                break;
+                            }
+
+                              if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                                  shiftPowershot(ps);
+                               }
+                            chassisSerialMotion.run();
+                            break;
+                        }
+                    }
+
 
                 }
 
@@ -228,7 +252,6 @@ public class AutonomousTasks{
 
                 if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
                     state = State.MOVE_TO_TARGET_ZONE;
-                    state = State.GRAB_WOBBLE;
                     break;
                 }
 
@@ -289,22 +312,26 @@ public class AutonomousTasks{
                 }
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
                     //                  moveToHighGoalLaunchPosition();
+  //                  moveToHighGoalLaunchPosition();
                 }
                 chassisSerialMotion.run();
                 break;
 
             case LAUNCH_RINGS_AT_HIGH_GOAL:
                 //               launchRingsAtHighGoal();
+ //               launchRingsAtHighGoal();
                 state = State.PARK_AT_LAUNCH_LINE;
                 break;
 
             case PARK_AT_LAUNCH_LINE:
                 //             parkAtLaunchLine();
+   //             parkAtLaunchLine();
                 state = State.STOP;
                 break;
 
             case STOP:
                 //           stop();
+     //           stop();
                 break;
 
 

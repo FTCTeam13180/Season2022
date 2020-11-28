@@ -84,6 +84,7 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void moveToTargetZone(int numRings){
         points= new ArrayList<Point>();
+
         if(numRings==0){
             //A
             points.add(new Point(45,210,power));
@@ -119,18 +120,21 @@ public class ChassisStateMachine implements BasicCommand {
     public State getState(){
         return state;
     }
+    public void shiftPowershot(int ps_ix){
+        points = new ArrayList<Point>();
+        if(ps_ix==1){
+            points.add(new Point(142.5,210,power)); //150-(12-4.5)
+        }
+        if(ps_ix==2){
+            points.add(new Point(135,210,power)); //150-(19.5-4.5)
+        }
+        finished=new boolean[points.size()];
 
+    }
     public void init() {
         // reset the timeout time and start motion.
         runtime = new ElapsedTime();
         runtime.reset();
-
-        //move to power shot
-        points = new ArrayList<Point>();
-        points.add(new Point(180,60,power));
-        points.add(new Point(150,210,power));
-        //op.telemetry.update();
-        finished = new boolean[points.size()];
 
     }
 // 1 0 0 0
