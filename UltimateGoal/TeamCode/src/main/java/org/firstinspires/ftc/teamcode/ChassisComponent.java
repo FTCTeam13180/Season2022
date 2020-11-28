@@ -118,7 +118,7 @@ public class ChassisComponent {
         double power = Math.sqrt(x * x + y * y);
 
         double controlAngle = Math.atan2(y, x);
-        double robotAngle = (IMU.getAngularOrientation().firstAngle);
+        double robotAngle = (IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
         double newAngle = controlAngle + robotAngle + Math.PI;
         double newY = (0 - Math.sin(newAngle)) * power;
         double newX = (0 - Math.cos(newAngle)) * power;
