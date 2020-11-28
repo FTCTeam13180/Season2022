@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class GrabberComponent {
     private static final double ARM_DOWN = 0;
+    private static final double ARM_STRAIGHT = 0.5;
     private static final double ARM_UP = 1;
     private static final double CLAW_OPEN = 1;
     private static final double CLAW_CLOSE = 0;
@@ -21,7 +22,7 @@ public class GrabberComponent {
     public void init(){
         arm = opmode.hardwareMap.get(Servo.class, "Arm");
         claw = opmode.hardwareMap.get(Servo.class, "Claw");
-        arm.setPosition(ARM_UP);
+        arm.setPosition(ARM_STRAIGHT);
         armPosition = ARM_UP;
         claw.setPosition(CLAW_CLOSE);
         clawPosition = CLAW_CLOSE;
@@ -30,6 +31,10 @@ public class GrabberComponent {
 
     public void armUp(){
         armPosition = ARM_UP;
+        arm.setPosition(armPosition);
+    }
+    public void armStraight(){
+        armPosition = ARM_STRAIGHT;
         arm.setPosition(armPosition);
     }
     public void armDown(){
