@@ -195,16 +195,16 @@ public class Odometry{
         opMode.telemetry.addData("target_y: ", y);
       //  opMode.telemetry.update();
 
-        Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
-        Orientation or2 = IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
+        Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+        Orientation or2 = IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
 
         double r = Math.hypot(global_X-x,global_Y-y);
-        opMode.telemetry.addData("first  (Y): ",or.firstAngle);
-        opMode.telemetry.addData("second (X): ",or.secondAngle);
+        opMode.telemetry.addData("first  (X): ",or.firstAngle);
+        opMode.telemetry.addData("second (Y): ",or.secondAngle);
         opMode.telemetry.addData("third  (Z): ",or.thirdAngle);
 
-        opMode.telemetry.addData("first -ex (Y): ",or2.firstAngle);
-        opMode.telemetry.addData("second -ex (X): ",or2.secondAngle);
+        opMode.telemetry.addData("first -ex (X): ",or2.firstAngle);
+        opMode.telemetry.addData("second -ex (Y): ",or2.secondAngle);
         opMode.telemetry.addData("third  -ex (Z): ",or2.thirdAngle);
 
         opMode.telemetry.addData("first - default: ",IMU.getAngularOrientation().firstAngle);
