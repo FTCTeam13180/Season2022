@@ -33,7 +33,6 @@ public class TestChassis extends LinearOpMode {
             telemetry.update();
             sleep (5000);
             odometry.stopChassisMotor();
-            break;
 
         }
     }
