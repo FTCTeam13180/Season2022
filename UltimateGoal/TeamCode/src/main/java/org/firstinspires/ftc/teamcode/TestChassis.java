@@ -31,7 +31,7 @@ public class TestChassis extends LinearOpMode {
         while(opModeIsActive()){
             odometry.nextPoint(180,160, 0.5);
             telemetry.update();
-            sleep (2000);
+            sleep (5000);
             odometry.stopChassisMotor();
             break;
 
