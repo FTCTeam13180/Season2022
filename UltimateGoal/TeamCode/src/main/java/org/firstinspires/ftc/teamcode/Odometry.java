@@ -134,12 +134,12 @@ public class Odometry{
         rearL: left encoder
         rearR: back encoder
          */
-
+/*
         frontR.setPower(power*(((y-x)/cap)));
         frontL.setPower(power*((y+x)/cap));
         rearR.setPower(power*((y+x)/cap));
         rearL.setPower(power*((y-x)/cap));
-
+*/
         //while( !( (frontR.getCurrentPosition()>Y_cnts || rearL.getCurrentPosition()>Y_cnts) && rearR.getCurrentPosition()>X_cnts) ){}
         //stopChassisMotor();
         //setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -196,10 +196,23 @@ public class Odometry{
       //  opMode.telemetry.update();
 
         Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
+        Orientation or2 = IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
+
         double r = Math.hypot(global_X-x,global_Y-y);
         opMode.telemetry.addData("first  (Y): ",or.firstAngle);
         opMode.telemetry.addData("second (X): ",or.secondAngle);
         opMode.telemetry.addData("third  (Z): ",or.thirdAngle);
+
+        opMode.telemetry.addData("first -ex (Y): ",or2.firstAngle);
+        opMode.telemetry.addData("second -ex (X): ",or2.secondAngle);
+        opMode.telemetry.addData("third  -ex (Z): ",or2.thirdAngle);
+
+        opMode.telemetry.addData("first - default: ",IMU.getAngularOrientation().firstAngle);
+        opMode.telemetry.addData("second - default : ",IMU.getAngularOrientation().secondAngle);
+        opMode.telemetry.addData("third  - default : ",IMU.getAngularOrientation().thirdAngle);
+
+
+
         double currentAngle = Math.toDegrees(normalizeIMU( or.thirdAngle) );
         double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
 
