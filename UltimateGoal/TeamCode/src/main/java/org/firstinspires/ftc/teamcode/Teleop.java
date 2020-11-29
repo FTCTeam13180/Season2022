@@ -17,6 +17,7 @@ public class Teleop extends LinearOpMode {
     ElapsedTime runningTime;
     private StackerComponent stackerComponent;
     private StackerStateMachine stackerStateMachine;
+    private ChassisComponent chassisComponent1;
 
 
     public void runOpMode(){
@@ -67,13 +68,8 @@ public class Teleop extends LinearOpMode {
          */
         while(opModeIsActive()){
             if(gamepad1.x) {
-                Odometry odometry = new Odometry (this, 180, 60);
-                odometry.init();
-                odometry.initIMU();
-                odometry.nextPoint(180,160, 0.5);
-                telemetry.update();
-                sleep (2000);
-                odometry.stopChassisMotor();
+//                chassisComponent.fieldCentricDrive(1,0);
+//                telemetry.update();
             }
             if(gamepad1.a) {
                 chassisComponent.initIMU();
@@ -82,7 +78,7 @@ public class Teleop extends LinearOpMode {
                 || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
 
                 if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                    chassisComponent.fieldCentricDrive(-gamepad1.left_stick_x, -gamepad1.left_stick_y );
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y );
                 }
                 if (Math.abs(gamepad1.right_stick_x) > 0.1) {
                     if (gamepad1.right_stick_x > 0) {
