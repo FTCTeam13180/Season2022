@@ -224,9 +224,8 @@ public class AutonomousTasks{
                     if(psFinished[ps][1]) continue;
                     if(launcherSerialTask.getState() == LauncherStateMachine.State.REACHED_MAX){
                         if(!psFinished[ps][0]){
-                            //whack
-                            //wait
-                            //once finished:
+                            stackerComponent.safeWhack();
+                            stackerComponent.sleep(1000);
                             psFinished[ps][0]=true;
                         }
                         else{

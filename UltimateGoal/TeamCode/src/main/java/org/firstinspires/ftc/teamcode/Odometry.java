@@ -195,9 +195,12 @@ public class Odometry{
         opMode.telemetry.addData("target_y: ", y);
       //  opMode.telemetry.update();
 
-
+        Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
         double r = Math.hypot(global_X-x,global_Y-y);
-        double currentAngle = Math.toDegrees(normalizeIMU( IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS).thirdAngle) );
+        opMode.telemetry.addData("first  (Y): ",or.firstAngle);
+        opMode.telemetry.addData("second (X): ",or.secondAngle);
+        opMode.telemetry.addData("third  (Z): ",or.thirdAngle);
+        double currentAngle = Math.toDegrees(normalizeIMU( or.thirdAngle) );
         double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
 
         opMode.telemetry.addData("current: ",currentAngle);
