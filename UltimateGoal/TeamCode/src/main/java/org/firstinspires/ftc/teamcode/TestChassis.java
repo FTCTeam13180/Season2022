@@ -13,97 +13,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "TestChassis", group ="teleop")
 public class TestChassis extends LinearOpMode {
-    DcMotor frontL;
-    DcMotor frontR;
-    DcMotor rearR;
-    DcMotor rearL;
-    DcMotor verticalLeft;
-    DcMotor verticalRight;
-    DcMotor horiz;
-    double cntsPerRotation = 3440;
-    double wheelDiameter = 10;
-    double cntspercm = (1/(Math.PI*wheelDiameter))*cntsPerRotation;
-    BNO055IMU imu;
-    public void initIMU(){
-        BNO055IMU.Parameters param = new BNO055IMU.Parameters();
-        param.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
-        param.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ523;
-        //param.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        param.calibrationDataFile = "BNO055IMUCalibration.json";
-        param.loggingEnabled      = true;
-        param.loggingTag          = "IMU";
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(param);
 
-        // Wait for gyroscope to be calibrated
-        telemetry.addLine ("Starting Gyro Calibration");
-        telemetry.update();
-        while(!imu.isGyroCalibrated()) {}
-        telemetry.addLine ("Completed Gyro Calibration");
-        Orientation imu_orientation =
-                imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
-        double imu_radian = imu_orientation.firstAngle;
-        telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
+    Odometry odometry;
 
-        telemetry.update();
-    }
     public void runOpMode(){
-        initIMU();
-        frontL = hardwareMap.get(DcMotor.class, "TopL");
-        frontR= hardwareMap.get(DcMotor.class, "TopR");
-        rearL = hardwareMap.get(DcMotor.class, "BackL");
-        rearR = hardwareMap.get(DcMotor.class, "BackR");
-
-        frontL.setDirection(DcMotor.Direction.REVERSE);
-        rearL.setDirection(DcMotor.Direction.REVERSE);
-
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        odometry= new Odometry(this,80,160);
+        odometry.init();
 
 
 
-        int n = (int) (cntsPerRotation/(Math.PI*wheelDiameter));
 
-        //double delay_reduction = 1500;
-        //n-=delay_reduction;
 
-        double percentAtSlowSpeed = 0.2;
-        double power=1.0;
-        double fastPower = 1.0;
-        double slowPower = 0.7;
-        double straightMargin = 125;
-        boolean slow = true;
-        double sideReduction = 0.90;
-        int slowedSide = 0; //-1: /left, 0: even, 1: right
-        setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         ElapsedTime runtime = new ElapsedTime();
         waitForStart();
         runtime.reset();
 
-        double curX = 150;
-        double curY = 210;
-        double targetX=120;
-        double targetY=45;
         while(opModeIsActive()){
-            double currentAngle = Math.toDegrees(normalizeIMU(imu.getAngularOrientation().thirdAngle));
-            telemetry.addData("curAngle",currentAngle);
-
-
-            while(((Math.abs(frontL.getCurrentPosition())<Math.abs(6000) || Math.abs(frontR.getCurrentPosition())<Math.abs(6000)))&&opModeIsActive()){
-
-                telemetry.addData("Right Encoder",frontR.getCurrentPosition());
-                telemetry.addData("Left Encoder",rearL.getCurrentPosition());
-                telemetry.addData("frontl Encoder",-frontL.getCurrentPosition());
-                telemetry.addData("rearr encoder",rearR.getCurrentPosition());
-                telemetry.addData("Angle",Math.toDegrees(currentAngle));
-                telemetry.update();
-            }
-            stopMotor();
-            sleep(10000);
+            odometry.nextPoint(180,160, 0.5);
+            telemetry.update();
+            sleep (2000);
+            odometry.stopChassisMotor();
             break;
+
         }
     }
 
@@ -119,14 +50,6 @@ public class TestChassis extends LinearOpMode {
         return (theta<0)? 2*Math.PI+theta: theta;
     }
 
-    public void stopMotor(){
-        rearL.setPower(0);
-        rearR.setPower(0);
-        frontR.setPower(0);
-        frontL.setPower(0);
-
-
-    }
     /*
     public void straightLine(double cms, double power){
         setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -160,31 +83,6 @@ public class TestChassis extends LinearOpMode {
     }
     */
 
-    public void setChassisPower(double p){
-        rearL.setPower(p);
-        rearR.setPower(p);
-        frontR.setPower(p);
-        frontL.setPower(p);
-
-    }
-    public void setChassisPower(double l,double r){
-        rearL.setPower(l);
-        rearR.setPower(r);
-        frontR.setPower(r);
-        frontL.setPower(l);
-
-    }
-    public void setOdometryMode(DcMotor.RunMode r){
-        verticalLeft.setMode(r);
-        verticalRight.setMode(r);
-        horiz.setMode(r);
-    }
-    public void setChassisMode(DcMotor.RunMode r){
-        frontL.setMode(r);
-        frontR.setMode(r);
-        rearL.setMode(r);
-        rearR.setMode(r);
-    }
 
 }
 
