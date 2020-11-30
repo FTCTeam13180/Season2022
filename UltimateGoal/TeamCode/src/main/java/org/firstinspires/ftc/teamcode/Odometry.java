@@ -19,8 +19,7 @@ public class Odometry{
      **/
 
     OpMode opMode;
-    BNO055IMU IMU;
-
+    ChassisComponent chassisComp;
     //constants
     double wheel_diameter = 10; //cm
     double cntsPerRotation = 3440;
@@ -39,66 +38,11 @@ public class Odometry{
 
 
 
-    DcMotor frontR, rearR, rearL, frontL;
-    Odometry (OpMode op, double i_x, double i_y){
+      Odometry (OpMode op, ChassisComponent chassisComponent,double i_x, double i_y){
         opMode=op;
         global_X = this.init_X = last_X = i_x;
         global_Y = this.init_Y = last_Y = i_y;
-
-    }
-    public void init(){
-        initDriveHardwareMap();
-        initIMU();
-    }
-    public void initDriveHardwareMap(){
-        opMode.telemetry.addData("Status", "Initializing Odometry");
-
-        frontR = opMode.hardwareMap.dcMotor.get("TopR");
-        frontL = opMode.hardwareMap.dcMotor.get("TopL");
-        rearR = opMode.hardwareMap.dcMotor.get("BackR");
-        rearL = opMode.hardwareMap.dcMotor.get("BackL");
-
-        frontR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rearL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setChassisMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rearL.setDirection(DcMotor.Direction.REVERSE);
-        frontL.setDirection(DcMotor.Direction.REVERSE);
-
-        opMode.telemetry.addData("Status", "Hardware Map Init Complete");
-        //opMode.telemetry.update();
-    }
-    public void initIMU(){
-        BNO055IMU.Parameters param = new BNO055IMU.Parameters();
-        param.angleUnit           = BNO055IMU.AngleUnit.RADIANS;
-        param.gyroBandwidth = BNO055IMU.GyroBandwidth.HZ523;
-        //param.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        param.calibrationDataFile = "BNO055IMUCalibration.json";
-        param.loggingEnabled      = true;
-        param.loggingTag          = "IMU";
-        IMU = opMode.hardwareMap.get(BNO055IMU.class, "imu");
-        IMU.initialize(param);
-
-        // Wait for gyroscope to be calibrated
-        opMode.telemetry.addLine ("Starting Gyro Calibration");
-        opMode.telemetry.update();
-        while(!IMU.isGyroCalibrated()) {}
-        opMode.telemetry.addLine ("Completed Gyro Calibration");
-        Orientation imu_orientation =
-                IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.RADIANS);
-        double imu_radian = imu_orientation.firstAngle;
-        opMode.telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
-
-        //opMode.telemetry.update();
+        chassisComp= chassisComponent;
     }
     //______________________________________________________________________________________________
 
@@ -134,47 +78,13 @@ public class Odometry{
         rearL: left encoder
         rearR: back encoder
          */
-/*
-        frontR.setPower(power*(((y-x)/cap)));
-        frontL.setPower(power*((y+x)/cap));
-        rearR.setPower(power*((y+x)/cap));
-        rearL.setPower(power*((y-x)/cap));
-*/
-        //while( !( (frontR.getCurrentPosition()>Y_cnts || rearL.getCurrentPosition()>Y_cnts) && rearR.getCurrentPosition()>X_cnts) ){}
-        //stopChassisMotor();
-        //setChassisMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    }
 
-    public void setChassisPower(double p){
-        frontL.setPower(p);
-        frontR.setPower(p);
-        rearL.setPower(p);
-        rearR.setPower(p);
-    }
-    public void setChassisPower(double l,double r){
-        frontL.setPower(l);
-        frontR.setPower(r);
-        rearL.setPower(l);
-        rearR.setPower(r);
-    }
+        double frontR = power*((y-x)/cap);
+        double frontL = power*((y+x)/cap);
+        double rearR = power*((y+x)/cap);
+        double rearL = power*((y-x)/cap);
+        chassisComp.setMotorPower(frontL,frontR,rearL,rearR);
 
-    public void stopChassisMotor(){
-        frontL.setPower(0);
-        frontR.setPower(0);
-        rearL.setPower(0);
-        rearR.setPower(0);
-    }
-    public void setChassisMode(DcMotor.RunMode r){
-        frontL.setMode(r);
-        frontR.setMode(r);
-        rearL.setMode(r);
-        rearR.setMode(r);
-    }
-    public void setZeroPower(){
-        frontL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rearR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -185,16 +95,17 @@ public class Odometry{
      **/
 
     public void nextPoint(double x, double y,double power){
-
-        global_Y = init_Y + (frontR.getCurrentPosition()/cntsPerCm);
-        global_X = init_X + (frontL.getCurrentPosition()/cntsPerCm);
+        double frontR = chassisComp.topl.getCurrentPosition();
+        double frontL = chassisComp.topr.getCurrentPosition();
+        global_Y = init_Y + (frontR/cntsPerCm);
+        global_X = init_X + (frontL/cntsPerCm);
 
         opMode.telemetry.addData("global_Y: ", global_Y);
         opMode.telemetry.addData("global_X: ", global_X);
         opMode.telemetry.addData("target_x: ", x);
         opMode.telemetry.addData("target_y: ", y);
       //  opMode.telemetry.update();
-
+/*
         Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
         Orientation or2 = IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
 
@@ -211,9 +122,8 @@ public class Odometry{
         opMode.telemetry.addData("second - default : ",IMU.getAngularOrientation().secondAngle);
         opMode.telemetry.addData("third  - default : ",IMU.getAngularOrientation().thirdAngle);
 
-
-
-        double currentAngle = Math.toDegrees(normalizeIMU( or.thirdAngle) );
+*/
+        double currentAngle = Math.toDegrees(normalizeIMU( (chassisComp.IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle)) );
         double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
 
         opMode.telemetry.addData("current: ",currentAngle);

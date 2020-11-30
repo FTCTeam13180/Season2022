@@ -8,14 +8,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class TestChassis extends LinearOpMode {
 
     Odometry odometry;
-
+    ChassisComponent chassisComp;
     public void runOpMode(){
-        odometry= new Odometry(this,80,160);
-        odometry.init();
-
-
-
-
+        chassisComp=new ChassisComponent(this);
+        chassisComp.init();
+        odometry= new Odometry(this,chassisComp,80,160);
 
         ElapsedTime runtime = new ElapsedTime();
         waitForStart();
@@ -24,7 +21,6 @@ public class TestChassis extends LinearOpMode {
         while(opModeIsActive()){
             odometry.nextPoint(180,160, 0.5);
             telemetry.update();
-            odometry.stopChassisMotor();
 
         }
     }

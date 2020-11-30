@@ -19,10 +19,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class ChassisComponent {
     private OpMode opMode;
 
-    private DcMotor topl;
-    private DcMotor topr;
-    private DcMotor rearr;
-    private DcMotor rearl;
+    public DcMotor topl;
+    public DcMotor topr;
+    public DcMotor rearr;
+    public DcMotor rearl;
     BNO055IMU IMU;
     //no gear reduction ratio as of now
     final static double power_scale = 1.0;
@@ -158,7 +158,12 @@ public class ChassisComponent {
     public void logCurrentPosition () {
         opMode.telemetry.addData("CurrentPosition:", "topl=%7d", topl.getCurrentPosition());
     }
-
+    public void setMotorPower(double topl, double topr, double rearl, double rearr){
+        this.topl.setPower(topl);
+        this.topr.setPower(topr);
+        this.rearl.setPower(rearl);
+        this.rearr.setPower(rearr);
+    }
     public void stop() {
         topr.setPower(0);
         topl.setPower(0);
