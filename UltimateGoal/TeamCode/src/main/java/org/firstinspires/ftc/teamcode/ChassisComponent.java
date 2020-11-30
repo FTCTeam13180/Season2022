@@ -69,11 +69,11 @@ public class ChassisComponent {
         opMode.telemetry.update();
         while(!IMU.isGyroCalibrated()) {}
         opMode.telemetry.addLine ("Completed Gyro Calibration");
-        Orientation imu_orientation =
+/*        Orientation imu_orientation =
                 IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         double imu_radian = imu_orientation.firstAngle;
         opMode.telemetry.addData ("Initialized at angle: ", "%f", imu_radian);
-
+*/
         //opMode.telemetry.update();
     }
     public void setRunMode(DcMotor.RunMode runMode) {
@@ -118,10 +118,19 @@ public class ChassisComponent {
         double power = Math.sqrt(x * x + y * y);
 
         double controlAngle = Math.atan2(y, x);
-        double robotAngle = (IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
-        double newAngle = controlAngle + robotAngle + Math.PI;
-        double newY = (0 - Math.sin(newAngle)) * power;
-        double newX = (0 - Math.cos(newAngle)) * power;
+        double robotAngle = (IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle);
+        double correctedRobotAngle = robotAngle + Math.PI/2; // Corrected for IMU orientation on robot.
+        double newAngle = AngleUnit.normalizeRadians(controlAngle - correctedRobotAngle + Math.PI/2);
+        double newY = Math.sin(newAngle) * power;
+        double newX = Math.cos(newAngle) * power;
+
+        opMode.telemetry.addData("controlAngle: ", controlAngle);
+        opMode.telemetry.addData("robotAngle: ", robotAngle);
+        opMode.telemetry.addData("correctedRobotAngle: ", correctedRobotAngle);
+        opMode.telemetry.addData("newAngle: ", newAngle);
+        opMode.telemetry.addData("newX: ", newX);
+        opMode.telemetry.addData("newY: ", newY);
+
         mecanumDrive(newX, newY);
     }
 
