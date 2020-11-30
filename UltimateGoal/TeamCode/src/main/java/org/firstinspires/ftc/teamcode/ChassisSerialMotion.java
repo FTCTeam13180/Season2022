@@ -11,10 +11,9 @@ public class ChassisSerialMotion {
 
     private Odometry odometry;
     private ChassisStateMachine chassisStateMachine;
-
-    public ChassisSerialMotion(Odometry odom, OpMode opMode) {
+    public ChassisSerialMotion(Odometry odom, ChassisComponent chassisComponent,OpMode opMode) {
         this.odometry = odom;
-        chassisStateMachine = new ChassisStateMachine(odometry, opMode);
+        chassisStateMachine = new ChassisStateMachine(odometry, chassisComponent,opMode);
 
     }
     public void moveToTarget(int numRings){ chassisStateMachine.moveToTargetZone(numRings); }

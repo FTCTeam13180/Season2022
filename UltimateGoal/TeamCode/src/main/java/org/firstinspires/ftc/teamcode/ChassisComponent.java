@@ -40,6 +40,16 @@ public class ChassisComponent {
         rearr = opMode.hardwareMap.dcMotor.get("BackR");
         rearl = opMode.hardwareMap.dcMotor.get("BackL");
 
+        topr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        topl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rearr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        topr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        topl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rearl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         topr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         topl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -90,64 +100,65 @@ public class ChassisComponent {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
-    public void mecanumDrive(double x, double y){
+    public void mecanumDrive(double x, double y, boolean auto){
         // need to roundoff near 1.0 values to avoid unnecessary veering
-        if (x > 0.9) {
-            x = 1.0;
-            y = 0;
+        if(!auto) {
+            if (x > 0.9) {
+                x = 1.0;
+                y = 0;
+            } else if (x < -0.9) {
+                x = -1.0;
+                y = 0;
+            } else if (y > 0.9) {
+                y = 1.0;
+                x = 0;
+            } else if (y < -0.9) {
+                y = -1.0;
+                x = 0;
+            }
         }
-        else if ( x < -0.9) {
-            x = -1.0;
-            y = 0;
-        } else if (y > 0.9) {
-            y = 1.0;
-            x = 0;
-        }
-        else if (y < -0.9){
-            y = -1.0;
-            x = 0;
-        }
-        double power = Math.sqrt(x * x + y * y);
-        topr.setPower(power_scale*(y-x)/power);
-        topl.setPower(power_scale*(x+y)/power);
-        rearr.setPower(power_scale*(x+y)/power);
-        rearl.setPower(power_scale*(y-x)/power);
+        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));;
+        topr.setPower(power_scale*(y-x)/cap);
+        topl.setPower(power_scale*(x+y)/cap);
+        rearr.setPower(power_scale*(x+y)/cap);
+        rearl.setPower(power_scale*(y-x)/cap);
     }
-
-    public void fieldCentricDrive(double x, double y){
+    public double getAngle(){
+        double angle_correction= Math.PI/2;
+        return IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle + angle_correction;
+    }
+    public void fieldCentricDrive(double x, double y,boolean auto){
         double power = Math.sqrt(x * x + y * y);
 
         double controlAngle = Math.atan2(y, x);
-        double robotAngle = (IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle);
-        double correctedRobotAngle = robotAngle + Math.PI/2; // Corrected for IMU orientation on robot.
-        double newAngle = AngleUnit.normalizeRadians(controlAngle - correctedRobotAngle + Math.PI/2);
+        double RobotAngle = getAngle(); // Corrected for IMU orientation on robot.
+        double newAngle = AngleUnit.normalizeRadians(controlAngle - RobotAngle + Math.PI/2);
         double newY = Math.sin(newAngle) * power;
         double newX = Math.cos(newAngle) * power;
 
         opMode.telemetry.addData("controlAngle: ", controlAngle);
-        opMode.telemetry.addData("robotAngle: ", robotAngle);
-        opMode.telemetry.addData("correctedRobotAngle: ", correctedRobotAngle);
+        opMode.telemetry.addData("robotAngle: ", RobotAngle);
         opMode.telemetry.addData("newAngle: ", newAngle);
         opMode.telemetry.addData("newX: ", newX);
         opMode.telemetry.addData("newY: ", newY);
 
-        mecanumDrive(newX, newY);
+        mecanumDrive(newX, newY,auto);
     }
 
     public void moveForward(double power){
-        mecanumDrive(0, Math.abs(power));
+        mecanumDrive(0, Math.abs(power),false);
     }
 
     public void moveBackward(double power){
-        mecanumDrive(0, -Math.abs(power));
+        mecanumDrive(0, -Math.abs(power),false);
     }
 
     public void shiftRight(double power){
-        mecanumDrive(power, 0);
+        mecanumDrive(power, 0,false);
     }
 
     public void shiftLeft(double power){
-        mecanumDrive(-power, 0);
+        mecanumDrive(-power, 0,false);
     }
 
     public void spinRight(double power){

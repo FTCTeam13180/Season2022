@@ -56,9 +56,10 @@ public class AutonomousTasks{
 
         chassisComponent = new ChassisComponent(op);
         chassisComponent.init();
+        chassisComponent.initIMU();
         odometry = new Odometry(op, chassisComponent,97,48);
 
-        chassisSerialMotion = new ChassisSerialMotion(odometry, op);
+        chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,op);
 
         launcherComponent = new LauncherComponent(op);
         launcherComponent.init();
@@ -201,14 +202,16 @@ public class AutonomousTasks{
             case INIT:
 
                 state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
+                
 //                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                 break;
 
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
 
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.MOVE_TO_TARGET_ZONE;
+                    state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+
                     break;
                 }
 
@@ -232,6 +235,9 @@ public class AutonomousTasks{
                             if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                                 psFinished[ps][1]=true;
                                 chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                                if(psFinished[2][1]){
+
+                                }
                                 break;
                             }
 
@@ -260,14 +266,15 @@ public class AutonomousTasks{
 
             case MOVE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-
+                    state=State.STOP;
+                    /*
                     if(numOfRings == 0 || numOfRings == 1){
                         state = State.GRAB_WOBBLE;
                     }
                     else if(numOfRings == 4){
                         state = State.PICK_UP_RINGS;
                     }
-
+*/
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }

@@ -27,16 +27,18 @@ public class OdometryTest extends OpMode {
     Odometry odometry;
     int numberOfRings=0; //just cuz
     ChassisSerialMotion chassisSerialMotion;
-
+    ChassisComponent chassisComponent;
 
     public void init(){
         telemetry.addLine("Initializing");
         telemetry.update();
         time = new ElapsedTime();
         time.reset();
-        odometry = new Odometry(this,120,45);
-        odometry.init();
-        chassisSerialMotion = new ChassisSerialMotion(odometry, this);
+        chassisComponent = new ChassisComponent(this);
+        chassisComponent.init();
+        chassisComponent.initIMU();
+        odometry = new Odometry(this,chassisComponent,120,45);
+        chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,this);
     }
 
     public void moveToTargetZone() {

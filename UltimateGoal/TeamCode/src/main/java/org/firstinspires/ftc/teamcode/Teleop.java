@@ -14,6 +14,8 @@ public class Teleop extends LinearOpMode {
     private LauncherStateMachine launcherStateMachine;
 
 
+    Odometry odometry;
+
     ElapsedTime runningTime;
     private StackerComponent stackerComponent;
     private StackerStateMachine stackerStateMachine;
@@ -34,6 +36,8 @@ public class Teleop extends LinearOpMode {
 
         intakeComponent = new IntakeComponent(this);
         intakeComponent.init();
+
+        odometry = new Odometry(this,chassisComponent,50,75);
 
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();
@@ -67,9 +71,18 @@ public class Teleop extends LinearOpMode {
 
          */
         while(opModeIsActive()){
+            telemetry.addData("counts frontL:",chassisComponent.topl.getCurrentPosition());
+            telemetry.addData("counts frontR:",chassisComponent.topr.getCurrentPosition());
+            telemetry.addData("counts rearL:",chassisComponent.rearl.getCurrentPosition());
+            telemetry.addData("counts rearR:",chassisComponent.rearr.getCurrentPosition());
+            telemetry.update();
             if(gamepad1.x) {
-//                chassisComponent.fieldCentricDrive(1,0);
-//                telemetry.update();
+                odometry.nextPoint(150,75,0.8);
+                sleep(1000);
+            }
+            else if(gamepad1.y){
+                odometry.nextPoint(50,175,0.8);
+                sleep(1000);
             }
             if(gamepad1.a) {
                 chassisComponent.initIMU();
@@ -78,7 +91,7 @@ public class Teleop extends LinearOpMode {
                 || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
 
                 if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y );
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y ,false);
                 }
                 if (Math.abs(gamepad1.right_stick_x) > 0.1) {
                     if (gamepad1.right_stick_x > 0) {
@@ -94,12 +107,6 @@ public class Teleop extends LinearOpMode {
             }
             else if (gamepad1.dpad_down) {
                 chassisComponent.moveForward(1);
-            }
-            else if (gamepad1.y) {
-                //test method for anything we want
-            }
-            else if (gamepad1.x) {
-                //test method for anything we want
             }
             else {
                 chassisComponent.stop();

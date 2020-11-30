@@ -52,41 +52,6 @@ public class Odometry{
      **/
 
 
-    public void moveTo(double r, double theta, double power){
-        opMode.telemetry.addLine("MoveTo");
-        opMode.telemetry.addData("theta",theta);
-        opMode.telemetry.addData("mag", r);
-        opMode.telemetry.addData("power",power);
-        theta = Math.toRadians(theta);
-        double x = Math.cos(theta)*r;
-        double y = Math.sin(theta)*r;
-        double m = Math.max(Math.abs(x),Math.abs(y));
-        x_cnts = x*cntsPerCm;
-        y_cnts = y*cntsPerCm;
-
-        x/=m;
-        y/=m;
-        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
-        opMode.telemetry.addData("frontR_speed: ", power*(((y-x)/cap)));
-        opMode.telemetry.addData("frontL_speed: ", power*(((y+x)/cap)));
-    //    opMode.telemetry.update();
-
-
-
-        /*
-        frontR: right encoder
-        rearL: left encoder
-        rearR: back encoder
-         */
-
-        double frontR = power*((y-x)/cap);
-        double frontL = power*((y+x)/cap);
-        double rearR = power*((y+x)/cap);
-        double rearL = power*((y-x)/cap);
-        chassisComp.setMotorPower(frontL,frontR,rearL,rearR);
-
-
-    }
 
 
     /**
@@ -95,8 +60,8 @@ public class Odometry{
      **/
 
     public void nextPoint(double x, double y,double power){
-        double frontR = chassisComp.topl.getCurrentPosition();
-        double frontL = chassisComp.topr.getCurrentPosition();
+        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontL = chassisComp.topl.getCurrentPosition();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
 
@@ -104,40 +69,9 @@ public class Odometry{
         opMode.telemetry.addData("global_X: ", global_X);
         opMode.telemetry.addData("target_x: ", x);
         opMode.telemetry.addData("target_y: ", y);
-      //  opMode.telemetry.update();
-/*
-        Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
-        Orientation or2 = IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+        opMode.telemetry.update();
+        chassisComp.fieldCentricDrive(x-global_X,y-global_Y,true);
 
-        opMode.telemetry.addData("first  (X): ",or.firstAngle);
-        opMode.telemetry.addData("second (Y): ",or.secondAngle);
-        opMode.telemetry.addData("third  (Z): ",or.thirdAngle);
-
-        opMode.telemetry.addData("first -ex (X): ",or2.firstAngle);
-        opMode.telemetry.addData("second -ex (Y): ",or2.secondAngle);
-        opMode.telemetry.addData("third  -ex (Z): ",or2.thirdAngle);
-
-        opMode.telemetry.addData("first - default: ",IMU.getAngularOrientation().firstAngle);
-        opMode.telemetry.addData("second - default : ",IMU.getAngularOrientation().secondAngle);
-        opMode.telemetry.addData("third  - default : ",IMU.getAngularOrientation().thirdAngle);
-
-*/
-
-        double r = Math.hypot(global_X-x,global_Y-y);
-        double currentAngle = Math.toDegrees(normalizeIMU( (chassisComp.IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle)) );
-        double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
-
-        opMode.telemetry.addData("current: ",currentAngle);
-        opMode.telemetry.addData("target: ",target);
-        double theta = target - currentAngle;
-
-        if(theta<0)theta+=360;
-        theta = 90-theta;
-        opMode.telemetry.addData("r: ", r);
-        opMode.telemetry.addData("theta: ", theta);
-
-        //    opMode.telemetry.update();
-        moveTo(r,theta,power);
     }
 
     public static double normalizeTarget(double y, double x){

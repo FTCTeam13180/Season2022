@@ -35,6 +35,7 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
     Odometry odometry;
+    ChassisComponent chassisComp;
     private double speed;
     private double cms;
     private double timeoutMs;
@@ -45,8 +46,9 @@ public class ChassisStateMachine implements BasicCommand {
     private ArrayList <Point> points;
     private boolean finished[];
 
-    public ChassisStateMachine(Odometry odometry, OpMode op) {
+    public ChassisStateMachine(Odometry odometry,ChassisComponent chassisComponent ,OpMode op) {
         this.odometry=odometry;
+        this.chassisComp=chassisComponent;
         this.op = op;
     }
 
@@ -139,15 +141,14 @@ public class ChassisStateMachine implements BasicCommand {
     }
 // 1 0 0 0
     public void execute(){
-        op.telemetry.addData("ChassisStateMachine:", "In Execute");
-        for(int i = 0;i<points.size();i++){
+         for(int i = 0;i<points.size();i++){
             if(finished[i]) continue;
             Point current = points.get(i);
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
             if( odometry.isFinished(current.getX(),current.getY()) ){
                 finished[i]=true;
                 if(finished[points.size()-1]) {
-                    odometry.stopChassisMotor();
+                    chassisComp.stop();
                 }
                 op.telemetry.addData("finished: ",i);
 
@@ -161,7 +162,7 @@ public class ChassisStateMachine implements BasicCommand {
         }
     }
     public void stop(){
-        odometry.stopChassisMotor();
+        chassisComp.stop();
     }
 
     public ChassisStateMachine(ParallelStateMachineOpMode opMode, ParallelStateMachineOpMode.DIRECTION direction,  double timeoutMs){
