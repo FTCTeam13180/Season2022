@@ -73,6 +73,8 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void smoothSpline(){
         points = new ArrayList<Point>();
+        points.add(new Point(0,120,1.0));
+        /*
         points.add(new Point(120,120,power));
         points.add(new Point(125,125,power));
         points.add(new Point(130,135,power));
@@ -81,7 +83,7 @@ public class ChassisStateMachine implements BasicCommand {
         points.add(new Point(145,195,power));
         points.add(new Point(150,225,power));
         points.add(new Point(155,260,power));
-
+*/
         finished = new boolean[points.size()];
     }
     public void moveToTargetZone(int numRings){
@@ -89,15 +91,15 @@ public class ChassisStateMachine implements BasicCommand {
 
         if(numRings==0){
             //A
-            points.add(new Point(45,210,power));
+            points.add(new Point(75,270,power));
         }
         else if(numRings==1){
             //B
-            points.add(new Point(90,270,power));
+            points.add(new Point(120,330,power));
         }
         else{
             //C
-            points.add(new Point(45,330,power));
+            points.add(new Point(75,390,power));
         }
         finished = new boolean[points.size()];
     }
@@ -107,7 +109,7 @@ public class ChassisStateMachine implements BasicCommand {
 
         points = new ArrayList<Point>();
         points.add(new Point(180,60,power));
-        points.add(new Point(150,210,power));
+        points.add(new Point(142.5,210,power));
         //op.telemetry.update();
         finished = new boolean[points.size()];
     }
@@ -124,11 +126,16 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void shiftPowershot(int ps_ix){
         points = new ArrayList<Point>();
+        //coordinates are not right, tweak pls - rohan
+        if(ps_ix==0){
+            points.add(new Point(135,210,power)); //150-(19.5-4.5)
+        }
         if(ps_ix==1){
-            points.add(new Point(142.5,210,power)); //150-(12-4.5)
+            points.add(new Point(130.5,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==2){
-            points.add(new Point(135,210,power)); //150-(19.5-4.5)
+            //doesnt matter
+            points.add(new Point(125,210,power));
         }
         finished=new boolean[points.size()];
 

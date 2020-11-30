@@ -37,7 +37,7 @@ public class OdometryTest extends OpMode {
         chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
         chassisComponent.initIMU();
-        odometry = new Odometry(this,chassisComponent,120,45);
+        odometry = new Odometry(this,chassisComponent,0,0);
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,this);
     }
 
@@ -57,6 +57,7 @@ public class OdometryTest extends OpMode {
     public void moveToGoal(){
         chassisSerialMotion.moveToGoal();
     }
+
 
     public void stop (){
         telemetry.addData("auto katham",time.milliseconds());
@@ -78,7 +79,7 @@ public class OdometryTest extends OpMode {
             case MOVE_TO_POWERSHOT:
 
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.MOVE_TO_TARGET_ZONE_1;
+                    state = State.STOP;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
 
                     //telemetry.update();
@@ -86,7 +87,7 @@ public class OdometryTest extends OpMode {
                 }
 
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    moveToPowerShot();
+                    smoothSpline();
                 }
                 chassisSerialMotion.run();
                 break;

@@ -8,6 +8,7 @@ public class LauncherComponent {
     private OpMode opmode;
     private DcMotor launcher;
     private final double LAUNCHER_POWER = 1.0;
+    boolean finishedLaunching = false;
 
     LauncherComponent (OpMode op) {
         opmode = op;
@@ -22,11 +23,11 @@ public class LauncherComponent {
         opmode.telemetry.addData("Launcher:", "Initialized");
     }
     public void shoot(){
-        launcher.setPower(LAUNCHER_POWER);
+        launcher.setPower(-LAUNCHER_POWER);
         opmode.telemetry.addData("Launcher", "SHOOTING");
     }
     public void reverse() {
-        launcher.setPower(-LAUNCHER_POWER);
+        launcher.setPower(LAUNCHER_POWER);
         opmode.telemetry.addData("Launcher", "REVERSING");
     }
     public void stop(){

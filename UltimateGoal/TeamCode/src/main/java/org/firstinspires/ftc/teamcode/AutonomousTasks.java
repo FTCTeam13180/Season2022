@@ -202,7 +202,7 @@ public class AutonomousTasks{
             case INIT:
 
                 state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
-                
+                launcherComponent.shoot();
 //                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                 break;
 
@@ -225,29 +225,34 @@ public class AutonomousTasks{
 
                 for(int ps=0;ps<3;ps++){
                     if(psFinished[ps][1]) continue;
-                    if(launcherSerialTask.getState() == LauncherStateMachine.State.REACHED_MAX){
-                        if(!psFinished[ps][0]){
-                            stackerComponent.safeWhack();
-                            stackerComponent.sleep(1000);
-                            psFinished[ps][0]=true;
-                        }
-                        else{
-                            if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                                psFinished[ps][1]=true;
-                                chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
-                                if(psFinished[2][1]){
+                    if(!psFinished[ps][0]){
 
-                                }
+                        stackerComponent.unsafeWhackerOut();
+                        stackerComponent.sleep(1000);
+                        stackerComponent.unsafeWhackerIn();
+                        stackerComponent.sleep(1000);
+
+                        psFinished[ps][0]=true;
+                        break;
+                    }
+                    else{
+                        if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                            psFinished[ps][1]=true;
+                            chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+
+                            if(psFinished[2][1]){
+                                launcherComponent.finishedLaunching=true;
+                            }
                                 break;
                             }
 
-                              if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                                  shiftPowershot(ps);
-                               }
-                            chassisSerialMotion.run();
-                            break;
+                        if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                            shiftPowershot(ps);
                         }
-                    }
+                        chassisSerialMotion.run();
+                        break;
+                        }
+
 
 
                 }
@@ -256,12 +261,13 @@ public class AutonomousTasks{
 
 
 
-                if(launcherSerialTask.getState() == LauncherStateMachine.State.STOP){
+                if(launcherComponent.finishedLaunching){
                     state = State.MOVE_TO_TARGET_ZONE;
+                    launcherComponent.stop();
+                    launcherComponent.finishedLaunching=false;
                     break;
                 }
 
-                launcherSerialTask.run();
                 break;
 
             case MOVE_TO_TARGET_ZONE:
