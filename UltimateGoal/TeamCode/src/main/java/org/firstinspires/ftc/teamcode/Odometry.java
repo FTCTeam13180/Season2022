@@ -109,7 +109,6 @@ public class Odometry{
         Orientation or = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
         Orientation or2 = IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
 
-        double r = Math.hypot(global_X-x,global_Y-y);
         opMode.telemetry.addData("first  (X): ",or.firstAngle);
         opMode.telemetry.addData("second (Y): ",or.secondAngle);
         opMode.telemetry.addData("third  (Z): ",or.thirdAngle);
@@ -123,6 +122,8 @@ public class Odometry{
         opMode.telemetry.addData("third  - default : ",IMU.getAngularOrientation().thirdAngle);
 
 */
+
+        double r = Math.hypot(global_X-x,global_Y-y);
         double currentAngle = Math.toDegrees(normalizeIMU( (chassisComp.IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle)) );
         double target = Math.toDegrees(normalizeTarget(y-global_Y,x-global_X));
 
