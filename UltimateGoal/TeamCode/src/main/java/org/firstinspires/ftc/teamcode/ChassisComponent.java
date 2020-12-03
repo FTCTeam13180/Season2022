@@ -26,7 +26,7 @@ public class ChassisComponent {
     BNO055IMU IMU;
     //no gear reduction ratio as of now
     final static double power_scale = 1.0;
-    double wheel_diameter = 9.60798; //cm
+    double wheel_diameter = 10; //cm
     double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
@@ -173,6 +173,30 @@ public class ChassisComponent {
         rearr.setPower(Math.abs(power));
         topl.setPower(-Math.abs(power));
         rearl.setPower(-Math.abs(power));
+    }
+
+    public void spinToXDegree(double degree)
+    {
+        degree += Math.PI/2;
+        double robotAngle = getAngle();
+        if (degree - robotAngle < 0)
+        {
+            spinRight(.5);
+            while ((Math.abs(degree - robotAngle) > .09))
+            {
+                robotAngle = getAngle();
+            }
+        }
+        else
+        {
+            spinLeft(.5);
+            while ((Math.abs(degree - robotAngle) > .09))
+            {
+                robotAngle = getAngle();
+            }
+        }
+        stop();
+        opMode.telemetry.addData("robotAngle: ", robotAngle);
     }
 
     public void logCurrentPosition () {

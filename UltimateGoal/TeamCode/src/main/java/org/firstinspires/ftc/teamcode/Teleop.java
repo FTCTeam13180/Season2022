@@ -108,15 +108,19 @@ public class Teleop extends LinearOpMode {
             else if (gamepad1.dpad_down) {
                 chassisComponent.moveForward(1);
             }
+            //else if (gamepad1.dpad_right) {
+            //    chassisComponent.spinToXDegree(.261799);
+            //}
+
             else {
                 chassisComponent.stop();
             }
 
             if(gamepad1.right_bumper){
-                intakeComponent.in();
+                intakeComponent.expel();
             }
             else if(gamepad1.left_bumper){
-                intakeComponent.expel();
+                intakeComponent.in();
             }
             else {
                 intakeComponent.stop();
@@ -140,10 +144,10 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.safeWhack();
             }
 
-            if(gamepad2.right_stick_y > 0){
+            if(gamepad2.right_stick_y < 0){
                 launcherComponent.shoot();
             }
-            else if (gamepad2.right_stick_y < 0){
+            else if (gamepad2.right_stick_y > 0){
                 launcherComponent.reverse();
             }
             else {
@@ -175,7 +179,7 @@ public class Teleop extends LinearOpMode {
                 6. Stop the launcher
              */
 
-            if(gamepad2.a){
+            if(gamepad2.y){
                 runningTime = new ElapsedTime();
                 runningTime.reset();
                 launcherStateMachine.setRunningTime(10000);

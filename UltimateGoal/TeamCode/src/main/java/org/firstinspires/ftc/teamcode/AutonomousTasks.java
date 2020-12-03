@@ -222,15 +222,13 @@ public class AutonomousTasks{
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
-
+                stackerComponent.stackerUp();
                 for(int ps=0;ps<3;ps++){
                     if(psFinished[ps][1]) continue;
                     if(!psFinished[ps][0]){
-
-                        stackerComponent.unsafeWhackerOut();
-                        stackerComponent.sleep(1000);
-                        stackerComponent.unsafeWhackerIn();
-                        stackerComponent.sleep(1000);
+                        stackerComponent.sleep(100);
+                        stackerComponent.safeWhack();
+                        stackerComponent.sleep(500);
 
                         psFinished[ps][0]=true;
                         break;
