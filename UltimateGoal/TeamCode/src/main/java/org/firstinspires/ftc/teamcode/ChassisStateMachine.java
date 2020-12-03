@@ -105,9 +105,11 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
     public void moveToPowerShot(){
+
+
         points = new ArrayList<Point>();
         points.add(new Point(180,60,power));
-        points.add(new Point(125,210,power));
+        points.add(new Point(142.5,210,power));
         //op.telemetry.update();
         finished = new boolean[points.size()];
     }
@@ -126,14 +128,14 @@ public class ChassisStateMachine implements BasicCommand {
         points = new ArrayList<Point>();
         //coordinates are not right, tweak pls - rohan
         if(ps_ix==0){
-            points.add(new Point(100,210,power)); //150-(19.5-4.5)
+            points.add(new Point(135,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==1){
-            points.add(new Point(70,210,power)); //150-(19.5-4.5)
+            points.add(new Point(130.5,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==2){
             //doesnt matter
-            points.add(new Point(70,210,power));
+            points.add(new Point(125,210,power));
         }
         finished=new boolean[points.size()];
 
