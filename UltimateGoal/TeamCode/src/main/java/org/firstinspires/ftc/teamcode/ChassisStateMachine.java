@@ -119,6 +119,10 @@ public class ChassisStateMachine implements BasicCommand {
         finished = new boolean[points.size()];
     }
 
+    public void moveToLaunchLine(){
+        //ToDO: add points for launch line
+    }
+
     public State getState(){
         return state;
     }
