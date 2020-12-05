@@ -21,6 +21,8 @@ public class Teleop extends LinearOpMode {
     private StackerStateMachine stackerStateMachine;
     private ChassisComponent chassisComponent1;
 
+    double power=1.0;
+
 
     public void runOpMode(){
         grabberComponent = new GrabberComponent(this);
@@ -75,13 +77,31 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("counts frontR:",chassisComponent.topr.getCurrentPosition());
             telemetry.addData("counts rearL:",chassisComponent.rearl.getCurrentPosition());
             telemetry.addData("counts rearR:",chassisComponent.rearr.getCurrentPosition());
+
             telemetry.update();
-            if(gamepad1.x) {
-                odometry.nextPoint(150,75,0.8);
+            if(gamepad2.x) {
+                odometry.nextPoint(110,75,0.8);
                 sleep(1000);
+
             }
-            else if(gamepad1.y){
-                odometry.nextPoint(50,175,0.8);
+            else if(gamepad2.y){
+                odometry.nextPoint(50,135,0.8);
+                sleep(1000);
+                /*
+                frontl: -39
+                frontr: 14752
+                 */
+            }
+            else if(gamepad2.a){
+                odometry.nextPoint(50,195,0.8);
+                sleep(1000);
+                /*
+                frontl: -42
+                frontr: 14612
+                 */
+            }
+            else if(gamepad2.b){
+                odometry.nextPoint(50,255,0.8);
                 sleep(1000);
             }
             if(gamepad1.a) {
@@ -103,10 +123,10 @@ public class Teleop extends LinearOpMode {
                 }
             }
             else if (gamepad1.dpad_up) {
-                chassisComponent.moveBackward(1);
+                chassisComponent.moveForward(power*0.5);
             }
             else if (gamepad1.dpad_down) {
-                chassisComponent.moveForward(1);
+                chassisComponent.moveBackward(power*0.5);
             }
             //else if (gamepad1.dpad_right) {
             //    chassisComponent.spinToXDegree(.261799);
@@ -128,10 +148,12 @@ public class Teleop extends LinearOpMode {
 
 
             //gamepad 2
+            /*
             if(gamepad2.x){
                 stackerComponent.stackerDump();
             }
-            else if (gamepad2.right_bumper){
+            */
+            if (gamepad2.right_bumper){
                 stackerComponent.toggleWhacker();
             }
             else if(gamepad2.dpad_up){
@@ -178,7 +200,7 @@ public class Teleop extends LinearOpMode {
                 5. Once we're finished whacking, move the stacker (now empty) down
                 6. Stop the launcher
              */
-
+/*
             if(gamepad2.y){
                 runningTime = new ElapsedTime();
                 runningTime.reset();
@@ -192,7 +214,7 @@ public class Teleop extends LinearOpMode {
                 launcherStateMachine.stop();
             }
 
-
+*/
 
 
         }

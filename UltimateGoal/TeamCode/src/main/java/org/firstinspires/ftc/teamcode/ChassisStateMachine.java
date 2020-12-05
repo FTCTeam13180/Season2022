@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 class Point{
@@ -71,9 +72,14 @@ public class ChassisStateMachine implements BasicCommand {
         points.add(new Point(90,120,power));
         finished = new boolean[points.size()];
     }
-    public void smoothSpline(){
+    public void pickUpRingsMovement(){
         points = new ArrayList<Point>();
-        points.add(new Point(0,120,1.0));
+        points.add(new Point(90,180,power));
+        finished = new boolean[points.size()];
+    }
+    public void smoothSpline(int n){
+        points = new ArrayList<Point>();
+        points.add(new Point(0,60*n,0.8));
         /*
         points.add(new Point(120,120,power));
         points.add(new Point(125,125,power));
@@ -86,21 +92,44 @@ public class ChassisStateMachine implements BasicCommand {
 */
         finished = new boolean[points.size()];
     }
-    public void moveToTargetZone(int numRings){
+    public void moveToTargetZone(int numRings,boolean first){
         points= new ArrayList<Point>();
-
-        if(numRings==0){
-            //A
-            points.add(new Point(75,260,power));
-        }
-        else if(numRings==1){
-            //B
-            points.add(new Point(120,320,power));
+        if(first){
+            if(numRings==0){
+                //A
+                points.add(new Point(75,250,power));
+            }
+            else if(numRings==1){
+                //B
+                points.add(new Point(120,310,power));
+            }
+            else{
+                //C
+                points.add(new Point(45,340,power));
+            }
         }
         else{
-            //C
-            points.add(new Point(75,380,power));
+            points.add(new Point(180,60,power));
+            if(numRings==0){
+                //A
+                points.add(new Point(75,230,power));
+            }
+            else if(numRings==1){
+                //B
+                points.add(new Point(120,300,power));
+            }
+            else{
+                //C
+                points.add(new Point(75,340,power));
+            }
         }
+        finished = new boolean[points.size()];
+    }
+    public void moveToSecondWobble(){
+        points = new ArrayList<Point>();
+        points.add(new Point(180,150,0.6*power));
+        points.add(new Point(180,110,0.6*power));
+        points.add(new Point(86.3,96.5,0.4*power));
         finished = new boolean[points.size()];
     }
 
@@ -113,14 +142,16 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void moveToGoal(){
         points = new ArrayList<Point>();
-        points.add(new Point(90,210,power));
+        points.add(new Point(30,120,power));
         op.telemetry.addData("power",power);
         //op.telemetry.update();
         finished = new boolean[points.size()];
     }
 
     public void moveToLaunchLine(){
-        //ToDO: add points for launch line
+        points = new ArrayList<Point>();
+        points.add(new Point(120,240,power));
+        finished = new boolean[points.size()];
     }
 
     public State getState(){
