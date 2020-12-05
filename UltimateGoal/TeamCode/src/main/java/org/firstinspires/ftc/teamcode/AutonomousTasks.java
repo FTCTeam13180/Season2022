@@ -159,10 +159,15 @@ public class AutonomousTasks{
 
 
 */
+
         }
 
 //        launcherSerialTask.setRunningTime(0);
 
+    }
+
+    public void moveToLaunchLine() {
+        chassisSerialMotion.moveToLaunchLine();
     }
 /*
     public void pickUpRings() {
@@ -177,9 +182,6 @@ public class AutonomousTasks{
 
     }
 
-    public void parkAtLaunchLine() {
-
-    }
 
     public void stop (){
 
@@ -270,21 +272,29 @@ public class AutonomousTasks{
 
             case MOVE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state=State.STOP;
-                    /*
-                    if(numOfRings == 0 || numOfRings == 1){
-                        state = State.GRAB_WOBBLE;
-                    }
-                    else if(numOfRings == 4){
-                        state = State.PICK_UP_RINGS;
-                    }
-*/
+                    //state=State.STOP;
+                    grabberComponent.safeWobbleGrabAndUp();
+                    state = State.PARK_AT_LAUNCH_LINE;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
                     moveToTargetZone();
                 }
+                chassisSerialMotion.run();
+                break;
+
+            case PARK_AT_LAUNCH_LINE:
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    state = State.STOP;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToLaunchLine();
+                }
+
                 chassisSerialMotion.run();
                 break;
 
@@ -331,12 +341,6 @@ public class AutonomousTasks{
                 //               launchRingsAtHighGoal();
  //               launchRingsAtHighGoal();
                 state = State.PARK_AT_LAUNCH_LINE;
-                break;
-
-            case PARK_AT_LAUNCH_LINE:
-                //             parkAtLaunchLine();
-   //             parkAtLaunchLine();
-                state = State.STOP;
                 break;
 
             case STOP:

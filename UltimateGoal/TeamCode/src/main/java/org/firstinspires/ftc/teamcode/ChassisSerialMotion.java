@@ -21,6 +21,7 @@ public class ChassisSerialMotion {
     public void moveToWobble(){ chassisStateMachine.moveToWobble(); }
     public void moveToRings(){chassisStateMachine.moveToRings();}
     public void moveToGoal(){chassisStateMachine.moveToGoal();}
+    public void moveToLaunchLine(){chassisStateMachine.moveToLaunchLine();}
     public void smoothSpline(){chassisStateMachine.smoothSpline();}
     public void shiftPowershot(int ps) { chassisStateMachine.shiftPowershot(ps); }
     public void setTimeoutMs(double ms){
