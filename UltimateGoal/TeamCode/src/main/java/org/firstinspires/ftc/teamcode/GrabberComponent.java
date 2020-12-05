@@ -24,11 +24,11 @@ public class GrabberComponent {
         arm = opmode.hardwareMap.get(Servo.class, "Arm");
         clawl = opmode.hardwareMap.get(Servo.class, "Clawl");
         clawr = opmode.hardwareMap.get(Servo.class, "Clawr");
-        arm.setPosition(ARM_UP);
-        armPosition = ARM_UP;
         clawr.setPosition(CLAW_CLOSE);
         clawl.setPosition(1 - CLAW_CLOSE);
         clawPosition = CLAW_CLOSE;
+        arm.setPosition(ARM_UP);
+        armPosition = ARM_UP;
         opmode.telemetry.addData("GrabberComponent", "Initialized");
     }
 
@@ -65,13 +65,15 @@ public class GrabberComponent {
         armDown();
         sleep(500);
         clawClose();
-        armUp();
+        sleep(500);
+        armStraight();
     }
     public void safeWobbleDownAndRelease(){
         armDown();
-        sleep(750);
+        sleep(500);
         clawOpen();
-        armUp();
+        sleep(500);
+        armStraight();
     }
 
     //likely will not work - servo doesn't give any position between the ones that were set

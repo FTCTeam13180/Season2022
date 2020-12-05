@@ -42,9 +42,9 @@ public class OdometryTest extends OpMode {
     }
 
     public void moveToTargetZone() {
-        chassisSerialMotion.moveToTarget(numberOfRings);
+        chassisSerialMotion.moveToTarget(numberOfRings,true);
     }
-    public void smoothSpline(){chassisSerialMotion.smoothSpline();}
+    public void smoothSpline(int n){chassisSerialMotion.smoothSpline(n);}
     public void moveToPowerShot() {
         chassisSerialMotion.moveToPowerShot();
     }
@@ -87,7 +87,7 @@ public class OdometryTest extends OpMode {
                 }
 
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    smoothSpline();
+                    smoothSpline(2);
                 }
                 chassisSerialMotion.run();
                 break;
@@ -100,7 +100,7 @@ public class OdometryTest extends OpMode {
                     break;
                 }
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    smoothSpline();
+                    smoothSpline(1);
                 }
                 chassisSerialMotion.run();
                 break;

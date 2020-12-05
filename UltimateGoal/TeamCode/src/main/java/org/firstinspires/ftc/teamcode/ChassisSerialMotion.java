@@ -16,13 +16,15 @@ public class ChassisSerialMotion {
         chassisStateMachine = new ChassisStateMachine(odometry, chassisComponent,opMode);
 
     }
-    public void moveToTarget(int numRings){ chassisStateMachine.moveToTargetZone(numRings); }
+    public void moveToTarget(int numRings,boolean first){ chassisStateMachine.moveToTargetZone(numRings,first); }
     public void moveToPowerShot(){chassisStateMachine.moveToPowerShot();}
+    public void moveToPickUpRings(){chassisStateMachine.pickUpRingsMovement();}
     public void moveToWobble(){ chassisStateMachine.moveToWobble(); }
     public void moveToRings(){chassisStateMachine.moveToRings();}
     public void moveToGoal(){chassisStateMachine.moveToGoal();}
+    public void moveToSecondWobble(){chassisStateMachine.moveToSecondWobble();}
     public void moveToLaunchLine(){chassisStateMachine.moveToLaunchLine();}
-    public void smoothSpline(){chassisStateMachine.smoothSpline();}
+    public void smoothSpline(int n){chassisStateMachine.smoothSpline(n);}
     public void shiftPowershot(int ps) { chassisStateMachine.shiftPowershot(ps); }
     public void setTimeoutMs(double ms){
         chassisStateMachine.setTimeoutMs(ms);
