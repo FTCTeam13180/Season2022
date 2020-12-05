@@ -21,8 +21,8 @@ public class Odometry{
     OpMode opMode;
     ChassisComponent chassisComp;
     //constants
-    double wheel_diameter = 10; //cm
-    double cntsPerRotation = 3440;
+    double wheel_diameter = 3.8; //cm
+    double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
     // Odometry position variables
@@ -59,18 +59,25 @@ public class Odometry{
      * Output is resultant polar coordinate (r,theta) which is inputted into MoveTo() which executes motion
      **/
 
-    public void nextPoint(double x, double y,double power){
+    public void nextPoint(double x, double y, double power){
         double frontR = chassisComp.topr.getCurrentPosition();
         double frontL = chassisComp.topl.getCurrentPosition();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
 
-        opMode.telemetry.addData("global_Y: ", global_Y);
-        opMode.telemetry.addData("global_X: ", global_X);
-        opMode.telemetry.addData("target_x: ", x);
-        opMode.telemetry.addData("target_y: ", y);
-        opMode.telemetry.update();
-        chassisComp.fieldCentricDrive(x-global_X,y-global_Y,true);
+        double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
+        double target_mag = Math.hypot(x-last_X,y-last_Y);
+
+        double cm_to_target = (target_mag - current_mag);
+        double rampdown_factor = cm_to_target / 10;
+        rampdown_factor = rampdown_factor > 1 ? 1 : rampdown_factor;
+
+        //opMode.telemetry.addData("global_Y: ", global_Y);
+        //opMode.telemetry.addData("global_X: ", global_X);
+        //opMode.telemetry.addData("target_x: ", x);
+        //opMode.telemetry.addData("target_y: ", y);
+        //opMode.telemetry.update();
+        chassisComp.fieldCentricDrive(x-global_X,y-global_Y, power * rampdown_factor, true);
 
     }
 
@@ -87,14 +94,22 @@ public class Odometry{
     }
 
     public boolean isFinished(double x, double y){
-
+       boolean finished = false;
         //double xDelta = Math.abs(global_X-last_X);
         //double yDelta = Math.abs(global_Y-last_Y);
         double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
         double target_mag = Math.hypot(x-last_X,y-last_Y);
         opMode.telemetry.addData("current - mag",current_mag);
         opMode.telemetry.addData("target - mag",target_mag);
-        return (current_mag>=target_mag);
-
+        opMode.telemetry.addData("global_Y: ", global_Y);
+        opMode.telemetry.addData("global_X: ", global_X);
+        opMode.telemetry.addData("target_x: ", x);
+        opMode.telemetry.addData("target_y: ", y);
+        ;opMode.telemetry.update();
+        if (Math.abs(current_mag-target_mag) <= 1) {
+            finished = true;
+        }
+        //return current_mag>=target_mag;
+        return finished;
     }
 }

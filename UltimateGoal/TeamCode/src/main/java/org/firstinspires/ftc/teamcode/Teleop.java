@@ -79,7 +79,7 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("counts rearR:",chassisComponent.rearr.getCurrentPosition());
 
             telemetry.update();
-            if(gamepad2.x) {
+          /*  if(gamepad2.x) {
                 odometry.nextPoint(110,75,0.8);
                 sleep(1000);
 
@@ -87,31 +87,28 @@ public class Teleop extends LinearOpMode {
             else if(gamepad2.y){
                 odometry.nextPoint(50,135,0.8);
                 sleep(1000);
-                /*
-                frontl: -39
-                frontr: 14752
-                 */
             }
             else if(gamepad2.a){
                 odometry.nextPoint(50,195,0.8);
                 sleep(1000);
-                /*
-                frontl: -42
-                frontr: 14612
-                 */
+
+               // frontl: -42
+                //frontr: 14612
+
             }
             else if(gamepad2.b){
                 odometry.nextPoint(50,255,0.8);
                 sleep(1000);
-            }
+            } */
+
             if(gamepad1.a) {
                 chassisComponent.initIMU();
             }
-            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+           if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
                 || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
 
                 if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y ,false);
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false);
                 }
                 if (Math.abs(gamepad1.right_stick_x) > 0.1) {
                     if (gamepad1.right_stick_x > 0) {
@@ -122,6 +119,7 @@ public class Teleop extends LinearOpMode {
                     }
                 }
             }
+
             else if (gamepad1.dpad_up) {
                 chassisComponent.moveForward(power*0.5);
             }
@@ -133,9 +131,8 @@ public class Teleop extends LinearOpMode {
             //}
 
             else {
-                chassisComponent.stop();
-            }
-
+               chassisComponent.stop();
+           }
             if(gamepad1.right_bumper){
                 intakeComponent.expel();
             }
@@ -148,11 +145,10 @@ public class Teleop extends LinearOpMode {
 
 
             //gamepad 2
-            /*
+
             if(gamepad2.x){
                 stackerComponent.stackerDump();
             }
-            */
             if (gamepad2.right_bumper){
                 stackerComponent.toggleWhacker();
             }

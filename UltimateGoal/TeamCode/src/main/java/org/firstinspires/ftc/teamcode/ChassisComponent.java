@@ -25,8 +25,8 @@ public class ChassisComponent {
     public DcMotor rearl;
     BNO055IMU IMU;
     //no gear reduction ratio as of now
-    final static double power_scale = 1.0;
-    double wheel_diameter = 10; //cm
+    final static double power_scale = 1;
+    double wheel_diameter = 3.8; //cm
     double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
@@ -102,6 +102,11 @@ public class ChassisComponent {
 
     public void mecanumDrive(double x, double y, boolean auto){
         // need to roundoff near 1.0 values to avoid unnecessary veering
+        mecanumDrive(x,y,power_scale,auto);
+    }
+
+    public void mecanumDrive(double x, double y, double power, boolean auto){
+        // need to roundoff near 1.0 values to avoid unnecessary veering
         if(!auto) {
             if (x > 0.9) {
                 x = 1.0;
@@ -118,23 +123,26 @@ public class ChassisComponent {
             }
         }
         double cap = Math.max(Math.abs(x+y),Math.abs(y-x));;
-        topr.setPower(power_scale*(y-x)/cap);
-        topl.setPower(power_scale*(x+y)/cap);
-        rearr.setPower(power_scale*(x+y)/cap);
-        rearl.setPower(power_scale*(y-x)/cap);
+        topr.setPower(power*(y-x)/cap);
+        topl.setPower(power*(x+y)/cap);
+        rearr.setPower(power*(x+y)/cap);
+        rearl.setPower(power*(y-x)/cap);
     }
     public double getAngle(){
         double angle_correction= Math.PI/2;
         return IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle + angle_correction;
     }
-    public void fieldCentricDrive(double x, double y,boolean auto){
-        double power = Math.sqrt(x * x + y * y);
+    public void fieldCentricDrive(double x, double y, boolean auto){
+        fieldCentricDrive(x, y, power_scale, auto);
+    }
+    public void fieldCentricDrive(double x, double y, double power, boolean auto){
+        double mag = Math.sqrt(x * x + y * y);
 
         double controlAngle = Math.atan2(y, x);
         double RobotAngle = getAngle(); // Corrected for IMU orientation on robot.
         double newAngle = AngleUnit.normalizeRadians(controlAngle - RobotAngle + Math.PI/2);
-        double newY = Math.sin(newAngle) * power;
-        double newX = Math.cos(newAngle) * power;
+        double newY = Math.sin(newAngle) * mag;
+        double newX = Math.cos(newAngle) * mag;
 
         opMode.telemetry.addData("controlAngle: ", controlAngle);
         opMode.telemetry.addData("robotAngle: ", RobotAngle);
@@ -142,7 +150,7 @@ public class ChassisComponent {
         opMode.telemetry.addData("newX: ", newX);
         opMode.telemetry.addData("newY: ", newY);
 
-        mecanumDrive(newX, newY,auto);
+        mecanumDrive(newX, newY, power, auto);
     }
 
     public void moveForward(double power){

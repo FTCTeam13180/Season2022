@@ -60,8 +60,7 @@ public class OdometryTest extends OpMode {
 
 
     public void stop (){
-        telemetry.addData("auto katham",time.milliseconds());
-        
+        //telemetry.addData("auto katham",time.milliseconds());
     }
 
 
@@ -87,7 +86,7 @@ public class OdometryTest extends OpMode {
                 }
 
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    smoothSpline(2);
+                    smoothSpline(3);
                 }
                 chassisSerialMotion.run();
                 break;

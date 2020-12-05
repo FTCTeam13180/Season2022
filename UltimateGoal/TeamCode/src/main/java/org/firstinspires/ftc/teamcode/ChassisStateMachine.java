@@ -127,9 +127,9 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void moveToSecondWobble(){
         points = new ArrayList<Point>();
-        points.add(new Point(180,150,0.6*power));
-        points.add(new Point(180,110,0.6*power));
-        points.add(new Point(86.3,96.5,0.4*power));
+        points.add(new Point(180,150,power));
+        points.add(new Point(180,110,power));
+        points.add(new Point(85.3,106.5,power));
         finished = new boolean[points.size()];
     }
 
@@ -190,7 +190,7 @@ public class ChassisStateMachine implements BasicCommand {
                 if(finished[points.size()-1]) {
                     chassisComp.stop();
                 }
-                op.telemetry.addData("finished: ",i);
+                //op.telemetry.addData("finished: ",i);
 
                 //op.telemetry.update();
                 odometry.last_X = odometry.global_X;
