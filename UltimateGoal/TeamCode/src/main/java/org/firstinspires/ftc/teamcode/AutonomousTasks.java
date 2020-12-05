@@ -10,10 +10,11 @@ public class AutonomousTasks{
 
     enum State {
         INIT,
-        MOVE_TO_TARGET_ZONE,
-        GRAB_WOBBLE,
         MOVE_TO_POWER_SHOT_LAUNCH_POSITION,
         LAUNCH_RINGS_AT_POWER_SHOTS,
+        MOVE_TO_TARGET_ZONE,
+
+        GRAB_WOBBLE,
         PICK_UP_RINGS,
         MOVE_SECOND_WOBBLE_TO_TARGET_ZONE,
         MOVE_TO_HIGH_GOAL_LAUNCH_POSITION,
@@ -120,7 +121,9 @@ public class AutonomousTasks{
 
 
     public void grabWobble(){
-        //move to wobble and pick it up
+        //ToDo: odom code to reach second wobble goal
+        //TODO: Change robot orientation as needed
+        grabberComponent.safeWobbleGrabAndUp();
     }
 
     public void moveToTargetZone() {
@@ -132,7 +135,7 @@ public class AutonomousTasks{
 
     public void moveToPowerShotLaunchPosition() {
         chassisSerialMotion.moveToPowerShot();
-
+//TODO: maybe start the launcher here so that it's max when position is reached
     }
 
     public void launchRingAtPowerShots() {
@@ -145,41 +148,33 @@ public class AutonomousTasks{
                 launcherSerialTask.run();
 
             }
-
-           /*
-           Every time a ring is launched at a power shot, the robot must slightly turn towards the next power shot
-           (possibly parallel - can retract whacker while turning to next power shot)
-           if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.RETRACT){ <-- if getTarget is Retract, switch to Extend
-               whackerSerialTask.setTarget(WhackerStateMachine.Target.EXTEND;
-               whackedRingCount++;
-           }
-           else if(whackerSerialTask.getTarget() == WhackerStateMachine.Target.EXTEND){    <-- if getTarget is Extend, switch to Retract
-               whackerSerialTask.setTarget(WhackerStateMachine.Target.RETRACT;
-
-
-
-*/
-
         }
-
-//        launcherSerialTask.setRunningTime(0);
-
     }
 
     public void moveToLaunchLine() {
         chassisSerialMotion.moveToLaunchLine();
     }
-/*
+
     public void pickUpRings() {
+        //TODO: robot turn to orientation to face intake to pile of rings
+        chassisSerialMotion.moveToRings();
+        intakeComponent.in();
 
     }
 
     public void moveToHighGoalLaunchPosition() {
         chassisSerialMotion.moveToGoal();
+
     }
 
     public void launchRingsAtHighGoal(){
+        launcherSerialTask.setRunningTime(8000);
+        launcherSerialTask.run();
 
+        stackerSerialTask.setWhacks(3);
+        if (launcherSerialTask.getState() == LauncherStateMachine.State.REACHED_MAX){
+            stackerSerialTask.run();
+        }
     }
 
 
@@ -205,15 +200,12 @@ public class AutonomousTasks{
 
                 state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 launcherComponent.shoot();
-//                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                 break;
 
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
-
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                     state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
-
                     break;
                 }
 
@@ -224,6 +216,7 @@ public class AutonomousTasks{
                 break;
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
+                //ToDO: Move the launching function to launchRingsAtPowerShot method
                 stackerComponent.stackerUp();
                 for(int ps=0;ps<3;ps++){
                     if(psFinished[ps][1]) continue;
@@ -252,14 +245,7 @@ public class AutonomousTasks{
                         chassisSerialMotion.run();
                         break;
                         }
-
-
-
                 }
-
-
-
-
 
                 if(launcherComponent.finishedLaunching){
                     state = State.MOVE_TO_TARGET_ZONE;
@@ -267,13 +253,35 @@ public class AutonomousTasks{
                     launcherComponent.finishedLaunching=false;
                     break;
                 }
-
                 break;
 
             case MOVE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    //state=State.STOP;
-                    grabberComponent.safeWobbleGrabAndUp();
+                    grabberComponent.safeWobbleDownAndRelease();
+                    if (numOfRings > 2 ) {
+                        state = State.PICK_UP_RINGS;
+                    }
+                    else
+                        state = State.GRAB_WOBBLE;
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    break;
+                }
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
+                    moveToTargetZone();
+                }
+                chassisSerialMotion.run();
+                break;
+
+
+            case GRAB_WOBBLE:
+                grabWobble();
+                state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
+                break;
+
+            case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
+
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    grabberComponent.safeWobbleDownAndRelease();
                     state = State.PARK_AT_LAUNCH_LINE;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
@@ -282,6 +290,29 @@ public class AutonomousTasks{
                     moveToTargetZone();
                 }
                 chassisSerialMotion.run();
+
+                break;
+
+            case PICK_UP_RINGS:
+                pickUpRings();
+                state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
+                break;
+
+            case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
+                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
+                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
+                    state = State.PARK_AT_LAUNCH_LINE;
+                    break;
+                }
+                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
+                    moveToHighGoalLaunchPosition();
+                }
+                chassisSerialMotion.run();
+                break;
+
+            case LAUNCH_RINGS_AT_HIGH_GOAL:
+                launchRingsAtHighGoal();
+                state = State.PARK_AT_LAUNCH_LINE;
                 break;
 
             case PARK_AT_LAUNCH_LINE:
@@ -298,54 +329,8 @@ public class AutonomousTasks{
                 chassisSerialMotion.run();
                 break;
 
-            case GRAB_WOBBLE:
-                grabWobble();
-                state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
-                //           state = State.PICK_UP_RINGS;
-                break;
-
-            case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
-
-                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.PARK_AT_LAUNCH_LINE;
-                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
-                    break;
-                }
-                if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
-                    moveToTargetZone();
-                }
-                chassisSerialMotion.run();
-                break;
-
-            case PICK_UP_RINGS:
-
-//                pickUpRings();
-                state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
-                //state=State.LAUNCH_RINGS_AT_HIGH_GOAL;
-                break;
-
-            case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
-                if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
-                    state = State.PARK_AT_LAUNCH_LINE;
-                    break;
-                }
-                if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    //                  moveToHighGoalLaunchPosition();
-  //                  moveToHighGoalLaunchPosition();
-                }
-                chassisSerialMotion.run();
-                break;
-
-            case LAUNCH_RINGS_AT_HIGH_GOAL:
-                //               launchRingsAtHighGoal();
- //               launchRingsAtHighGoal();
-                state = State.PARK_AT_LAUNCH_LINE;
-                break;
-
             case STOP:
-                //           stop();
-     //           stop();
+                stop();
                 break;
 
 
