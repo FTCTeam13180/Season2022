@@ -91,15 +91,15 @@ public class ChassisStateMachine implements BasicCommand {
 
         if(numRings==0){
             //A
-            points.add(new Point(75,270,power));
+            points.add(new Point(75,260,power));
         }
         else if(numRings==1){
             //B
-            points.add(new Point(120,330,power));
+            points.add(new Point(120,320,power));
         }
         else{
             //C
-            points.add(new Point(75,390,power));
+            points.add(new Point(75,380,power));
         }
         finished = new boolean[points.size()];
     }

@@ -200,7 +200,7 @@ public class AutonomousTasks{
         switch(state){
 
             case INIT:
-
+                grabberComponent.armStraight();
                 state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 launcherComponent.shoot();
 //                state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
