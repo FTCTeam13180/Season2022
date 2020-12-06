@@ -79,7 +79,7 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void smoothSpline(int n){
         points = new ArrayList<Point>();
-        points.add(new Point(0,60*n,0.8));
+        points.add(new Point(60*n,0,power));
         /*
         points.add(new Point(120,120,power));
         points.add(new Point(125,125,power));
@@ -97,22 +97,7 @@ public class ChassisStateMachine implements BasicCommand {
         if(first){
             if(numRings==0){
                 //A
-                points.add(new Point(75,250,power));
-            }
-            else if(numRings==1){
-                //B
-                points.add(new Point(120,310,power));
-            }
-            else{
-                //C
-                points.add(new Point(45,340,power));
-            }
-        }
-        else{
-            points.add(new Point(180,60,power));
-            if(numRings==0){
-                //A
-                points.add(new Point(75,230,power));
+                points.add(new Point(70,240,power));
             }
             else if(numRings==1){
                 //B
@@ -120,23 +105,40 @@ public class ChassisStateMachine implements BasicCommand {
             }
             else{
                 //C
-                points.add(new Point(75,340,power));
+                points.add(new Point(45,340,power));
+            }
+        }
+        else{
+            points.add(new Point(150,81,power));
+            points.add(new Point(150,230,power));
+            if(numRings==0){
+                //A
+                points.add(new Point(70,230,power));
+            }
+            else if(numRings==1){
+                //B
+                points.add(new Point(120,300,power));
+            }
+            else{
+                //C
+                points.add(new Point(70,340,power));
             }
         }
         finished = new boolean[points.size()];
     }
     public void moveToSecondWobble(){
         points = new ArrayList<Point>();
-        points.add(new Point(180,150,power));
-        points.add(new Point(180,110,power));
-        points.add(new Point(85.3,106.5,power));
+        points.add(new Point(150,240,power));
+        points.add(new Point(150,81,power));
+        points.add(new Point(91,81,power));
         finished = new boolean[points.size()];
     }
 
     public void moveToPowerShot(){
         points = new ArrayList<Point>();
-        points.add(new Point(180,60,power));
-        points.add(new Point(125,210,power));
+        points.add(new Point(97, 60, power));
+        points.add(new Point(142,60,power));
+        points.add(new Point(142,210,power));
         //op.telemetry.update();
         finished = new boolean[points.size()];
     }
@@ -157,18 +159,19 @@ public class ChassisStateMachine implements BasicCommand {
     public State getState(){
         return state;
     }
+
     public void shiftPowershot(int ps_ix){
         points = new ArrayList<Point>();
         //coordinates are not right, tweak pls - rohan
         if(ps_ix==0){
-            points.add(new Point(100,210,power)); //150-(19.5-4.5)
+            points.add(new Point(125,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==1){
-            points.add(new Point(70,210,power)); //150-(19.5-4.5)
+            points.add(new Point(105,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==2){
             //doesnt matter
-            points.add(new Point(70,210,power));
+            points.add(new Point(75,210,power));
         }
         finished=new boolean[points.size()];
 
@@ -186,20 +189,24 @@ public class ChassisStateMachine implements BasicCommand {
             Point current = points.get(i);
             odometry.nextPoint(current.getX(),current.getY(),current.getPower());
             if( odometry.isFinished(current.getX(),current.getY()) ){
-                finished[i]=true;
-                if(finished[points.size()-1]) {
-                    chassisComp.stop();
+                chassisComp.sleep(100);
+                if( odometry.isFinished(current.getX(),current.getY()) ) {
+                    finished[i]=true;
+                    chassisComp.spinToXDegree(0);
+                    if (finished[points.size() - 1]) {
+                        chassisComp.stop();
+                    }
+                    //op.telemetry.addData("finished: ",i);
+
+                    //op.telemetry.update();
+                    odometry.last_X = odometry.global_X;
+                    odometry.last_Y = odometry.global_Y;
+
+                    continue;
                 }
-                //op.telemetry.addData("finished: ",i);
-
-                //op.telemetry.update();
-                odometry.last_X = odometry.global_X;
-                odometry.last_Y = odometry.global_Y;
-
-                continue;
             }
             break;
-        }
+         }
     }
     public void stop(){
         chassisComp.stop();
@@ -212,7 +219,6 @@ public class ChassisStateMachine implements BasicCommand {
 
 
     public void run() {
-
         switch(state){
 
             case INIT:
@@ -222,11 +228,9 @@ public class ChassisStateMachine implements BasicCommand {
 
             case EXECUTE:
                 execute();
-
                 if (finished[points.size()-1]) {
                     state = State.STOP;
                 }
-
                 break;
 
             case STOP:

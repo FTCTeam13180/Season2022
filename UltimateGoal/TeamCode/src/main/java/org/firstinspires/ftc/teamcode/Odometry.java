@@ -68,10 +68,14 @@ public class Odometry{
         double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
         double target_mag = Math.hypot(x-last_X,y-last_Y);
 
-        double cm_to_target = (target_mag - current_mag);
-        double rampdown_factor = cm_to_target / 10;
+        double cm_to_target = Math.abs(target_mag - current_mag);
+        double rampdown_factor;
+        if (cm_to_target > 30)
+             rampdown_factor = cm_to_target / (.75 * target_mag);
+        else
+            rampdown_factor = cm_to_target / 30;
         rampdown_factor = rampdown_factor > 1 ? 1 : rampdown_factor;
-
+        rampdown_factor = rampdown_factor < .3 ? .3 : rampdown_factor;
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
@@ -97,6 +101,8 @@ public class Odometry{
        boolean finished = false;
         //double xDelta = Math.abs(global_X-last_X);
         //double yDelta = Math.abs(global_Y-last_Y);
+        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontL = chassisComp.topl.getCurrentPosition();
         double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
         double target_mag = Math.hypot(x-last_X,y-last_Y);
         opMode.telemetry.addData("current - mag",current_mag);
@@ -105,8 +111,10 @@ public class Odometry{
         opMode.telemetry.addData("global_X: ", global_X);
         opMode.telemetry.addData("target_x: ", x);
         opMode.telemetry.addData("target_y: ", y);
+        opMode.telemetry.addData("counts frontL:",frontR);
+        opMode.telemetry.addData("counts frontR:",frontL);
         ;opMode.telemetry.update();
-        if (Math.abs(current_mag-target_mag) <= 1) {
+        if (Math.abs(current_mag-target_mag) <= .5) {
             finished = true;
         }
         //return current_mag>=target_mag;

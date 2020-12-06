@@ -223,6 +223,14 @@ public class ChassisComponent {
         rearl.setPower(0);
     }
 
+    public void sleep(long milliseconds){
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public boolean isBusy() {
         return (topl.isBusy() || topr.isBusy() || rearl.isBusy() || rearr.isBusy());
     }

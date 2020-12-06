@@ -20,6 +20,7 @@ public class AutonomousTasks{
         MOVE_TO_HIGH_GOAL_LAUNCH_POSITION,
         LAUNCH_RINGS_AT_HIGH_GOAL,
         PARK_AT_LAUNCH_LINE,
+        TURN,
         STOP
     }
 
@@ -280,7 +281,7 @@ public class AutonomousTasks{
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                     state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
                     grabWobble();
-                    launcherComponent.shoot();
+                    //launcherComponent.shoot();
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
@@ -337,7 +338,7 @@ public class AutonomousTasks{
 
             case PARK_AT_LAUNCH_LINE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.STOP;
+                    state = State.TURN;
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
@@ -349,6 +350,14 @@ public class AutonomousTasks{
                 chassisSerialMotion.run();
                 break;
 
+            case TURN:
+                stackerComponent.sleep(1000);
+                chassisComponent.spinToXDegree(-Math.PI/2);
+                stackerComponent.sleep(1000);
+                chassisComponent.spinToXDegree(-Math.PI/2);
+                stackerComponent.sleep(1000);
+                chassisComponent.spinToXDegree(-Math.PI/2);
+                state = State.STOP;
             case STOP:
                 stop();
                 break;
