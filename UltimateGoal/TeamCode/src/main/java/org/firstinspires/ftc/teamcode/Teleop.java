@@ -173,10 +173,10 @@ public class Teleop extends LinearOpMode {
             }
 
             //wobble arm controls
-            if(gamepad2.dpad_right){
+            if(gamepad2.dpad_left){
                 grabberComponent.clawOpen();
             }
-            else if(gamepad2.dpad_left){
+            else if(gamepad2.dpad_right){
                 grabberComponent.clawClose();
             }
             if(Math.abs(gamepad2.left_stick_y) > 0.1 ){
