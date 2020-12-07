@@ -86,7 +86,7 @@ public class OdometryTest extends OpMode {
                 }
 
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    smoothSpline(2);
+                    smoothSpline(1);
                 }
                 chassisSerialMotion.run();
                 break;
@@ -157,6 +157,7 @@ public class OdometryTest extends OpMode {
 
             case STOP:
                 stop();
+                telemetry.update();
                 break;
 
 

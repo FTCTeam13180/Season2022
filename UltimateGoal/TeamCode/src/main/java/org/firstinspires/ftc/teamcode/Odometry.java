@@ -32,6 +32,7 @@ public class Odometry{
     double init_Y;
     double last_X;
     double last_Y;
+    double rampdown_cap = 40;
 
     double y_cnts;
     double x_cnts;
@@ -70,12 +71,12 @@ public class Odometry{
 
         double cm_to_target = Math.abs(target_mag - current_mag);
         double rampdown_factor;
-        if (cm_to_target > 30)
+        if (cm_to_target > rampdown_cap)
              rampdown_factor = cm_to_target / (.75 * target_mag);
         else
-            rampdown_factor = cm_to_target / 30;
+            rampdown_factor = cm_to_target / rampdown_cap;
         rampdown_factor = rampdown_factor > 1 ? 1 : rampdown_factor;
-        rampdown_factor = rampdown_factor < .3 ? .3 : rampdown_factor;
+        rampdown_factor = Math.max(rampdown_factor, .3);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
@@ -101,23 +102,28 @@ public class Odometry{
        boolean finished = false;
         //double xDelta = Math.abs(global_X-last_X);
         //double yDelta = Math.abs(global_Y-last_Y);
-        double frontR = chassisComp.topr.getCurrentPosition();
-        double frontL = chassisComp.topl.getCurrentPosition();
+        global_X = init_X + chassisComp.topl.getCurrentPosition()/cntsPerCm;
+        global_Y= init_Y + chassisComp.topr.getCurrentPosition()/cntsPerCm;
         double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
         double target_mag = Math.hypot(x-last_X,y-last_Y);
-        opMode.telemetry.addData("current - mag",current_mag);
-        opMode.telemetry.addData("target - mag",target_mag);
-        opMode.telemetry.addData("global_Y: ", global_Y);
-        opMode.telemetry.addData("global_X: ", global_X);
-        opMode.telemetry.addData("target_x: ", x);
-        opMode.telemetry.addData("target_y: ", y);
-        opMode.telemetry.addData("counts frontL:",frontR);
-        opMode.telemetry.addData("counts frontR:",frontL);
-        ;opMode.telemetry.update();
-        if (Math.abs(current_mag-target_mag) <= .5) {
+        updateLog("isFinished");
+        if (Math.abs(current_mag-target_mag) <= .75) {
             finished = true;
         }
         //return current_mag>=target_mag;
         return finished;
+    }
+
+    public void updateLog(String calledFrom)
+    {
+        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontL = chassisComp.topl.getCurrentPosition();
+        global_Y = init_Y + (frontR/cntsPerCm);
+        global_X = init_X + (frontL/cntsPerCm);
+        opMode.telemetry.addData("CalledFrom: ", calledFrom);
+        opMode.telemetry.addData("global_Y: ", global_Y);
+        opMode.telemetry.addData("global_X: ", global_X);
+        opMode.telemetry.addData("counts frontL:",frontR);
+        opMode.telemetry.addData("counts frontR:",frontL);
     }
 }

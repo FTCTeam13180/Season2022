@@ -33,7 +33,7 @@ public class Teleop extends LinearOpMode {
         chassisComponent.initIMU();
 
         launcherComponent = new LauncherComponent(this);
-        launcherComponent.init();
+        launcherComponent.teleInit();
         launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
 
         intakeComponent = new IntakeComponent(this);
@@ -181,7 +181,7 @@ public class Teleop extends LinearOpMode {
             }
             if(Math.abs(gamepad2.left_stick_y) > 0.1 ){
                 if(gamepad2.left_stick_y < 0){
-                    grabberComponent.armUp();
+                    grabberComponent.armStraight();
                 }
                 if(gamepad2.left_stick_y > 0){
                     grabberComponent.armDown();

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class StackerComponent {
     private static final double STACKER_DOWN = 1;
     private static final double STACKER_DUMP = 0;
-    private static final double STACKER_UP = 0.635;
+    private static final double STACKER_UP = 0.71;
     private static final double WHACKER_OUT = 0;
     private static final double WHACKER_IN = 1;
     private Servo stacker;
@@ -26,6 +26,10 @@ public class StackerComponent {
         whacker.setPosition(WHACKER_IN);
     }
 
+    public void logStackerPosition() {
+        opmode.telemetry.addData("StackerPositon:", stacker.getPosition());
+        opmode.telemetry.addData("WhackerPosition:", whacker.getPosition());
+    }
     public void stackerDump(){
         stackerPosition = STACKER_DUMP;
         stacker.setPosition(stackerPosition);
@@ -66,6 +70,18 @@ public class StackerComponent {
             unsafeWhackerOut();
         else
             unsafeWhackerIn();
+    }
+
+    public void stackerIncremetalUp()
+    {
+        stacker.setPosition(stacker.getPosition() + 0.02);
+        sleep(500);
+    }
+
+    public void stackerIncremetalDown()
+    {
+        stacker.setPosition(stacker.getPosition() - 0.02);
+        sleep(500);
     }
 
 
