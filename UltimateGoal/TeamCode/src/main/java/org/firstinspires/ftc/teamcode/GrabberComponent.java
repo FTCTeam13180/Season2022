@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class GrabberComponent {
+public class GrabberComponent implements Component {
     private static final double ARM_DOWN = .8;
     private static final double ARM_STRAIGHT = 0.3;
     private static final double ARM_UP = 0;
