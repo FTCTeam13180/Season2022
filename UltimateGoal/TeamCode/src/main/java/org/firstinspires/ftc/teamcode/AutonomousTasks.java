@@ -174,12 +174,7 @@ public class AutonomousTasks{
 
     public void launchRingsAtHighGoal(){
         stackerComponent.sleep(100);
-        stackerComponent.safeWhack();
-        stackerComponent.sleep(500);
-        stackerComponent.safeWhack();
-        stackerComponent.sleep(500);
-        stackerComponent.safeWhack();
-        stackerComponent.sleep(500);
+        stackerComponent.safeWhackThree();
 
     }
 
@@ -205,7 +200,7 @@ public class AutonomousTasks{
             case INIT:
                 grabberComponent.armStraight();
                 launcherComponent.autoShoot();
-                state = State.MOVE_TO_TARGET_ZONE;
+                state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 break;
 
 
@@ -227,7 +222,7 @@ public class AutonomousTasks{
 
             case MOVE_TO_SECOND_WOBBLE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
+                    state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
                     grabWobble();
                     //launcherComponent.shoot();
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
@@ -284,7 +279,7 @@ public class AutonomousTasks{
                 }
 
                 if(launcherComponent.finishedLaunching){
-                    state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
+                    state = State.MOVE_TO_TARGET_ZONE;
                     launcherComponent.stop();
                     launcherComponent.finishedLaunching=false;
                     break;

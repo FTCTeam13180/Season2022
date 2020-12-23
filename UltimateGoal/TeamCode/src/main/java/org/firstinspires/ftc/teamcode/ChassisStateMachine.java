@@ -98,9 +98,7 @@ public class ChassisStateMachine implements BasicCommand {
 
 
         if(first){
-            points.add(new Point(97, 60, power));
-            points.add(new Point(150,60,power));
-            points.add(new Point(150,230,power));
+
             if(numRings==0){
                 //A
                 points.add(new Point(80,240,power));
@@ -115,10 +113,11 @@ public class ChassisStateMachine implements BasicCommand {
             }
         }
         else{
-            points.add(new Point(150,210,power));
+            points.add(new Point(150,81,power));
+            points.add(new Point(150,230,power));
             if(numRings==0){
                 //A
-                points.add(new Point(80,235,power));
+                points.add(new Point(70,235,power));
             }
             else if(numRings==1){
                 //B
@@ -142,9 +141,9 @@ public class ChassisStateMachine implements BasicCommand {
 
     public void moveToPowerShot(){
         points = new ArrayList<Point>();
-        points.add(new Point(140,83,power));
-        points.add(new Point(140,210,power));
-        points.add(new Point(125,210,power));
+        points.add(new Point(97, 60, power));
+        points.add(new Point(142,60,power));
+        points.add(new Point(142,210,power));
         //op.telemetry.update();
         finished = new boolean[points.size()];
     }
@@ -170,10 +169,10 @@ public class ChassisStateMachine implements BasicCommand {
         points = new ArrayList<Point>();
         //coordinates are not right, tweak pls - rohan
         if(ps_ix==0){
-            points.add(new Point(105,210,power)); //150-(19.5-4.5)
+            points.add(new Point(125,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==1){
-            points.add(new Point(85,210,power)); //150-(19.5-4.5)
+            points.add(new Point(105,210,power)); //150-(19.5-4.5)
         }
         if(ps_ix==2){
             //doesnt matter
