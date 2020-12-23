@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class StackerComponent {
+public class StackerComponent implements Component {
     private static final double STACKER_DOWN = 1;
     private static final double STACKER_DUMP = 0;
     private static final double STACKER_UP = 0.575;

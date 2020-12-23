@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class LauncherComponent {
+public class LauncherComponent implements Component{
 
     private OpMode opmode;
     private DcMotor launcher;
@@ -16,7 +15,7 @@ public class LauncherComponent {
         opmode = op;
     }
 
-    public void autoInit(){
+    public void init(){
         launcher = opmode.hardwareMap.dcMotor.get("Launcher");
         launcher.setDirection(DcMotor.Direction.REVERSE);
         launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -24,14 +23,11 @@ public class LauncherComponent {
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         opmode.telemetry.addData("Launcher:", "Initialized");
     }
-
+    public void autoInit(){
+        init();
+    }
     public void teleInit(){
-        launcher = opmode.hardwareMap.dcMotor.get("Launcher");
-        launcher.setDirection(DcMotor.Direction.REVERSE);
-        launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        launcher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opmode.telemetry.addData("Launcher:", "Initialized");
+       init();
     }
     public void shoot(){
         launcher.setPower(LAUNCHER_POWER);
