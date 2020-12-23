@@ -71,7 +71,7 @@ public class Odometry{
 
         double cm_to_target = Math.abs(target_mag - current_mag);
         double rampdown_factor;
-        if (cm_to_target > rampdown_cap)
+        if (target_mag > rampdown_cap)
              rampdown_factor = cm_to_target / (.75 * target_mag);
         else
             rampdown_factor = cm_to_target / rampdown_cap;
