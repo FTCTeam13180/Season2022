@@ -157,7 +157,7 @@ public class ChassisStateMachine implements BasicCommand {
 
     public void moveToLaunchLine(){
         points = new ArrayList<Point>();
-        points.add(new Point(120,220,power));
+        points.add(new Point(120,230,power));
         finished = new boolean[points.size()];
     }
 
