@@ -76,7 +76,7 @@ public class Odometry{
         else
             rampdown_factor = cm_to_target / rampdown_cap;
         rampdown_factor = rampdown_factor > 1 ? 1 : rampdown_factor;
-        rampdown_factor = Math.max(rampdown_factor, .3);
+        rampdown_factor = Math.max(rampdown_factor, .5);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
