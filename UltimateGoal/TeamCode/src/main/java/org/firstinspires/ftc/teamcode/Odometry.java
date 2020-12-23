@@ -32,7 +32,7 @@ public class Odometry{
     double init_Y;
     double last_X;
     double last_Y;
-    double rampdown_cap = 40;
+    double rampdown_cap = 60;
     double ACCURACY_THRESHOLD = .75; //cm
 
     double y_cnts;
@@ -61,7 +61,7 @@ public class Odometry{
      * Output is resultant polar coordinate (r,theta) which is inputted into MoveTo() which executes motion
      **/
 
-    public void nextPoint(double x, double y, double power){
+    public void nextPointRampdown(double x, double y, double power){
         double frontR = chassisComp.topr.getCurrentPosition();
         double frontL = chassisComp.topl.getCurrentPosition();
         global_Y = init_Y + (frontR/cntsPerCm);
@@ -71,14 +71,27 @@ public class Odometry{
         double rampdown_factor;
         rampdown_factor = cm_to_target / rampdown_cap;
         rampdown_factor = Math.min(rampdown_factor, 1);
-        rampdown_factor = Math.max(rampdown_factor, .5);
+        rampdown_factor = Math.max(rampdown_factor, .3);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-        chassisComp.fieldCentricDrive(x-global_X,y-global_Y, power * rampdown_factor, true);
-
+        if(!isFinished(x, y))
+            chassisComp.fieldCentricDrive(x-global_X,y-global_Y, power * rampdown_factor, true);
+    }
+    public void nextPoint(double x, double y, double power){
+        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontL = chassisComp.topl.getCurrentPosition();
+        global_Y = init_Y + (frontR/cntsPerCm);
+        global_X = init_X + (frontL/cntsPerCm);
+        double cm_to_target = Math.hypot(y-global_Y, x-global_X);
+        //opMode.telemetry.addData("global_Y: ", global_Y);
+        //opMode.telemetry.addData("global_X: ", global_X);
+        //opMode.telemetry.addData("target_x: ", x);
+        //opMode.telemetry.addData("target_y: ", y);
+        //opMode.telemetry.update();
+        chassisComp.fieldCentricDrive(x-global_X,y-global_Y, power, true);
     }
 
     public static double normalizeTarget(double y, double x){
