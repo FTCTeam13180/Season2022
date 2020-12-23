@@ -192,26 +192,25 @@ public class ChassisStateMachine implements BasicCommand {
          for(int i = 0;i<points.size();i++){
             if(finished[i]) continue;
             Point current = points.get(i);
-            odometry.nextPoint(current.getX(),current.getY(),current.getPower());
+            if (i == points.size() - 1)
+                odometry.nextPointRampdown(current.getX(),current.getY(),current.getPower());
+            else
+                odometry.nextPoint(current.getX(),current.getY(),current.getPower());
             if( odometry.isFinished(current.getX(),current.getY()) ){
-                check++;
+                finished[i] = true;
                 chassisComp.spinToXDegree(0);
-                if(check > 0) {
-                    check = 0;
-                    finished[i] = true;
-                    if (finished[points.size() - 1]) {
-                        odometry.updateLog("Before chassis.stop()");
-                        chassisComp.stop();
-                        odometry.updateLog("After chassis.stop()");
-                    }
+                if (finished[points.size() - 1]) {
+                    odometry.updateLog("Before chassis.stop()");
+                    chassisComp.stop();
+                    odometry.updateLog("After chassis.stop()");
+                }
                     //op.telemetry.addData("finished: ",i);
 
                     //op.telemetry.update();
-                    odometry.last_X = odometry.global_X;
-                    odometry.last_Y = odometry.global_Y;
+                    //odometry.last_X = odometry.global_X;
+                    //odometry.last_Y = odometry.global_Y;
 
-                    continue;
-                }
+                continue;
             }
             break;
          }
