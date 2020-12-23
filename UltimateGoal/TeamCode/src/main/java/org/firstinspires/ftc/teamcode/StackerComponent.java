@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class StackerComponent {
     private static final double STACKER_DOWN = 1;
     private static final double STACKER_DUMP = 0;
-    private static final double STACKER_UP = 0.71;
+    private static final double STACKER_UP = 0.575;
     private static final double WHACKER_OUT = 0;
     private static final double WHACKER_IN = 1;
     private Servo stacker;
@@ -52,7 +52,23 @@ public class StackerComponent {
     public void safeWhack(){
         if(stackerPosition == STACKER_UP){
             unsafeWhackerOut();
-            sleep(500);
+            sleep(250);
+            unsafeWhackerIn();
+        }
+    }
+    public void safeWhackThree()
+    {
+        if(stackerPosition == STACKER_UP){
+            unsafeWhackerOut();
+            sleep(400);
+            unsafeWhackerIn();
+            sleep(400);
+            unsafeWhackerOut();
+            sleep(400);
+            unsafeWhackerIn();
+            sleep(400);
+            unsafeWhackerOut();
+            sleep(400);
             unsafeWhackerIn();
         }
     }

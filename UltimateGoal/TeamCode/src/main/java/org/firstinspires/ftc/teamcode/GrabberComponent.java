@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class GrabberComponent {
     private static final double ARM_DOWN = .8;
-    private static final double ARM_STRAIGHT = 0.3;
+    private static final double ARM_STRAIGHT = 0;
     private static final double ARM_UP = 0;
     private static final double CLAW_OPEN = 1;
     private static final double CLAW_CLOSE = 0;

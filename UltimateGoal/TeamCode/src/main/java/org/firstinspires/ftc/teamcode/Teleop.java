@@ -150,7 +150,7 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.stackerDump();
             }
             if (gamepad2.right_bumper){
-                stackerComponent.toggleWhacker();
+                stackerComponent.safeWhack();
             }
             else if(gamepad2.dpad_up){
                 stackerComponent.stackerUp();
@@ -159,7 +159,7 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.stackerDown();
             }
             if (gamepad2.left_bumper) {
-                stackerComponent.safeWhack();
+                stackerComponent.safeWhackThree();
             }
 
             if(gamepad2.right_stick_y < 0){
