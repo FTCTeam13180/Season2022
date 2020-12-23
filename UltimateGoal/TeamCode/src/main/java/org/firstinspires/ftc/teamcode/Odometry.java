@@ -33,6 +33,7 @@ public class Odometry{
     double last_X;
     double last_Y;
     double rampdown_cap = 40;
+    double ACCURACY_THRESHOLD = .75; //cm
 
     double y_cnts;
     double x_cnts;
@@ -65,17 +66,11 @@ public class Odometry{
         double frontL = chassisComp.topl.getCurrentPosition();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
+        double cm_to_target = Math.hypot(y-global_Y, x-global_X);
 
-        double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
-        double target_mag = Math.hypot(x-last_X,y-last_Y);
-
-        double cm_to_target = Math.abs(target_mag - current_mag);
         double rampdown_factor;
-        if (target_mag > rampdown_cap)
-             rampdown_factor = cm_to_target / (.75 * target_mag);
-        else
-            rampdown_factor = cm_to_target / rampdown_cap;
-        rampdown_factor = rampdown_factor > 1 ? 1 : rampdown_factor;
+        rampdown_factor = cm_to_target / rampdown_cap;
+        rampdown_factor = Math.min(rampdown_factor, 1);
         rampdown_factor = Math.max(rampdown_factor, .5);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
@@ -99,19 +94,12 @@ public class Odometry{
     }
 
     public boolean isFinished(double x, double y){
-       boolean finished = false;
-        //double xDelta = Math.abs(global_X-last_X);
-        //double yDelta = Math.abs(global_Y-last_Y);
-        global_X = init_X + chassisComp.topl.getCurrentPosition()/cntsPerCm;
-        global_Y= init_Y + chassisComp.topr.getCurrentPosition()/cntsPerCm;
-        double current_mag = Math.hypot(global_Y-last_Y,global_X-last_X);
-        double target_mag = Math.hypot(x-last_X,y-last_Y);
-        updateLog("isFinished");
-        if (Math.abs(current_mag-target_mag) <= .75) {
-            finished = true;
-        }
-        //return current_mag>=target_mag;
-        return finished;
+       global_X = init_X + chassisComp.topl.getCurrentPosition()/cntsPerCm;
+       global_Y= init_Y + chassisComp.topr.getCurrentPosition()/cntsPerCm;
+
+       if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD)
+           return true;
+       return false;
     }
 
     public void updateLog(String calledFrom)
