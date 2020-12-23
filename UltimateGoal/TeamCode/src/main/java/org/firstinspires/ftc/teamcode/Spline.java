@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class Spline {
 
     private ArrayList<Waypoint> waypoints = new ArrayList<>();
+    private boolean corrected = false;
 
     public Spline(Waypoint p) {
         add(p);
@@ -71,4 +72,11 @@ public class Spline {
         return reachedAllWayPointsExceptDestination;
     }
 
+    public boolean isCorrected() {
+        return corrected;
+    }
+
+    public void setCorrected() {
+        corrected = true;
+    }
 }

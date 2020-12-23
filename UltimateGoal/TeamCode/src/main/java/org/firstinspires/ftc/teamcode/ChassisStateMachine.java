@@ -8,6 +8,7 @@ public class ChassisStateMachine implements BasicCommand {
     enum State {
         INIT,
         EXECUTE,
+        AUTO_CORRECT,
         STOP
     }
 
@@ -22,6 +23,7 @@ public class ChassisStateMachine implements BasicCommand {
     private State state = State.INIT;
     private Spline spline;
     private int check = 0;
+    private AutoPositionCorrector autoPositionCorrector;
 
     public ChassisStateMachine(Odometry odometry,ChassisComponent chassisComponent ,OpMode op) {
         this.odometry=odometry;
@@ -142,9 +144,14 @@ public class ChassisStateMachine implements BasicCommand {
         // reset the timeout time and start motion.
         runtime = new ElapsedTime();
         runtime.reset();
+        autoPositionCorrector = new AutoPositionCorrector(spline.getDestination());
     }
 
-    public void execute(){
+    public void execute() {
+        // Log robot's current position
+        autoPositionCorrector.logPosition(odometry.global_X, odometry.global_Y);
+
+        // Get target waypoint and move towards it
         Waypoint targetPoint = spline.getTargetWaypoint();
         if (spline.movingToDestination())
             odometry.nextPointRampdown(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
@@ -153,16 +160,27 @@ public class ChassisStateMachine implements BasicCommand {
         if(odometry.isFinished(targetPoint.getX(),targetPoint.getY()) ) {
             targetPoint.setReached();
             chassisComp.spinToXDegree(0);
-            if (spline.isCompleted()) {
-                odometry.updateLog("Before chassis.stop()");
-                chassisComp.stop();
-                odometry.updateLog("After chassis.stop()");
-            }
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
             //odometry.last_X = odometry.global_X;
             //odometry.last_Y = odometry.global_Y;
+        }
+    }
+
+    public void autoCorrectPosition() {
+        // Log robot's current position
+        autoPositionCorrector.logPosition(odometry.global_X, odometry.global_Y);
+        if (autoPositionCorrector.correctionDone()) {
+            // Correction is done. Stop the robot.
+            odometry.updateLog("Before chassis.stop()");
+            chassisComp.stop();
+            spline.setCorrected();
+            odometry.updateLog("After chassis.stop()");
+        } else {
+            // Correction is not done yet. Continue correction
+            Waypoint destination = spline.getDestination();
+            odometry.nextPointRampdown(destination.getX(),destination.getY(),destination.getPower());
         }
     }
 
@@ -181,6 +199,13 @@ public class ChassisStateMachine implements BasicCommand {
             case EXECUTE:
                 execute();
                 if (spline.isCompleted()) {
+                    state = State.AUTO_CORRECT;
+                }
+                break;
+
+            case AUTO_CORRECT:
+                autoCorrectPosition();
+                if (spline.isCorrected()) {
                     state = State.STOP;
                 }
                 break;
