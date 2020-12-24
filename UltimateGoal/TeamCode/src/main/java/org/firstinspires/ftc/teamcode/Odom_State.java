@@ -13,6 +13,28 @@ public class Odom_State {
         State_C,
         Sleep
     }
+
+    class Point{
+        private double X;
+        private double Y;
+        private double power;
+        Point(double x, double y, double p){
+            X = x;
+            Y = y;
+            power = p;
+        }
+        public double getX(){
+            return X;
+        }
+        public double getY(){
+            return Y;
+        }
+        public double getPower(){
+            return power;
+        }
+
+    }
+
     public State state;
     public Point point;
     private double turn;
