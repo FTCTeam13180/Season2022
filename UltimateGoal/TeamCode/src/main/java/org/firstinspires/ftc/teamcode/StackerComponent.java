@@ -126,4 +126,18 @@ public class StackerComponent implements Component {
         }
     }
 
+    public boolean isBusy(){
+        if (isWhackerBusy() || isStackerBusy()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public void stop(){
+        stacker.setPosition(STACKER_DOWN);
+        whacker.setPosition(WHACKER_IN);
+    }
+
 }

@@ -79,13 +79,18 @@ public class GrabberComponent implements Component {
             return false;
         }
     }*/
-    public boolean isArmBusy(){
+    public boolean isBusy(){
         if (arm.getPosition() < armPosition || arm.getPosition() > ARM_DOWN){
             return true;
         }
         else{
             return false;
         }
+    }
+
+    public void stop(){
+        clawPosition = CLAW_CLOSE;
+        arm.setPosition(ARM_STRAIGHT);
     }
 
 }

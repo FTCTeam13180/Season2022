@@ -44,7 +44,7 @@ public class LauncherComponent implements Component{
         launcher.setPower(0);
         opmode.telemetry.addData("Launcher", "Stopped");
     }
-    public boolean isbusy(){
+    public boolean isBusy(){
         return launcher.isBusy();
     }
 }

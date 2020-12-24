@@ -71,7 +71,7 @@ public class LauncherStateMachine {
         launcherComponent.stop();
     }
     private boolean isBusy() {
-        return  launcherComponent.isbusy();
+        return  launcherComponent.isBusy();
     }
     public void run() {
 
