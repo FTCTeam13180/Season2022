@@ -34,7 +34,7 @@ public class IntakeComponent implements Component {
         opMode.telemetry.addData("Intake:", "Stopped");
     }
 
-    public boolean isbusy() {
+    public boolean isBusy() {
         return intake.isBusy();
     }
 
