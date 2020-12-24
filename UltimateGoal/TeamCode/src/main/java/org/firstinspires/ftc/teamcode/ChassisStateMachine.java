@@ -24,6 +24,7 @@ public class ChassisStateMachine implements BasicCommand {
     private Spline spline;
     private int check = 0;
     private AutoPositionCorrector autoPositionCorrector;
+    private boolean isFinished;
 
     public ChassisStateMachine(Odometry odometry,ChassisComponent chassisComponent ,OpMode op) {
         this.odometry=odometry;
@@ -62,7 +63,7 @@ public class ChassisStateMachine implements BasicCommand {
         points.add(new Point(150,225,power));
         points.add(new Point(155,260,power));
         */
-        spline = new Spline(new Waypoint(60*n,60*n,power));
+        spline = new Spline(new Waypoint(0,60*n,power));
     }
 
     public void moveToTargetZone(int numRings,boolean first){
@@ -154,10 +155,16 @@ public class ChassisStateMachine implements BasicCommand {
         // Get target waypoint and move towards it
         Waypoint targetPoint = spline.getTargetWaypoint();
         if (spline.movingToDestination())
+        {
             odometry.nextPointRampdown(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
+            isFinished = odometry.isFinishedRampdown(targetPoint.getX(),targetPoint.getY());
+        }
         else
+        {
             odometry.nextPoint(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
-        if(odometry.isFinished(targetPoint.getX(),targetPoint.getY()) ) {
+            isFinished = odometry.isFinished(targetPoint.getX(),targetPoint.getY());
+        }
+        if(isFinished) {
             targetPoint.setReached();
             chassisComp.spinToXDegree(0);
             //op.telemetry.addData("finished: ",i);
@@ -175,6 +182,7 @@ public class ChassisStateMachine implements BasicCommand {
             // Correction is done. Stop the robot.
             odometry.updateLog("Before chassis.stop()");
             chassisComp.stop();
+            chassisComp.spinToXDegree(0);
             spline.setCorrected();
             odometry.updateLog("After chassis.stop()");
         } else {

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 public class AutoPositionCorrector {
 
-    private static double TOLERANCE = .5;
+    private static double TOLERANCE = 2.5;
     private static int MAX_LOG_SIZE = 30;
     private RobotPosition[] positionLogRingBuffer = new RobotPosition[MAX_LOG_SIZE];
     private int nextIndex = 0;

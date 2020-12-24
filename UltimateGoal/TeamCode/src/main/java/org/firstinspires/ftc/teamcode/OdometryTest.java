@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Odometry Test",group="UltimateGoalAutonomous")
@@ -86,7 +83,7 @@ public class OdometryTest extends OpMode {
                 }
 
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
-                    smoothSpline(1);
+                    smoothSpline(3);
                 }
                 chassisSerialMotion.run();
                 break;

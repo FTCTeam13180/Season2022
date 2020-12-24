@@ -1,14 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 
@@ -33,7 +24,9 @@ public class Odometry{
     double last_X;
     double last_Y;
     double rampdown_cap = 60;
-    double ACCURACY_THRESHOLD = .75; //cm
+    double ACCURACY_THRESHOLD = 5; //cm
+    double ACCURACY_THRESHOLD_RAMPDOWN= 2.5; //cm
+
 
     double y_cnts;
     double x_cnts;
@@ -69,7 +62,7 @@ public class Odometry{
         double cm_to_target = Math.hypot(y-global_Y, x-global_X);
 
         double rampdown_factor;
-        rampdown_factor = cm_to_target / rampdown_cap;
+        rampdown_factor = 0.5*cm_to_target / rampdown_cap;
         rampdown_factor = Math.min(rampdown_factor, 1);
         rampdown_factor = Math.max(rampdown_factor, .3);
         //opMode.telemetry.addData("global_Y: ", global_Y);
@@ -77,7 +70,6 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-        if(!isFinished(x, y))
             chassisComp.fieldCentricDrive(x-global_X,y-global_Y, power * rampdown_factor, true);
     }
     public void nextPoint(double x, double y, double power){
@@ -85,7 +77,6 @@ public class Odometry{
         double frontL = chassisComp.topl.getCurrentPosition();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
-        double cm_to_target = Math.hypot(y-global_Y, x-global_X);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
@@ -113,6 +104,15 @@ public class Odometry{
        if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD)
            return true;
        return false;
+    }
+
+    public boolean isFinishedRampdown(double x, double y){
+        global_X = init_X + chassisComp.topl.getCurrentPosition()/cntsPerCm;
+        global_Y= init_Y + chassisComp.topr.getCurrentPosition()/cntsPerCm;
+
+        if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD_RAMPDOWN)
+            return true;
+        return false;
     }
 
     public void updateLog(String calledFrom)
