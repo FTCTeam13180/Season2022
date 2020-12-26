@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class GrabberComponent implements Component {
-    private static final double ARM_DOWN = .8;
+    private static final double ARM_DOWN = .85;
     private static final double ARM_STRAIGHT = 0;
     private static final double ARM_UP = 0;
     private static final double CLAW_OPEN = 1;
@@ -22,9 +22,9 @@ public class GrabberComponent implements Component {
     public void init(){
         arm = opmode.hardwareMap.get(Servo.class, "Arm");
         claw = opmode.hardwareMap.get(Servo.class, "Claw");
-        clawPosition = CLAW_CLOSE;
-        arm.setPosition(ARM_STRAIGHT);
-        armPosition = ARM_STRAIGHT;
+        clawClose();
+        sleep(500);
+        armStraight();
         opmode.telemetry.addData("GrabberComponent", "Initialized");
     }
 

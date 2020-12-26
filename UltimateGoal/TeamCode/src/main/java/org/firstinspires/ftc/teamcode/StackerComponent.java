@@ -52,7 +52,7 @@ public class StackerComponent implements Component {
     public void safeWhack(){
         if(stackerPosition == STACKER_UP){
             unsafeWhackerOut();
-            sleep(400);
+            sleep(100);
             unsafeWhackerIn();
         }
     }
@@ -60,15 +60,15 @@ public class StackerComponent implements Component {
     {
         if(stackerPosition == STACKER_UP){
             unsafeWhackerOut();
-            sleep(400);
+            sleep(100);
             unsafeWhackerIn();
-            sleep(400);
+            sleep(175);
             unsafeWhackerOut();
-            sleep(400);
+            sleep(100);
             unsafeWhackerIn();
-            sleep(400);
+            sleep(175);
             unsafeWhackerOut();
-            sleep(400);
+            sleep(100);
             unsafeWhackerIn();
         }
     }
