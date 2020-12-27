@@ -91,18 +91,18 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(150,230,power));
             if(numRings==0){
                 //A
-                spline.add(new Waypoint(70,235,power));
-                spline.add(new Waypoint(70,235,power));
+                spline.add(new Waypoint(70,245,power));
+                spline.add(new Waypoint(70,245,power));
             }
             else if(numRings==1){
                 //B
-                spline.add(new Waypoint(125,305,power));
-                spline.add(new Waypoint(125,305,power));
+                spline.add(new Waypoint(125,310,power));
+                spline.add(new Waypoint(125,310,power));
             }
             else{
                 //C
-                spline.add(new Waypoint(75,340,power));
-                spline.add(new Waypoint(75,340,power));
+                spline.add(new Waypoint(60,350,power));
+                spline.add(new Waypoint(60,350,power));
             }
         }
     }
