@@ -64,7 +64,7 @@ public class AutonomousTasks{
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,op);
 
         launcherComponent = new LauncherComponent(op);
-        launcherComponent.autoInit();
+        launcherComponent.init();
         launcherSerialTask = new LauncherSerialTask(launcherComponent, op);
 
         stackerComponent = new StackerComponent(op);

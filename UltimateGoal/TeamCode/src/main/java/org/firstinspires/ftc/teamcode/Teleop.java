@@ -33,7 +33,7 @@ public class Teleop extends LinearOpMode {
         chassisComponent.initIMU();
 
         launcherComponent = new LauncherComponent(this);
-        launcherComponent.teleInit();
+        launcherComponent.init();
         launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
 
         intakeComponent = new IntakeComponent(this);

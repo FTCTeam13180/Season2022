@@ -23,7 +23,6 @@ public class GrabberComponent implements Component {
         arm = opmode.hardwareMap.get(Servo.class, "Arm");
         claw = opmode.hardwareMap.get(Servo.class, "Claw");
         clawClose();
-        sleep(500);
         armStraight();
         opmode.telemetry.addData("GrabberComponent", "Initialized");
     }

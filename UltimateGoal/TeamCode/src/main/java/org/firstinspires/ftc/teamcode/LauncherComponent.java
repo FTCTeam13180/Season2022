@@ -23,12 +23,6 @@ public class LauncherComponent implements Component{
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         opmode.telemetry.addData("Launcher:", "Initialized");
     }
-    public void autoInit(){
-        init();
-    }
-    public void teleInit(){
-       init();
-    }
     public void shoot(){
         launcher.setPower(LAUNCHER_POWER);
         opmode.telemetry.addData("Launcher", "SHOOTING");

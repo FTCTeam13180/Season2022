@@ -21,7 +21,7 @@ public class LauncherSerialTask {
         return launcherStateMachine.getState();
     }
     public void init(){
-        launcherComponent.autoInit();
+        launcherComponent.init();
     }
     public void run() {
         launcherStateMachine.run();}
