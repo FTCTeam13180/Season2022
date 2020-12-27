@@ -25,7 +25,7 @@ public class Odometry{
     double last_Y;
     double rampdown_cap = 60;
     double ACCURACY_THRESHOLD = 5; //cm
-    double ACCURACY_THRESHOLD_RAMPDOWN= 1; //cm
+    double ACCURACY_THRESHOLD_RAMPDOWN= 2.5; //cm
 
 
     double y_cnts;

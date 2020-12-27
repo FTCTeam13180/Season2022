@@ -186,11 +186,9 @@ public class ChassisStateMachine implements BasicCommand {
         autoPositionCorrector.logPosition(odometry.global_X, odometry.global_Y);
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
-            odometry.updateLog("Before chassis.stop()");
             chassisComp.stop();
             chassisComp.spinToXDegree(0);
             spline.setCorrected();
-            odometry.updateLog("After chassis.stop()");
         } else {
             // Correction is not done yet. Continue correction
             Waypoint destination = spline.getDestination();
@@ -213,6 +211,7 @@ public class ChassisStateMachine implements BasicCommand {
             case EXECUTE:
                 execute();
                 if (spline.isCompleted()) {
+                    chassisComp.spinToXDegree(0);
                     state = State.AUTO_CORRECT;
                 }
                 break;

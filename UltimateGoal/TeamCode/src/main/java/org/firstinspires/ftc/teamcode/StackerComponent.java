@@ -70,6 +70,10 @@ public class StackerComponent implements Component {
             unsafeWhackerOut();
             sleep(100);
             unsafeWhackerIn();
+            sleep(175);
+            unsafeWhackerOut();
+            sleep(100);
+            unsafeWhackerIn();
         }
     }
     public void unsafeWhackerOut() {
