@@ -122,10 +122,10 @@ public class ChassisComponent implements Component {
             }
         }
         double cap = Math.max(Math.abs(x+y),Math.abs(y-x));;
-        topr.setPower(power*(y-x)/cap);
         topl.setPower(power*(x+y)/cap);
-        rearr.setPower(power*(x+y)/cap);
+        topr.setPower(power*(y-x)/cap);
         rearl.setPower(power*(y-x)/cap);
+        rearr.setPower(power*(x+y)/cap);
     }
     public double getAngle(){
         double angle_correction= Math.PI/2;

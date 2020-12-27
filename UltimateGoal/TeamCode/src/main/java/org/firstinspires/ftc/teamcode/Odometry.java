@@ -62,7 +62,10 @@ public class Odometry{
         double cm_to_target = Math.hypot(y-global_Y, x-global_X);
 
         double rampdown_factor;
+        //double rampstart_factor;
         rampdown_factor = .5 * cm_to_target / rampdown_cap;
+        //rampstart_factor =
+        //rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;
         rampdown_factor = Math.min(rampdown_factor, 1);
         rampdown_factor = Math.max(rampdown_factor, .4);
         //opMode.telemetry.addData("global_Y: ", global_Y);
