@@ -73,14 +73,17 @@ public class ChassisStateMachine implements BasicCommand {
             if(numRings==0){
                 //A
                 spline = new Spline(new Waypoint(80,240,power));
+                spline.add(new Waypoint(80,240,power));
             }
             else if(numRings==1){
                 //B
                 spline = new Spline(new Waypoint(125,300,power));
+                spline.add(new Waypoint(125,300,power));
             }
             else{
                 //C
-                spline = new Spline(new Waypoint(55,340,power));
+                spline = new Spline(new Waypoint(60,340,power));
+                spline.add(new Waypoint(60,340,power));
             }
         }
         else{
@@ -89,21 +92,24 @@ public class ChassisStateMachine implements BasicCommand {
             if(numRings==0){
                 //A
                 spline.add(new Waypoint(70,235,power));
+                spline.add(new Waypoint(70,235,power));
             }
             else if(numRings==1){
                 //B
                 spline.add(new Waypoint(125,305,power));
+                spline.add(new Waypoint(125,305,power));
             }
             else{
                 //C
-                spline.add(new Waypoint(70,340,power));
+                spline.add(new Waypoint(75,340,power));
+                spline.add(new Waypoint(75,340,power));
             }
         }
     }
 
     public void moveToSecondWobble(){
         spline = new Spline(new Waypoint(150,240,power));
-        spline.add(new Waypoint(150,81,power));
+        spline.add(new Waypoint(150,83,power));
         spline.add(new Waypoint(93,83,power));
     }
 
@@ -134,9 +140,9 @@ public class ChassisStateMachine implements BasicCommand {
         if(ps_ix==1){
             spline = new Spline(new Waypoint(136,200,power)); //150-(19.5-4.5)
         }
-        if(ps_ix==2){
+      if(ps_ix==2){
             //doesnt matter
-            spline = new Spline(new Waypoint(75,200,power));
+            spline = new Spline(new Waypoint(136,200,power));
         }
 
     }

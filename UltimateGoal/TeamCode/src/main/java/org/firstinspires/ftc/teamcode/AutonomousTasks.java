@@ -200,6 +200,7 @@ public class AutonomousTasks{
             case INIT:
                 grabberComponent.armStraight();
                 launcherComponent.autoShoot();
+                stackerComponent.stackerUp();
                 state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 break;
 
@@ -248,7 +249,7 @@ public class AutonomousTasks{
                 break;
             case LAUNCH_RINGS_AT_POWER_SHOTS:
 
-                stackerComponent.stackerUp();
+
                 for(int ps=0;ps<3;ps++){
                     if(psFinished[ps][1]) continue;
                     if(!psFinished[ps][0]){
