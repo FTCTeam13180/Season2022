@@ -101,7 +101,7 @@ public class ChassisStateMachine implements BasicCommand {
     public void moveToSecondWobble(){
         spline = new Spline(new Waypoint(155,200,power));
         spline.add(new Waypoint(150,83,power));
-        spline.add(new Waypoint(97,83,power));
+        spline.add(new Waypoint(99.5,80,power));
     }
 
 
