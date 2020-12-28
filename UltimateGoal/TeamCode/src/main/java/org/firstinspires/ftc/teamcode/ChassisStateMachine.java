@@ -22,6 +22,7 @@ public class ChassisStateMachine implements BasicCommand {
     double power = 1.0;
     private State state = State.INIT;
     private Spline spline;
+    private int rings;
     private int check = 0;
     private AutoPositionCorrector autoPositionCorrector;
     private boolean isFinished;
@@ -41,7 +42,7 @@ public class ChassisStateMachine implements BasicCommand {
     public void setState(State st){ state = st; }
 
     public void moveToPowerShot(){
-        spline = new Spline(new Waypoint(97, 60, power));
+        spline = new Spline(new Waypoint(98, 60, power));
         spline.add(new Waypoint(150,120,power));
         spline.add(new Waypoint(174,200,power));
     }
@@ -60,50 +61,77 @@ public class ChassisStateMachine implements BasicCommand {
     }
 
     public void moveToTargetZone(int numRings,boolean first){
+        rings = numRings;
         if(first){
-            if(numRings==0){
+            if(rings==0){
                 //A
-                spline = new Spline(new Waypoint(80,240,power));
-                spline.add(new Waypoint(80,240,power));
+                spline = new Spline(new Waypoint(60,240,power));
+                spline.add(new Waypoint(60,240,power));
             }
-            else if(numRings==1){
+            else if(rings==1){
                 //B
-                spline = new Spline(new Waypoint(113,302,power));
-                spline.add(new Waypoint(113,302,power));
+                spline = new Spline(new Waypoint(120,300,power));
+                spline.add(new Waypoint(120,300,power));
             }
-            else{
+            else if(rings == 4){
                 //C
-                spline = new Spline(new Waypoint(60,330,power));
-                spline.add(new Waypoint(60,330,power));
+                spline = new Spline(new Waypoint(60,350,power));
+                spline.add(new Waypoint(60,350,power));
             }
         }
         else{
             spline = new Spline(new Waypoint(150,81,power));
             spline.add(new Waypoint(150,230,power));
-            if(numRings==0){
+            if(rings==0){
                 //A
                 spline.add(new Waypoint(70,245,power));
                 spline.add(new Waypoint(70,245,power));
             }
-            else if(numRings==1){
+            else if(rings==1){
                 //B
                 spline.add(new Waypoint(126,278,power));
                 spline.add(new Waypoint(126,278,power));
             }
-            else{
+            else if (rings == 4){
                 //C
-                spline.add(new Waypoint(60,340,power));
-                spline.add(new Waypoint(60,340,power));
+                spline.add(new Waypoint(70,330,power));
+                spline.add(new Waypoint(70,330,power));
             }
         }
     }
 
     public void moveToSecondWobble(){
-        spline = new Spline(new Waypoint(155,200,power));
-        spline.add(new Waypoint(150,83,power));
-        spline.add(new Waypoint(99.5,80,power));
+        if(rings == 0){
+            //starts from 60, 250
+            spline = new Spline(new Waypoint(120,220,power));
+            spline.add(new Waypoint(150,200,power));
+            spline.add(new Waypoint(160,170,power));
+            spline.add(new Waypoint(160,160,power));
+            spline.add(new Waypoint(150,130,power));
+            spline.add(new Waypoint(125,100,power));
+            spline.add(new Waypoint(95,82,power));
+        }
+        if(rings == 1){
+            //starts from 120, 300
+            spline = new Spline(new Waypoint(140,260,power));
+            spline.add(new Waypoint(150,220,power));
+            spline.add(new Waypoint(160,170,power));
+            spline.add(new Waypoint(160,160,power));
+            spline.add(new Waypoint(150,130,power));
+            spline.add(new Waypoint(125,100,power));
+            spline.add(new Waypoint(95,82,power));
+        }
+        else if(rings == 4){
+            //starts from 60, 340
+            spline = new Spline(new Waypoint(100,290,power));
+            spline.add(new Waypoint(140,230,power));
+            spline.add(new Waypoint(160,170,power));
+            spline.add(new Waypoint(160,160,power));
+            spline.add(new Waypoint(150,130,power));
+            spline.add(new Waypoint(125,100,power));
+            spline.add(new Waypoint(99.5,82,power));
+        }
     }
-
 
     public void moveToWobble(){
         spline = new Spline(new Waypoint(60,60,power));
