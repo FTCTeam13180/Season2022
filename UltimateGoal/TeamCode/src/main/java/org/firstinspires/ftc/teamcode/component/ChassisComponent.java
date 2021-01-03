@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.component;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -29,7 +29,7 @@ public class ChassisComponent implements Component {
     double cntsPerRotation = 1440;
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
-    ChassisComponent(OpMode op) {
+    public ChassisComponent(OpMode op) {
         opMode = op;
     }
 

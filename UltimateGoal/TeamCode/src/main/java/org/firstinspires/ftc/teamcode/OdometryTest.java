@@ -3,6 +3,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+
 @Autonomous(name="Odometry Test",group="UltimateGoalAutonomous")
 public class OdometryTest extends OpMode {
 

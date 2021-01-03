@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+
 
 public class ChassisSerialMotion {
 
@@ -11,7 +13,7 @@ public class ChassisSerialMotion {
 
     private Odometry odometry;
     private ChassisStateMachine chassisStateMachine;
-    public ChassisSerialMotion(Odometry odom, ChassisComponent chassisComponent,OpMode opMode) {
+    public ChassisSerialMotion(Odometry odom, ChassisComponent chassisComponent, OpMode opMode) {
         this.odometry = odom;
         chassisStateMachine = new ChassisStateMachine(odometry, chassisComponent,opMode);
 

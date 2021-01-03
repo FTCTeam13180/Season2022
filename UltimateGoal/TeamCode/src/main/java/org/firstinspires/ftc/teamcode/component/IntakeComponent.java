@@ -1,13 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.component;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class IntakeComponent implements Component {
     private final double INTAKE_POWER = 1.0;
     private OpMode opMode;
 
-    IntakeComponent(OpMode op) {
+    public IntakeComponent(OpMode op) {
         opMode = op;
     }
 

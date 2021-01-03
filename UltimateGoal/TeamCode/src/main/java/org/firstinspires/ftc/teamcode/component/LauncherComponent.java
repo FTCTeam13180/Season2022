@@ -1,17 +1,17 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.component;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class LauncherComponent implements Component{
+public class LauncherComponent implements Component {
 
     private OpMode opmode;
     private DcMotor launcher;
     private final double LAUNCHER_POWER = 1;
     private final double Auto_Launcher_Power = .75;
-    boolean finishedLaunching = false;
+    private boolean finishedLaunching = false;
 
-    LauncherComponent (OpMode op) {
+    public LauncherComponent (OpMode op) {
         opmode = op;
     }
 
@@ -41,4 +41,8 @@ public class LauncherComponent implements Component{
     public boolean isBusy(){
         return launcher.isBusy();
     }
+
+    public boolean isFinishedLaunching() { return finishedLaunching; }
+
+    public void setFinishedLaunching(boolean hasFinishedLaunching) { finishedLaunching = hasFinishedLaunching; }
 }

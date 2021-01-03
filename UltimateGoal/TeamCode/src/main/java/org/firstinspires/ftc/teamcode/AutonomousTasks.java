@@ -3,6 +3,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+import org.firstinspires.ftc.teamcode.component.GrabberComponent;
+import org.firstinspires.ftc.teamcode.component.IntakeComponent;
+import org.firstinspires.ftc.teamcode.component.LauncherComponent;
+import org.firstinspires.ftc.teamcode.component.StackerComponent;
 
 import java.util.List;
 
@@ -266,7 +271,7 @@ public class AutonomousTasks{
                             chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
 
                             if(psFinished[2][1]){
-                                launcherComponent.finishedLaunching=true;
+                                launcherComponent.setFinishedLaunching(true);
                             }
                             break;
                         }
@@ -279,10 +284,10 @@ public class AutonomousTasks{
                     }
                 }
 
-                if(launcherComponent.finishedLaunching){
+                if(launcherComponent.isFinishedLaunching()){
                     state = State.MOVE_TO_TARGET_ZONE;
                     launcherComponent.stop();
-                    launcherComponent.finishedLaunching=false;
+                    launcherComponent.setFinishedLaunching(false);
                     break;
                 }
                 break;

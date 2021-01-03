@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.component;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -16,7 +16,7 @@ public class GrabberComponent implements Component {
     private double clawPosition;
     private OpMode opmode;
 
-    GrabberComponent (OpMode op) {
+    public GrabberComponent (OpMode op) {
         opmode = op;
     }
     public void init(){

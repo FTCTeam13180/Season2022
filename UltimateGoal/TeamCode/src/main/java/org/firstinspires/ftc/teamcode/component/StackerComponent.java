@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.component;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,7 +15,7 @@ public class StackerComponent implements Component {
     private double whackerPosition;
     private OpMode opmode;
 
-    StackerComponent (OpMode op) {
+    public StackerComponent (OpMode op) {
         opmode = op;
     }
 

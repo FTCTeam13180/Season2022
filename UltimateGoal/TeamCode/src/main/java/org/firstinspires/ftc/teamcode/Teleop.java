@@ -4,6 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+import org.firstinspires.ftc.teamcode.component.GrabberComponent;
+import org.firstinspires.ftc.teamcode.component.IntakeComponent;
+import org.firstinspires.ftc.teamcode.component.LauncherComponent;
+import org.firstinspires.ftc.teamcode.component.StackerComponent;
+
 @TeleOp(name = "Teleop", group = "POC")
 public class Teleop extends LinearOpMode {
     private OpMode op;

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.component.LauncherComponent;
+
 public class LauncherSerialTask {
     private LauncherComponent launcherComponent;
     private LauncherStateMachine launcherStateMachine;
