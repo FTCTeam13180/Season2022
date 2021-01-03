@@ -131,4 +131,9 @@ public class Odometry{
         opMode.telemetry.addData("counts frontL:",frontR);
         opMode.telemetry.addData("counts frontR:",frontL);
     }
+    public void displayPosition(){
+        opMode.telemetry.addLine("y:" + chassisComp.topr.getCurrentPosition());
+        opMode.telemetry.addLine("x:" + chassisComp.topl.getCurrentPosition());
+        opMode.telemetry.update();
+    }
 }

@@ -8,7 +8,7 @@ public class LauncherComponent implements Component {
     private OpMode opmode;
     private DcMotor launcher;
     private final double LAUNCHER_POWER = 1;
-    private final double Auto_Launcher_Power = .75;
+    private final double Auto_Launcher_Power = 1;
     private boolean finishedLaunching = false;
 
     public LauncherComponent (OpMode op) {

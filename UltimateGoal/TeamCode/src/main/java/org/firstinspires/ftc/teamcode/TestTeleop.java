@@ -58,6 +58,7 @@ public class TestTeleop extends LinearOpMode {
                 stackerComponent.logStackerPosition();
                 telemetry.update();
             }
+            odometry.displayPosition();
 
             if (gamepad2.dpad_up)
                 stackerComponent.stackerIncremetalUp();
