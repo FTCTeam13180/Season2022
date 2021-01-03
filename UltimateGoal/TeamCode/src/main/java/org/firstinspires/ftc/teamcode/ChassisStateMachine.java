@@ -58,6 +58,7 @@ public class ChassisStateMachine implements BasicCommand {
             //same point in order to avoid rampdown while moving between powershots
             spline = new Spline(new Waypoint(136,200,power));
         }
+
     }
 
     public void moveToTargetZone(int numRings,boolean first){
@@ -141,6 +142,7 @@ public class ChassisStateMachine implements BasicCommand {
     }
     public void pickUpRingsMovement(){
         spline = new Spline(new Waypoint(90,180,power));
+
     }
     public void smoothSpline(int n){
         /*

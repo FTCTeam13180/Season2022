@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class StackerComponent implements Component {
     private static final double STACKER_DOWN = 1;
     private static final double STACKER_DUMP = 0;
-    private static final double STACKER_UP = 0.575;
+    private static final double STACKER_UP = 0.56;
     private static final double WHACKER_OUT = 0;
     private static final double WHACKER_IN = 1;
     private Servo stacker;
