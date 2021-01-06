@@ -105,7 +105,6 @@ public class ChassisComponent implements Component {
     }
 
     public void mecanumDrive(double x, double y, double power, boolean auto){
-        // need to roundoff near 1.0 values to avoid unnecessary veering
         if(!auto) {
             if (x > 0.9) {
                 x = 1.0;
@@ -121,11 +120,47 @@ public class ChassisComponent implements Component {
                 x = 0;
             }
         }
-        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));;
+        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
         topl.setPower(power*(x+y)/cap);
         topr.setPower(power*(y-x)/cap);
         rearl.setPower(power*(y-x)/cap);
         rearr.setPower(power*(x+y)/cap);
+    }
+    public void mecanumDrive(double x, double y, double power, boolean auto, int turn){
+        // need to roundoff near 1.0 values to avoid unnecessary veering
+        int lchange = 0;
+        int rchange = 0;
+        if(!auto) {
+            if (x > 0.9) {
+                x = 1.0;
+                y = 0;
+            } else if (x < -0.9) {
+                x = -1.0;
+                y = 0;
+            } else if (y > 0.9) {
+                y = 1.0;
+                x = 0;
+            } else if (y < -0.9) {
+                y = -1.0;
+                x = 0;
+            }
+        }
+        double cap = Math.max(Math.abs(x+y+1),Math.abs(y-x-1));
+        if (turn > 0)
+        {
+            lchange = 1;
+            rchange = -1;
+        }
+        else if (turn < 0)
+        {
+            lchange = -1;
+            rchange = 1;
+        }
+
+        topl.setPower(power*(x+y+lchange)/cap);
+        topr.setPower(power*(y-x+rchange)/cap);
+        rearl.setPower(power*(y-x+lchange)/cap);
+        rearr.setPower(power*(x+y+rchange)/cap);
     }
     public double getAngle(){
         double angle_correction= Math.PI/2;
@@ -150,6 +185,23 @@ public class ChassisComponent implements Component {
         opMode.telemetry.addData("newY: ", newY);
 
         mecanumDrive(newX, newY, power, auto);
+    }
+    public void fieldCentricDrive(double x, double y, double power, boolean auto, int turn){
+        double mag = Math.sqrt(x * x + y * y);
+
+        double controlAngle = Math.atan2(y, x);
+        double RobotAngle = getAngle(); // Corrected for IMU orientation on robot.
+        double newAngle = AngleUnit.normalizeRadians(controlAngle - RobotAngle + Math.PI/2);
+        double newY = Math.sin(newAngle) * mag;
+        double newX = Math.cos(newAngle) * mag;
+
+        /*opMode.telemetry.addData("controlAngle: ", controlAngle);
+        opMode.telemetry.addData("robotAngle: ", RobotAngle);
+        opMode.telemetry.addData("newAngle: ", newAngle);
+        opMode.telemetry.addData("newX: ", newX);
+        opMode.telemetry.addData("newY: ", newY);*/
+
+        mecanumDrive(newX, newY, power, auto, turn);
     }
 
     public void moveForward(double power){

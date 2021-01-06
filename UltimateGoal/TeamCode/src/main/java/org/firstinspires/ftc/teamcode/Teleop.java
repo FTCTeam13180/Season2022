@@ -110,13 +110,35 @@ public class Teleop extends LinearOpMode {
             if(gamepad1.a) {
                 chassisComponent.initIMU();
             }
-           if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+           /*if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
                 || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
 
                 if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
                     chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false);
                 }
                 if (Math.abs(gamepad1.right_stick_x) > 0.1) {
+                    if (gamepad1.right_stick_x > 0) {
+                        chassisComponent.spinLeft(gamepad1.right_stick_x);
+                    }
+                    if (gamepad1.right_stick_x < 0) {
+                        chassisComponent.spinRight(gamepad1.right_stick_x);
+                    }
+                }
+            }*/
+
+            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+                    || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
+
+                if((Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1) && (gamepad1.right_stick_x > 0.3)) {
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false, -1);
+                }
+                else if ((Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1) && (gamepad1.right_stick_x < -0.3)) {
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false, 1);
+                }
+                else if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1) {
+                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false);
+                }
+                else if (Math.abs(gamepad1.right_stick_x) > 0.1) {
                     if (gamepad1.right_stick_x > 0) {
                         chassisComponent.spinLeft(gamepad1.right_stick_x);
                     }
