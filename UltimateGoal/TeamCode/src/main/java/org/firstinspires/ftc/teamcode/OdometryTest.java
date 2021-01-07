@@ -54,7 +54,7 @@ public class OdometryTest extends OpMode {
         chassisSerialMotion.moveToRings();
     }
     public void moveToGoal(){
-        chassisSerialMotion.moveToGoal();
+        chassisSerialMotion.moveToGoal(1);
     }
 
 

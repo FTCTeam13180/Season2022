@@ -144,7 +144,6 @@ public class ChassisStateMachine implements BasicCommand {
     public void pickUpRingsMovement(){
         spline = new Spline(new Waypoint(90,84,power));
         spline.add(new Waypoint(90, 180, power));
-        spline.add(new Waypoint(85, 198, power));
     }
     public void smoothSpline(int n){
         /*
@@ -161,19 +160,24 @@ public class ChassisStateMachine implements BasicCommand {
         points.add(new Point(150,225,power));
         points.add(new Point(155,260,power));
         */
-        spline = new Spline(new Waypoint(0*n,60*n,power));
+        spline = new Spline(new Waypoint(60*n,0*n,power));
     }
 
-    public void moveToGoal(){
-        op.telemetry.addData("power",power);
-        //op.telemetry.update();
-        spline = new Spline(new Waypoint(110, 55, power));
-        spline.add(new Waypoint(125,90,power));
-        spline.add(new Waypoint(150,120,power));
-        spline.add(new Waypoint(124,188,power));
+    public void moveToGoal(int instance){
+        if (instance == 1) {
+            op.telemetry.addData("power", power);
+            //op.telemetry.update();
+            spline = new Spline(new Waypoint(110, 55, power));
+            spline.add(new Waypoint(125, 90, power));
+            spline.add(new Waypoint(150, 120, power));
+            spline.add(new Waypoint(124, 188, power));
 
-        //destination
-        spline.add(new Waypoint(85,198,power));
+            //destination
+            spline.add(new Waypoint(85, 198, power));
+        }
+        else{
+            spline = new Spline(new Waypoint(85, 198, power));
+        }
     }
 
     public void moveToLaunchLine(){

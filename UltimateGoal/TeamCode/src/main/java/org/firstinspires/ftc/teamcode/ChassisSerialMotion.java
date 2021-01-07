@@ -23,7 +23,7 @@ public class ChassisSerialMotion {
     public void moveToPickUpRings(){chassisStateMachine.pickUpRingsMovement();}
     public void moveToWobble(){ chassisStateMachine.moveToWobble(); }
     public void moveToRings(){chassisStateMachine.moveToRings();}
-    public void moveToGoal(){chassisStateMachine.moveToGoal();}
+    public void moveToGoal(int instance){chassisStateMachine.moveToGoal(instance);}
     public void moveToSecondWobble(){chassisStateMachine.moveToSecondWobble();}
     public void moveToLaunchLine(){chassisStateMachine.moveToLaunchLine();}
     public void smoothSpline(int n){chassisStateMachine.smoothSpline(n);}
