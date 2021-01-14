@@ -99,11 +99,6 @@ public class ChassisComponent implements Component {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
-    public void mecanumDrive(double x, double y, boolean auto){
-        // need to roundoff near 1.0 values to avoid unnecessary veering
-        mecanumDrive(x,y,power_scale,auto);
-    }
-
     public void mecanumDrive(double x, double y, double power, boolean auto){
         if(!auto) {
             if (x > 0.9) {
@@ -126,11 +121,32 @@ public class ChassisComponent implements Component {
         rearl.setPower(power*(y-x)/cap);
         rearr.setPower(power*(x+y)/cap);
     }
-    public void mecanumDrive(double x, double y, double power, boolean auto, int turn){
-        // need to roundoff near 1.0 values to avoid unnecessary veering
-        int lchange = 0;
-        int rchange = 0;
-        if(!auto) {
+
+    /*
+     * mechanumDrive expects x,y and turn values scaled to a unit_circle (i.e. in the range [0,1.0]).
+     *
+     * Note For Teleop
+     * Controller joy-stick values are already scaled to unit_circle range.
+     * In teleop speed control comes from magnitue of (x,y) values. If you press joystick only 50% through,
+     * (x,y) are 50% of max values.
+     *
+     * Note for Autonomous
+     * In autonomous x and y is always greater than 1. We use that fact to scale them to unit_circle range
+     * Speed control in autonomous comes from the power passed.
+     *
+     */
+
+    public void mecanumDrive(double x, double y, double turn, double power, boolean teleop_optimizations){
+
+        // Scale (x,y) for autonomous. (x,y) are bigger than 1.0 in autonomous
+        if (Math.abs(x) > 1.0)
+            x = x / Math.sqrt(x*x + y*y);
+
+        if (Math.abs(y) > 1.0)
+            y = y / Math.sqrt(x*x + y*y);
+
+        if(teleop_optimizations) {
+            // need to roundoff near 1.0 values to avoid unnecessary veering
             if (x > 0.9) {
                 x = 1.0;
                 y = 0;
@@ -144,28 +160,30 @@ public class ChassisComponent implements Component {
                 y = -1.0;
                 x = 0;
             }
-        }
-        double cap = Math.max(Math.abs(x+y+1),Math.abs(y-x-1));
-        if (turn > 0)
-        {
-            lchange = 1;
-            rchange = -1;
-        }
-        else if (turn < 0)
-        {
-            lchange = -1;
-            rchange = 1;
+            // To turn fast/responsive make it 1.0 if it is above certain (e.g. 0.7) threshold
+            if (turn >= 0.7)
+                turn = 1.0;
+            else if (turn <= -0.7)
+                turn = -1.0;
         }
 
-        topl.setPower(power*(x+y+lchange)/cap);
-        topr.setPower(power*(y-x+rchange)/cap);
-        rearl.setPower(power*(y-x+lchange)/cap);
-        rearr.setPower(power*(x+y+rchange)/cap);
+        double topl_power = x + y + turn;
+        double topr_power = y - x - turn;
+        double rearl_power = y - x + turn;
+        double rearr_power = x + y - turn;
+
+        topl.setPower(power * topl_power);
+        topr.setPower(power * topr_power);
+        rearl.setPower(power * rearl_power);
+        rearr.setPower(power * rearr_power);
     }
+
+
     public double getAngle(){
         double angle_correction= Math.PI/2;
         return IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle + angle_correction;
     }
+    /*
     public void fieldCentricDrive(double x, double y, boolean auto){
         fieldCentricDrive(x, y, power_scale, auto);
     }
@@ -186,7 +204,8 @@ public class ChassisComponent implements Component {
 
         mecanumDrive(newX, newY, power, auto);
     }
-    public void fieldCentricDrive(double x, double y, double power, boolean auto, int turn){
+    */
+    public void fieldCentricDrive(double x, double y, double power, boolean auto, double turn){
         double mag = Math.sqrt(x * x + y * y);
 
         double controlAngle = Math.atan2(y, x);
@@ -201,23 +220,26 @@ public class ChassisComponent implements Component {
         opMode.telemetry.addData("newX: ", newX);
         opMode.telemetry.addData("newY: ", newY);*/
 
-        mecanumDrive(newX, newY, power, auto, turn);
+        if (auto)
+            mecanumDrive(newX, newY, turn, power, false);
+        else
+            mecanumDrive(newX, newY, turn, power, true);
     }
 
     public void moveForward(double power){
-        mecanumDrive(0, Math.abs(power),false);
+        mecanumDrive(0, 1.0, 0, power,false);
     }
 
     public void moveBackward(double power){
-        mecanumDrive(0, -Math.abs(power),false);
+        mecanumDrive(0, -1.0, 0, power,false);
     }
 
     public void shiftRight(double power){
-        mecanumDrive(power, 0,false);
+        mecanumDrive(1.0, 0, 0, power,false);
     }
 
     public void shiftLeft(double power){
-        mecanumDrive(-power, 0,false);
+        mecanumDrive(-1, 0, 0, power,false);
     }
 
     public void spinRight(double power){
