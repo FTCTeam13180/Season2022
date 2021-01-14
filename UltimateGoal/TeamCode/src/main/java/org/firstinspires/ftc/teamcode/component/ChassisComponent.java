@@ -99,6 +99,9 @@ public class ChassisComponent implements Component {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
+    //
+    // TODO: Move autonomust to use the other mecanumDrive method and kill this one.
+    //
     public void mecanumDrive(double x, double y, double power, boolean auto){
         if(!auto) {
             if (x > 0.9) {
