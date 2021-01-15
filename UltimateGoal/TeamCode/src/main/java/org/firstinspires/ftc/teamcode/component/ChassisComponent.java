@@ -126,47 +126,46 @@ public class ChassisComponent implements Component {
     }
 
     /*
-     * mechanumDrive expects x,y and turn values scaled to a unit_circle (i.e. in the range [0,1.0]).
+     * (x,y) are used to give the direction for mecanum drive.
+     * The directional value for each mechanum wheel comes by adding/subtracting x and y, in following pattern
+     * topl  -> y+x
+     * topr  -> y-x
+     * rearl -> y-x
+     * rearr -> y+x
+     * NOTE: Motor power can not be greater than 1.0, hence we scale all the directional values by max_abs value.
      *
      * Note For Teleop
-     * Controller joy-stick values are already scaled to unit_circle range.
-     * In teleop speed control comes from magnitue of (x,y) values. If you press joystick only 50% through,
-     * (x,y) are 50% of max values.
+     * In teleop (x,y) direction of the joystick gives the general direction of the robot,
+     * while power control comes from hypotenuse of (x,y) values. If you press joystick only 50% through,
+     * power should be 50%.
      *
      * Note for Autonomous
-     * In autonomous x and y is always greater than 1. We use that fact to scale them to unit_circle range
-     * Speed control in autonomous comes from the power passed.
-     *
+     * In autonomous x and y is the relative co-ordinate position on the field where we want to go. In general
+     * x,y are really large values. But scaling them down with max_abs value takes care of not mistakenly
+     * setting all motors to 1.0
      */
 
     public void mecanumDrive(double x, double y, double turn, double power, boolean teleop_optimizations){
 
-        // Scale (x,y) for autonomous. (x,y) are bigger than 1.0 in autonomous
-        if (Math.abs(x) > 1.0)
-            x = x / Math.sqrt(x*x + y*y);
-
-        if (Math.abs(y) > 1.0)
-            y = y / Math.sqrt(x*x + y*y);
-
         if(teleop_optimizations) {
             // need to roundoff near 1.0 values to avoid unnecessary veering
-            if (x > 0.9) {
+            if (x > 0.96) {
                 x = 1.0;
                 y = 0;
-            } else if (x < -0.9) {
+            } else if (x < -0.96) {
                 x = -1.0;
                 y = 0;
-            } else if (y > 0.9) {
+            } else if (y > 0.96) {
                 y = 1.0;
                 x = 0;
-            } else if (y < -0.9) {
+            } else if (y < -0.96) {
                 y = -1.0;
                 x = 0;
             }
             // To turn fast/responsive make it 1.0 if it is above certain (e.g. 0.7) threshold
-            if (turn >= 0.7)
+            if (turn >= 0.8)
                 turn = 1.0;
-            else if (turn <= -0.7)
+            else if (turn <= -0.8)
                 turn = -1.0;
         }
 
@@ -175,10 +174,16 @@ public class ChassisComponent implements Component {
         double rearl_power = y - x + turn;
         double rearr_power = x + y - turn;
 
-        topl.setPower(power * topl_power);
-        topr.setPower(power * topr_power);
-        rearl.setPower(power * rearl_power);
-        rearr.setPower(power * rearr_power);
+        double max_abs_power = 0;
+        max_abs_power = Math.max(max_abs_power, Math.abs(topl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(topr_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+
+        topl.setPower(power * topl_power / max_abs_power);
+        topr.setPower(power * topr_power / max_abs_power);
+        rearl.setPower(power * rearl_power / max_abs_power);
+        rearr.setPower(power * rearr_power / max_abs_power);
     }
 
 

@@ -90,7 +90,12 @@ public class Teleop extends LinearOpMode {
 
             if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
                     || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
-                chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false, gamepad1.right_stick_x);
+                double x = gamepad1.left_stick_x;
+                double y = -gamepad1.left_stick_y; // note: joystick y is reversed.
+                double turn = -gamepad1.right_stick_x; //for driver specifically arnav who has practiced the other way
+                double power = Math.sqrt(x*x + y*y);
+                power = (power > 0) ? power : Math.abs(turn);
+                chassisComponent.fieldCentricDrive(x, y, power,false, turn);
             }
             else if (gamepad1.dpad_up) {
                 chassisComponent.moveForward(power*0.5);
