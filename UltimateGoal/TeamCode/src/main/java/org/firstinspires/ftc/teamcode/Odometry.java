@@ -74,7 +74,7 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-            chassisComp.mecanumDrive(x-global_X,y-global_Y, power * rampdown_factor, true);
+            chassisComp.mecanumDrive(x-global_X,y-global_Y, 0,power * rampdown_factor, true);
     }
     public void nextPoint(double x, double y, double power){
         double frontR = chassisComp.topr.getCurrentPosition();
@@ -86,7 +86,7 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-        chassisComp.mecanumDrive(x-global_X,y-global_Y, power, true);
+        chassisComp.mecanumDrive(x-global_X,y-global_Y, 0, power, true);
     }
 
     public static double normalizeTarget(double y, double x){

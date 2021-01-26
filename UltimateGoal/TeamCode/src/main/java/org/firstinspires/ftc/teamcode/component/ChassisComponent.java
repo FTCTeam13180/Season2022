@@ -99,31 +99,7 @@ public class ChassisComponent implements Component {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
-    //
-    // TODO: Move autonomust to use the other mecanumDrive method and kill this one.
-    //
-    public void mecanumDrive(double x, double y, double power, boolean auto){
-        if(!auto) {
-            if (x > 0.9) {
-                x = 1.0;
-                y = 0;
-            } else if (x < -0.9) {
-                x = -1.0;
-                y = 0;
-            } else if (y > 0.9) {
-                y = 1.0;
-                x = 0;
-            } else if (y < -0.9) {
-                y = -1.0;
-                x = 0;
-            }
-        }
-        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
-        topl.setPower(power*(x+y)/cap);
-        topr.setPower(power*(y-x)/cap);
-        rearl.setPower(power*(y-x)/cap);
-        rearr.setPower(power*(x+y)/cap);
-    }
+
 
     /*
      * (x,y) are used to give the direction for mecanum drive.
