@@ -86,9 +86,10 @@ public class OdometryTest extends OpMode {
 
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
                     smoothSpline(2);
-                    odometry.displayPosition();
+
                 }
                 chassisSerialMotion.run();
+                odometry.displayPosition();
                 break;
 
             case MOVE_TO_TARGET_ZONE_1:

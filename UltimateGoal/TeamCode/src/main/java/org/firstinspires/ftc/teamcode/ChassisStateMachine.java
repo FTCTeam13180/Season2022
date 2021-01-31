@@ -146,21 +146,13 @@ public class ChassisStateMachine implements BasicCommand {
         spline.add(new Waypoint(90, 180, power));
     }
     public void smoothSpline(int n){
-        /*
-        points = new ArrayList<Point>();
-        points.add(new Point(60*n,60*n,power));
-         */
-        /* old comment
-        points.add(new Point(120,120,power));
-        points.add(new Point(125,125,power));
-        points.add(new Point(130,135,power));
-        points.add(new Point(135,150,power));
-        points.add(new Point(140,170,power));
-        points.add(new Point(145,195,power));
-        points.add(new Point(150,225,power));
-        points.add(new Point(155,260,power));
-        */
-        spline = new Spline(new Waypoint(60*n,0*n,power));
+       int distance = 60;
+
+        //square
+        spline = new Spline(new Waypoint(distance*0,distance*n,power));
+      //  spline.add(new Waypoint(distance*n, distance*0, power ));
+        //spline.add(new Waypoint(distance*0, -distance*n, power ));
+        //spline.add(new Waypoint(-distance*n, distance*0, power ));
     }
 
     public void moveToGoal(int instance){
