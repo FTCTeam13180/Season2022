@@ -273,16 +273,7 @@ public class ChassisComponent implements Component {
         this.rearl.setPower(rearl);
         this.rearr.setPower(rearr);
     }
-    public double getCurrentX(){
-        return topl.getCurrentPosition();
-    }
-    public double getCurrentY(){
-        double yRight = topr.getCurrentPosition();
 
-        double yLeft = rearl.getCurrentPosition();
-
-        return (yRight + yLeft)/2;
-    }
     public void stop() {
         topr.setPower(0);
         topl.setPower(0);
