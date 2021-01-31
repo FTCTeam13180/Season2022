@@ -259,7 +259,6 @@ public class AutonomousTasks{
                     stackerComponent.stackerUp();
                     stackerComponent.sleep(400);
                     launchRingsAtHighGoal();
-                    intakeComponent.stop();
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
                 }
@@ -294,6 +293,7 @@ public class AutonomousTasks{
                 }
                 if(chassisSerialMotion.getState()==ChassisStateMachine.State.INIT){
                     moveToLaunchLine();
+                    intakeComponent.stop();
                 }
                 chassisSerialMotion.run();
                 break;
