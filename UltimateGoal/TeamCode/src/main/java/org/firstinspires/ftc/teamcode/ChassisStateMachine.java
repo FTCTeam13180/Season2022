@@ -160,12 +160,9 @@ public class ChassisStateMachine implements BasicCommand {
             op.telemetry.addData("power", power);
             //op.telemetry.update();
             spline = new Spline(new Waypoint(110, 55, power));
-            spline.add(new Waypoint(130, 75, power));
-            spline.add(new Waypoint(140, 90, power));
+            spline.add(new Waypoint(125, 90, power));
             spline.add(new Waypoint(150, 120, power));
-            spline.add(new Waypoint(140, 150, power));
-            spline.add(new Waypoint(130, 170, power));
-            spline.add(new Waypoint(100, 183, power));
+            spline.add(new Waypoint(124, 188, power));
 
             //destination
             spline.add(new Waypoint(85, 198, power));
