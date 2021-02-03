@@ -100,6 +100,14 @@ public class ChassisComponent implements Component {
     }
 
 
+    public void mecanumDriveAuto(double x, double y, double power){
+            double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+            topl.setPower(power*(x+y)/cap);
+            topr.setPower(power*(y-x)/cap);
+            rearl.setPower(power*(y-x)/cap);
+            rearr.setPower(power*(x+y)/cap);
+    }
+
 
     /*
      * (x,y) are used to give the direction for mecanum drive.
