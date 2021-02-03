@@ -154,7 +154,7 @@ public class ChassisComponent implements Component {
         max_abs_power = Math.max(max_abs_power, Math.abs(topl_power));
         max_abs_power = Math.max(max_abs_power, Math.abs(topr_power));
         max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
-        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearr_power));
 
         topl.setPower(power * topl_power / max_abs_power);
         topr.setPower(power * topr_power / max_abs_power);
