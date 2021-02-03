@@ -56,7 +56,7 @@ public class Odometry{
      **/
 
     public void nextPointRampdown(double x, double y, double power){
-        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontR = getCurrentY();
         double frontL = getCurrentX();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
@@ -77,7 +77,7 @@ public class Odometry{
             chassisComp.mecanumDrive(x-global_X,y-global_Y, 0,power * rampdown_factor, true);
     }
     public void nextPoint(double x, double y, double power){
-        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontR = getCurrentY();
         double frontL = getCurrentX();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
@@ -103,7 +103,7 @@ public class Odometry{
 
     public boolean isFinished(double x, double y){
        global_X = init_X + getCurrentX()/cntsPerCm;
-       global_Y= init_Y + chassisComp.topr.getCurrentPosition()/cntsPerCm;
+       global_Y= init_Y + getCurrentY()/cntsPerCm;
 
        if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD)
            return true;
@@ -112,7 +112,7 @@ public class Odometry{
 
     public boolean isFinishedRampdown(double x, double y){
         global_X = init_X + getCurrentX()/cntsPerCm;
-        global_Y= init_Y + chassisComp.topr.getCurrentPosition()/cntsPerCm;
+        global_Y= init_Y + getCurrentY()/cntsPerCm;
 
         if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD_RAMPDOWN)
             return true;
@@ -123,15 +123,20 @@ public class Odometry{
         return chassisComp.topl.getCurrentPosition();
     }
     public double getCurrentY(){
-        double yRight = chassisComp.topr.getCurrentPosition();
+        return chassisComp.topr.getCurrentPosition();
+    }
+
+
+        /*double yRight = chassisComp.topr.getCurrentPosition();
 
         double yLeft = chassisComp.rearl.getCurrentPosition();
 
         return (yRight + yLeft)/2;
-    }
+
+         */
     public void updateLog(String calledFrom)
     {
-        double frontR = chassisComp.topr.getCurrentPosition();
+        double frontR = getCurrentY();
         double frontL = getCurrentX();
         global_Y = init_Y + (frontR/cntsPerCm);
         global_X = init_X + (frontL/cntsPerCm);
@@ -142,7 +147,7 @@ public class Odometry{
         opMode.telemetry.addData("counts frontR:",frontL);
     }
     public void displayPosition(){
-        opMode.telemetry.addLine("yRight: " + chassisComp.topr.getCurrentPosition());
+        opMode.telemetry.addLine("yRight: " + getCurrentY());
         opMode.telemetry.addLine("yLeft: " + chassisComp.rearl.getCurrentPosition());
         opMode.telemetry.addLine("x: " + getCurrentX());
         opMode.telemetry.update();
