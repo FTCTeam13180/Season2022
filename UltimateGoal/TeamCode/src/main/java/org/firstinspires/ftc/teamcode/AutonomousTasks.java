@@ -273,7 +273,6 @@ public class AutonomousTasks{
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
                     state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
-                    intakeComponent.stop();
                     launchRingsAtHighGoal();
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
@@ -310,6 +309,7 @@ public class AutonomousTasks{
                     moveToLaunchLine();
                 }
                 chassisSerialMotion.run();
+                intakeComponent.stop();
                 break;
 
             case TURN:
@@ -323,18 +323,6 @@ public class AutonomousTasks{
             case STOP:
                 stop();
                 break;
-
-
-
-
-
-
-
-
-
-
-
-
 
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
