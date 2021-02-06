@@ -29,7 +29,7 @@ public class Odometry{
     double last_Y;
     double rampdown_cap = 60;
     double ACCURACY_THRESHOLD = 10; //cm
-    double ACCURACY_THRESHOLD_RAMPDOWN= 2.5; //cm
+    double ACCURACY_THRESHOLD_RAMPDOWN= 1.5; //cm
 
 
     double y_cnts;
@@ -132,7 +132,7 @@ public class Odometry{
         currentYLeftCounts = chassisComp.rearl.getCurrentPosition();
 
         global_X = init_X + currentXCounts/cntsPerCm;
-        global_Y= init_Y + currentYRightCounts/cntsPerCm;
+        global_Y= init_Y + (currentYRightCounts+currentYLeftCounts)/(2*cntsPerCm);
     }
 
 public double getCurrentX(){
