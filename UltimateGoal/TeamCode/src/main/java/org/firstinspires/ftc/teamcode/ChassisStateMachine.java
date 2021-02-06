@@ -42,23 +42,34 @@ public class ChassisStateMachine implements BasicCommand {
         return state;
     }
     public void setState(State st){ state = st; }
+    public void smoothSpline(int n){
+        int distance = 60;
 
-    public void moveToPowerShot(){
-        spline = new Spline(new Waypoint(98, 60, power));
-        spline.add(new Waypoint(150,120,power));
-        spline.add(new Waypoint(174,200,power));
+        //square
+        spline = new Spline(new Waypoint(distance*0,distance*n,power));
+        //  spline.add(new Waypoint(distance*n, distance*0, power ));
+        //spline.add(new Waypoint(distance*0, -distance*n, power ));
+        //spline.add(new Waypoint(-distance*n, distance*0, power ));
     }
 
-    public void shiftPowershot(int ps_ix){
-        if(ps_ix==0){
-            spline = new Spline(new Waypoint(155,200,power)); //150-(19.5-4.5)
+
+
+/*autonomous sequence*/
+    public void moveToGoal(int instance){
+        if (instance == 1) {
+            op.telemetry.addData("power", power);
+            //op.telemetry.update();
+            spline = new Spline(new Waypoint(120, 70, power));
+            spline.add(new Waypoint(130, 90, power));
+            spline.add(new Waypoint(140, 120, power));
+            spline.add(new Waypoint(124, 168, power));
+            spline.add(new Waypoint(100, 188, power));
+
+            //hack to avoid rampdown and save time
+            spline.add(new Waypoint(85, 198, power));
         }
-        if(ps_ix==1){
-            spline = new Spline(new Waypoint(136,200,power)); //150-(19.5-4.5)
-        }
-        if(ps_ix==2){
-            //same point in order to avoid rampdown while moving between powershots
-            spline = new Spline(new Waypoint(136,200,power));
+        else{
+            spline = new Spline(new Waypoint(85, 198, power));
         }
     }
 
@@ -91,7 +102,7 @@ public class ChassisStateMachine implements BasicCommand {
             else if(rings==1){
                 //B
                 spline = new Spline(new Waypoint(126,200,power));
-                spline.add(new Waypoint(126,278,power));
+                spline.add(new Waypoint(126,283,power));
             }
             else if (rings == 4){
                 //C
@@ -115,10 +126,10 @@ public class ChassisStateMachine implements BasicCommand {
         }
         if(rings == 1){
             //starts from 120, 300
-            spline = new Spline(new Waypoint(130,275,power));
-            spline.add(new Waypoint(145,240,power));
-            spline.add(new Waypoint(150,210,power));
-            spline.add(new Waypoint(150,160,power));
+            spline = new Spline(new Waypoint(135,275,power));
+            spline.add(new Waypoint(155,240,power));
+            spline.add(new Waypoint(165,195,power));
+            spline.add(new Waypoint(160,160,power));
             spline.add(new Waypoint(140,120,power));
             spline.add(new Waypoint(125,100,power));
             spline.add(new Waypoint(110,90,power));
@@ -138,42 +149,9 @@ public class ChassisStateMachine implements BasicCommand {
         }
     }
 
-    public void moveToWobble(){
-        spline = new Spline(new Waypoint(60,60,power));
-    }
-    public void moveToRings(){
-        spline = new Spline(new Waypoint(90,120,power));
-    }
     public void pickUpRingsMovement(){
         spline = new Spline(new Waypoint(95,84,power));
         spline.add(new Waypoint(80, 170, power));
-    }
-    public void smoothSpline(int n){
-       int distance = 60;
-
-        //square
-        spline = new Spline(new Waypoint(distance*0,distance*n,power));
-      //  spline.add(new Waypoint(distance*n, distance*0, power ));
-        //spline.add(new Waypoint(distance*0, -distance*n, power ));
-        //spline.add(new Waypoint(-distance*n, distance*0, power ));
-    }
-
-    public void moveToGoal(int instance){
-        if (instance == 1) {
-            op.telemetry.addData("power", power);
-            //op.telemetry.update();
-            spline = new Spline(new Waypoint(120, 70, power));
-            spline.add(new Waypoint(130, 90, power));
-            spline.add(new Waypoint(140, 120, power));
-            spline.add(new Waypoint(124, 168, power));
-            spline.add(new Waypoint(100, 188, power));
-
-            //hack to avoid rampdown and save time
-            spline.add(new Waypoint(85, 198, power));
-        }
-        else{
-            spline = new Spline(new Waypoint(85, 198, power));
-        }
     }
 
     public void ParkAtLaunchLine(){
@@ -181,7 +159,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline = new Spline(new Waypoint(80,240,power));
         }
         else if(rings == 0){
-            spline = new Spline(new Waypoint(100,260,power));
+            spline = new Spline(new Waypoint(80,270,power));
             spline.add(new Waypoint(100, 240, power));
         }
         else{
@@ -270,6 +248,37 @@ public class ChassisStateMachine implements BasicCommand {
                 odometry.updateLog("STOP");
                 break;
         }
+    }
+
+
+
+
+
+
+
+    public void moveToPowerShot(){
+        spline = new Spline(new Waypoint(98, 60, power));
+        spline.add(new Waypoint(150,120,power));
+        spline.add(new Waypoint(174,200,power));
+    }
+
+    public void shiftPowershot(int ps_ix){
+        if(ps_ix==0){
+            spline = new Spline(new Waypoint(155,200,power)); //150-(19.5-4.5)
+        }
+        if(ps_ix==1){
+            spline = new Spline(new Waypoint(136,200,power)); //150-(19.5-4.5)
+        }
+        if(ps_ix==2){
+            //same point in order to avoid rampdown while moving between powershots
+            spline = new Spline(new Waypoint(136,200,power));
+        }
+    }
+    public void moveToWobble(){
+        spline = new Spline(new Waypoint(60,60,power));
+    }
+    public void moveToRings(){
+        spline = new Spline(new Waypoint(90,120,power));
     }
 
 }
