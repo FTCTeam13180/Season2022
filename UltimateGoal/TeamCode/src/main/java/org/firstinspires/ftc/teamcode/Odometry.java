@@ -18,6 +18,9 @@ public class Odometry{
     double cntsPerCm = (1/(Math.PI*wheel_diameter))*cntsPerRotation;
 
     // Odometry position variables
+    double currentXCounts;
+    double currentYRightCounts;
+    double currentYLeftCounts;
     double global_X;
     double global_Y;
     double init_X;
@@ -56,10 +59,11 @@ public class Odometry{
      **/
 
     public void nextPointRampdown(double x, double y, double power){
-        double frontR = getCurrentY();
-        double frontL = getCurrentX();
-        global_Y = init_Y + (frontR/cntsPerCm);
-        global_X = init_X + (frontL/cntsPerCm);
+        readCurrentPosition();
+//        double frontR = getCurrentY();
+//        double frontL = getCurrentX();
+//        global_Y = init_Y + (frontR/cntsPerCm);
+//        global_X = init_X + (frontL/cntsPerCm);
         double cm_to_target = Math.hypot(y-global_Y, x-global_X);
 
         double rampdown_factor;
@@ -77,10 +81,11 @@ public class Odometry{
             chassisComp.mecanumDriveAuto(x-global_X,y-global_Y,power * rampdown_factor);
     }
     public void nextPoint(double x, double y, double power){
-        double frontR = getCurrentY();
-        double frontL = getCurrentX();
-        global_Y = init_Y + (frontR/cntsPerCm);
-        global_X = init_X + (frontL/cntsPerCm);
+        readCurrentPosition();
+//        double frontR = getCurrentY();
+//        double frontL = getCurrentX();
+//        global_Y = init_Y + (frontR/cntsPerCm);
+//        global_X = init_X + (frontL/cntsPerCm);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
@@ -101,9 +106,10 @@ public class Odometry{
         return (theta<0)? 2*Math.PI+theta: theta;
     }
 
-    public boolean isFinished(double x, double y){
-       global_X = init_X + getCurrentX()/cntsPerCm;
-       global_Y= init_Y + getCurrentY()/cntsPerCm;
+    public boolean isFinished(double x, double y) {
+        readCurrentPosition();
+//        global_X = init_X + getCurrentX()/cntsPerCm;
+//        global_Y= init_Y + getCurrentY()/cntsPerCm;
 
        if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD)
            return true;
@@ -111,15 +117,25 @@ public class Odometry{
     }
 
     public boolean isFinishedRampdown(double x, double y){
-        global_X = init_X + getCurrentX()/cntsPerCm;
-        global_Y= init_Y + getCurrentY()/cntsPerCm;
+        readCurrentPosition();
+//        global_X = init_X + getCurrentX()/cntsPerCm;
+//        global_Y= init_Y + getCurrentY()/cntsPerCm;
 
         if (Math.hypot(y-global_Y, x-global_X) <= ACCURACY_THRESHOLD_RAMPDOWN)
             return true;
         return false;
     }
 
-    public double getCurrentX(){
+    public void readCurrentPosition() {
+        currentXCounts = chassisComp.topl.getCurrentPosition();
+        currentYRightCounts = chassisComp.topr.getCurrentPosition();
+        currentYLeftCounts = chassisComp.rearl.getCurrentPosition();
+
+        global_X = init_X + currentXCounts/cntsPerCm;
+        global_Y= init_Y + currentYRightCounts/cntsPerCm;
+    }
+
+public double getCurrentX(){
         return chassisComp.topl.getCurrentPosition();
     }
     public double getCurrentY(){
@@ -136,20 +152,26 @@ public class Odometry{
          */
     public void updateLog(String calledFrom)
     {
-        double frontR = getCurrentY();
-        double frontL = getCurrentX();
-        global_Y = init_Y + (frontR/cntsPerCm);
-        global_X = init_X + (frontL/cntsPerCm);
+        readCurrentPosition();
+//        double currentX = getCurrentX();
+//        double currentY = getCurrentY();
+//        double yRight = chassisComp.topr.getCurrentPosition();
+//        double yLeft = chassisComp.rearl.getCurrentPosition();
+
+//        global_Y = init_Y + (currentY/cntsPerCm);
+//        global_X = init_X + (currentX/cntsPerCm);
         opMode.telemetry.addData("CalledFrom: ", calledFrom);
-        opMode.telemetry.addData("global_Y: ", global_Y);
         opMode.telemetry.addData("global_X: ", global_X);
-        opMode.telemetry.addData("counts frontL:",frontR);
-        opMode.telemetry.addData("counts frontR:",frontL);
+        opMode.telemetry.addData("global_Y: ", global_Y);
+        opMode.telemetry.addData("XCounts:",currentXCounts);
+        opMode.telemetry.addData("YRightCounts:",currentYRightCounts);
+        opMode.telemetry.addData("YLeftCounts:",currentYLeftCounts);
     }
     public void displayPosition(){
-        opMode.telemetry.addLine("yRight: " + getCurrentY());
-        opMode.telemetry.addLine("yLeft: " + chassisComp.rearl.getCurrentPosition());
-        opMode.telemetry.addLine("x: " + getCurrentX());
+        readCurrentPosition();
+        opMode.telemetry.addLine("x: " + currentXCounts);
+        opMode.telemetry.addLine("yRight: " + currentYRightCounts);
+        opMode.telemetry.addLine("yLeft: " + currentYLeftCounts);
         opMode.telemetry.update();
     }
 }
