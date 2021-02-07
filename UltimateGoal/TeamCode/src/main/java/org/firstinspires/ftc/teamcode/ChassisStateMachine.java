@@ -66,10 +66,10 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(100, 188, power));
 
             //hack to avoid rampdown and save time
-            spline.add(new Waypoint(85, 198, power));
+            spline.add(new Waypoint(90, 198, power));
         }
         else{
-            spline = new Spline(new Waypoint(85, 198, power));
+            spline = new Spline(new Waypoint(90, 198, power));
         }
     }
 
@@ -78,18 +78,18 @@ public class ChassisStateMachine implements BasicCommand {
         if(first){
             if(rings==0){
                 //A
-                spline = new Spline(new Waypoint(60,240,power));
-                spline.add(new Waypoint(60,240,power));
+                spline = new Spline(new Waypoint(60,235,power));
+                spline.add(new Waypoint(60,235,power));
             }
             else if(rings==1){
                 //B
                 spline = new Spline(new Waypoint(120,180,power));
-                spline.add(new Waypoint(120,300,power));
+                spline.add(new Waypoint(130,305,power));
             }
             else if(rings == 4){
                 //C
-                spline = new Spline(new Waypoint(60,345,power));
-                spline.add(new Waypoint(60,345,power));
+                spline = new Spline(new Waypoint(60,355,power));
+                spline.add(new Waypoint(60,355,power));
             }
         }
         else{
@@ -106,8 +106,8 @@ public class ChassisStateMachine implements BasicCommand {
             }
             else if (rings == 4){
                 //C
-                spline = new Spline(new Waypoint(70,355,power));
-                spline.add(new Waypoint(80,355,power));
+                spline = new Spline(new Waypoint(70,345,power));
+                spline.add(new Waypoint(80,345,power));
             }
         }
     }
@@ -151,15 +151,16 @@ public class ChassisStateMachine implements BasicCommand {
 
     public void pickUpRingsMovement(){
         spline = new Spline(new Waypoint(95,84,power));
-        spline.add(new Waypoint(80, 170, power));
+        spline.add(new Waypoint(80, 155, power));
     }
 
     public void ParkAtLaunchLine(){
         if (rings == 4){
+            spline.add(new Waypoint(80, 240, power));
             spline = new Spline(new Waypoint(80,240,power));
         }
         else if(rings == 0){
-            spline = new Spline(new Waypoint(80,270,power));
+            spline = new Spline(new Waypoint(90,270,power));
             spline.add(new Waypoint(100, 240, power));
         }
         else{

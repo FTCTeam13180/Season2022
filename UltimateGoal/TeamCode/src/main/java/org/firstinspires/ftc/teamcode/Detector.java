@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -42,7 +41,7 @@ public class Detector {
         int tfodMonitorViewId = opMode.hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", opMode.hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
+        tfodParameters.minResultConfidence = 0.7f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
@@ -70,7 +69,7 @@ public class Detector {
             // Uncomment the following line if you want to adjust the magnification and/or the aspect ratio of the input images.
             // https://firstinspiresst01.blob.core.windows.net/first-game-changers/ftc/remote-field-requirements.pdf
             // Need to revisit based on field dimensions
-            tfod.setZoom(2.5, 1.78);
+            tfod.setZoom(2, 1.78);
         }
 
     }
