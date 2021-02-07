@@ -88,11 +88,8 @@ public class Teleop extends LinearOpMode {
                 chassisComponent.initIMU();
             }
 
-            // if move robot in x or y, or turn robot and not (launcher shooting and whacker whacking)
-            // then move the robot
-            if ((Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
-                    || (Math.abs(gamepad1.right_stick_x) > 0.1))
-                    && !(gamepad2.right_stick_y < 0 && gamepad2.left_bumper) ) {
+            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+                    || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
                 double x = gamepad1.left_stick_x;
                 double y = -gamepad1.left_stick_y; // note: joystick y is reversed.
                 double turn = -gamepad1.right_stick_x; //for driver specifically arnav who has practiced the other way
@@ -137,6 +134,7 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.stackerDown();
             }
             if (gamepad2.left_bumper) {
+                chassisComponent.stop();
                 stackerComponent.safeWhackThree();
             }
 
