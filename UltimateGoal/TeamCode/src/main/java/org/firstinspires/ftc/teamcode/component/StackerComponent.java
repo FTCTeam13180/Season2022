@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.component;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class StackerComponent implements Component {
     private static final double STACKER_DOWN = 1;
     private static final double STACKER_DUMP = 0;
@@ -15,6 +17,10 @@ public class StackerComponent implements Component {
     private double whackerPosition;
     private OpMode opmode;
 
+    // Telemetry Items
+    Telemetry.Item log_stacker;
+    Telemetry.Item log_whacker;
+
     public StackerComponent (OpMode op) {
         opmode = op;
     }
@@ -24,6 +30,9 @@ public class StackerComponent implements Component {
         whacker = opmode.hardwareMap.get(Servo.class, "Whacker");
         stacker.setPosition(STACKER_DOWN);
         whacker.setPosition(WHACKER_IN);
+        log_stacker = opmode.telemetry.addData("Stacker:", "DOWN");
+        log_whacker = opmode.telemetry.addData("Whacker:", "IN");
+
     }
 
     public void logStackerPosition() {
@@ -33,14 +42,17 @@ public class StackerComponent implements Component {
     public void stackerDump(){
         stackerPosition = STACKER_DUMP;
         stacker.setPosition(stackerPosition);
+        log_stacker.setValue("DUMP");
     }
     public void stackerUp(){
         stackerPosition = STACKER_UP;
         stacker.setPosition(stackerPosition);
+        log_stacker.setValue("UP");
     }
     public void stackerDown(){
         stackerPosition = STACKER_DOWN;
         stacker.setPosition(stackerPosition);
+        log_stacker.setValue("DOWN");
     }
     public void sleep(long milliseconds){
         try {
@@ -79,10 +91,12 @@ public class StackerComponent implements Component {
     public void unsafeWhackerOut() {
         whackerPosition = WHACKER_OUT;
         whacker.setPosition(WHACKER_OUT);
+        log_whacker.setValue("OUT");
     }
     public void unsafeWhackerIn(){
         whackerPosition = WHACKER_IN;
         whacker.setPosition(WHACKER_IN);
+        log_whacker.setValue("IN");
     }
 
     public void toggleWhacker() {

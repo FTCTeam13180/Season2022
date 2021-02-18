@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
 import org.firstinspires.ftc.teamcode.component.GrabberComponent;
@@ -55,13 +56,20 @@ public class AutonomousTasks{
     int whackedRingCount;
     boolean psFinished[][]= new boolean[3][2];
 
+
+    // Telemetry Items
+    Telemetry.Item log_num_OfRings;
+    Telemetry.Item log_autonomouTasks_state;
+
     public AutonomousTasks(OpMode opmode){
         op = opmode;
+        log_num_OfRings = op.telemetry.addData("Rings", numOfRings);
+        log_autonomouTasks_state = op.telemetry.addData("AutonomousState", state);
     }
 
     //ToDo: add init for other components
     public void init(){
-        op.telemetry.addData("AutonomousTask", "Initializing");
+//        op.telemetry.addData("AutonomousTask", "Initializing");
 
         chassisComponent = new ChassisComponent(op);
         chassisComponent.init();
@@ -87,7 +95,7 @@ public class AutonomousTasks{
         detect.init();
         time = new ElapsedTime();
         time.reset();
-        op.telemetry.addData("AutonomousTasks", "Initialized");
+//        op.telemetry.addData("AutonomousTasks", "Initialized");
     }
 
     /**
@@ -100,11 +108,11 @@ public class AutonomousTasks{
         int i = 0;
         if(updatedRecognitions != null) {
             for (Recognition recognition : updatedRecognitions) {
-                op.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                op.telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                        recognition.getLeft(), recognition.getTop());
-                op.telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                        recognition.getRight(), recognition.getBottom());
+//                op.telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+//                op.telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+//                        recognition.getLeft(), recognition.getTop());
+//                op.telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+//                        recognition.getRight(), recognition.getBottom());
                 if(recognition.getLabel() == Detector.LABEL_SECOND_ELEMENT){
                     numOfRings = 1;
                 }
@@ -119,7 +127,8 @@ public class AutonomousTasks{
         else {
             numOfRings = 0;
         }
-        op.telemetry.addData("Number of rings = ", numOfRings);
+//        op.telemetry.addData("Number of rings = ", numOfRings);
+        log_num_OfRings.setValue(numOfRings);
     }
 
 
@@ -201,6 +210,7 @@ public class AutonomousTasks{
 
     public void run(){
 
+        log_autonomouTasks_state.setValue(state);
         switch(state){
 
             case INIT:

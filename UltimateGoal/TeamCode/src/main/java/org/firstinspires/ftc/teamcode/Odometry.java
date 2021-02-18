@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
 
 
@@ -31,6 +32,10 @@ public class Odometry{
     double ACCURACY_THRESHOLD = 10; //cm
     double ACCURACY_THRESHOLD_RAMPDOWN= 1.5; //cm
 
+    // Telemetry Items
+    private Telemetry.Item log_global_X_Y;
+
+
 
     double y_cnts;
     double x_cnts;
@@ -42,7 +47,8 @@ public class Odometry{
         global_X = this.init_X = last_X = i_x;
         global_Y = this.init_Y = last_Y = i_y;
         chassisComp= chassisComponent;
-    }
+        log_global_X_Y = opMode.telemetry.addData("global_X_Y:", "(%.1f, %.1f)", global_X, global_Y);
+      }
     //______________________________________________________________________________________________
 
 
@@ -133,6 +139,7 @@ public class Odometry{
 
         global_X = init_X + currentXCounts/cntsPerCm;
         global_Y= init_Y + (currentYRightCounts+currentYLeftCounts)/(2*cntsPerCm);
+        log_global_X_Y.setValue("(%.1f, %.1f)", global_X, global_Y);
     }
 
 public double getCurrentX(){
@@ -152,23 +159,17 @@ public double getCurrentX(){
          */
     public void updateLog(String calledFrom)
     {
-        readCurrentPosition();
-//        double currentX = getCurrentX();
-//        double currentY = getCurrentY();
-//        double yRight = chassisComp.topr.getCurrentPosition();
-//        double yLeft = chassisComp.rearl.getCurrentPosition();
-
-//        global_Y = init_Y + (currentY/cntsPerCm);
-//        global_X = init_X + (currentX/cntsPerCm);
+        /*
         opMode.telemetry.addData("CalledFrom: ", calledFrom);
         opMode.telemetry.addData("global_X: ", global_X);
         opMode.telemetry.addData("global_Y: ", global_Y);
         opMode.telemetry.addData("XCounts:",currentXCounts);
         opMode.telemetry.addData("YRightCounts:",currentYRightCounts);
         opMode.telemetry.addData("YLeftCounts:",currentYLeftCounts);
+
+         */
     }
     public void displayPosition(){
-        readCurrentPosition();
         opMode.telemetry.addLine("x: " + currentXCounts);
         opMode.telemetry.addLine("yRight: " + currentYRightCounts);
         opMode.telemetry.addLine("yLeft: " + currentYLeftCounts);

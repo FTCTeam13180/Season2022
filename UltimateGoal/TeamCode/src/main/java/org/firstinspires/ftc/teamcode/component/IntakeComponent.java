@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.component;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class IntakeComponent implements Component {
     private final double INTAKE_POWER = 1.0;
     private OpMode opMode;
+    private Telemetry.Item log_intake;
 
     public IntakeComponent(OpMode op) {
         opMode = op;
@@ -16,22 +19,22 @@ public class IntakeComponent implements Component {
         intake = opMode.hardwareMap.dcMotor.get("Intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intake.setDirection(DcMotor.Direction.FORWARD);
-        opMode.telemetry.addData("Intake:", "Initialized");
+        log_intake = opMode.telemetry.addData("Intake:", "Initialized");
     }
 
     public void in() {
         intake.setPower(INTAKE_POWER);
-        opMode.telemetry.addData("Intake", "IN");
+        log_intake.setValue("IN");
     }
 
     public void expel() {
         intake.setPower(-INTAKE_POWER);
-        opMode.telemetry.addData("Intake", "EXPEL");
+        log_intake.setValue("EXPEL");
     }
 
     public void stop() {
         intake.setPower(0);
-        opMode.telemetry.addData("Intake:", "Stopped");
+        log_intake.setValue("STOPPED");
     }
 
     public boolean isBusy() {

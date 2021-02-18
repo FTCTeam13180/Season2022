@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
 
 public class ChassisStateMachine implements BasicCommand {
@@ -29,10 +30,13 @@ public class ChassisStateMachine implements BasicCommand {
     private AutoPositionCorrector autoPositionCorrector;
     private boolean isFinished;
 
+    private Telemetry.Item log_target_X_Y;
+
     public ChassisStateMachine(Odometry odometry,ChassisComponent chassisComponent ,OpMode op) {
         this.odometry=odometry;
         this.chassisComp=chassisComponent;
         this.op = op;
+        log_target_X_Y = op.telemetry.addData("target_X_Y:", "(0, 0)");
     }
 
     public void setTimeoutMs(double ms){
@@ -57,7 +61,7 @@ public class ChassisStateMachine implements BasicCommand {
 /*autonomous sequence*/
     public void moveToGoal(int instance){
         if (instance == 1) {
-            op.telemetry.addData("power", power);
+            //op.telemetry.addData("power", power);
             //op.telemetry.update();
             spline = new Spline(new Waypoint(120, 70, power));
             spline.add(new Waypoint(130, 90, power));
@@ -182,6 +186,8 @@ public class ChassisStateMachine implements BasicCommand {
 
         // Get target waypoint and move towards it
         Waypoint targetPoint = spline.getTargetWaypoint();
+        log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
+
         if (spline.movingToDestination())
         {
             odometry.nextPointRampdown(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
@@ -192,6 +198,7 @@ public class ChassisStateMachine implements BasicCommand {
             odometry.nextPoint(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
             isFinished = odometry.isFinished(targetPoint.getX(),targetPoint.getY());
         }
+
         if(isFinished) {
             targetPoint.setReached();
             chassisComp.spinToXDegree(0);
