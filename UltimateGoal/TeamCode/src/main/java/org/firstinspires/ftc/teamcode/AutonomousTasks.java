@@ -183,8 +183,8 @@ public class AutonomousTasks{
 
     }
 
-    public void moveToHighGoalLaunchPosition() {
-        chassisSerialMotion.moveToGoal();
+    public void moveToHighGoalLaunchPosition(int instance) {
+        chassisSerialMotion.moveToGoal(instance);
     }
 
     public void launchRingsAtHighGoal(){
