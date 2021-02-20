@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
 import org.firstinspires.ftc.teamcode.component.GrabberComponent;
 import org.firstinspires.ftc.teamcode.component.IntakeComponent;
@@ -18,7 +19,7 @@ public class Teleop extends LinearOpMode {
     private GrabberComponent grabberComponent;
     private LauncherComponent launcherComponent;
     private LauncherStateMachine launcherStateMachine;
-
+    private Telemetry.Item log_angle;
 
     Odometry odometry;
 
@@ -31,6 +32,9 @@ public class Teleop extends LinearOpMode {
 
 
     public void runOpMode(){
+
+        this.telemetry.setAutoClear(false);
+
         grabberComponent = new GrabberComponent(this);
         grabberComponent.init();
 
@@ -50,6 +54,7 @@ public class Teleop extends LinearOpMode {
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();
         stackerStateMachine = new StackerStateMachine(stackerComponent, op);
+        log_angle = this.telemetry.addData("log_angle:", chassisComponent.getAngle() * 180 / Math.PI - 90);
 
         waitForStart();
 
@@ -87,8 +92,9 @@ public class Teleop extends LinearOpMode {
             if(gamepad1.a) {
                 chassisComponent.initIMU();
             }
+            if(gamepad1.x){log_angle.setValue(chassisComponent.getAngle() * 180 / Math.PI - 90);}
 
-            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+                if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
                     || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
                 double x = gamepad1.left_stick_x;
                 double y = -gamepad1.left_stick_y; // note: joystick y is reversed.
@@ -195,7 +201,7 @@ public class Teleop extends LinearOpMode {
 
 */
 
-
+            this.telemetry.update();
         }
 
 
