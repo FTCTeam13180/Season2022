@@ -133,7 +133,15 @@ public class Teleop extends LinearOpMode {
             else if (gamepad2.dpad_down){
                 stackerComponent.stackerDown();
             }
+
             if (gamepad2.left_bumper) {
+                // Note: safeWhackThree sleeps for a while which introduces race condition between Driver 1 stopping
+                // the robot right before driver 2 presses safeWhackThree. Robot continues to move during safeWhackThree
+                // if driver 1 stop does not get registered in time.
+                // Fix: Force robot to stop moving before we go in this long (sleep) thread.
+                // Do this only if launcher is also running to ensure the intent is to shoot rather than unjam.
+                if (gamepad2.right_stick_y < 0)
+                    chassisComponent.stop();
                 stackerComponent.safeWhackThree();
             }
 

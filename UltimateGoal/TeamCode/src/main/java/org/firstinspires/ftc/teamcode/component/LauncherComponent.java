@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.component;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class LauncherComponent implements Component {
 
     private OpMode opmode;
@@ -10,6 +12,9 @@ public class LauncherComponent implements Component {
     private final double LAUNCHER_POWER = 1;
     private final double Auto_Launcher_Power = 1;
     private boolean finishedLaunching = false;
+
+    // Telemetry Items
+    private Telemetry.Item log_launcher;
 
     public LauncherComponent (OpMode op) {
         opmode = op;
@@ -21,22 +26,26 @@ public class LauncherComponent implements Component {
         launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        opmode.telemetry.addData("Launcher:", "Initialized");
+        log_launcher = opmode.telemetry.addData("Launcher:", "Initialized");
+    }
+    public void safeshoot(){
+        launcher.setPower(LAUNCHER_POWER);
+        log_launcher.setValue("SHOOTING");
     }
     public void shoot(){
         launcher.setPower(LAUNCHER_POWER);
-        opmode.telemetry.addData("Launcher", "SHOOTING");
+        log_launcher.setValue("SHOOTING");
     }
     public void autoShoot(){
         launcher.setPower(Auto_Launcher_Power);
     }
     public void reverse() {
         launcher.setPower(-LAUNCHER_POWER);
-        opmode.telemetry.addData("Launcher", "REVERSING");
+        log_launcher.setValue("REVERSING");
     }
     public void stop(){
         launcher.setPower(0);
-        opmode.telemetry.addData("Launcher", "Stopped");
+        log_launcher.setValue("STOPPED");
     }
     public boolean isBusy(){
         return launcher.isBusy();

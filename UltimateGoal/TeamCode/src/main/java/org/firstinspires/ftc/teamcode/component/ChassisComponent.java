@@ -58,8 +58,8 @@ public class ChassisComponent implements Component {
         topl.setDirection(DcMotorSimple.Direction.REVERSE);
         rearl.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        opMode.telemetry.addData("Chassis Component", "Initialized");
-        opMode.telemetry.update();
+//        opMode.telemetry.addData("Chassis Component", "Initialized");
+//        opMode.telemetry.update();
     }
 
     public void initIMU(){
@@ -74,10 +74,10 @@ public class ChassisComponent implements Component {
         IMU.initialize(param);
 
         // Wait for gyroscope to be calibrated
-        opMode.telemetry.addLine ("Starting Gyro Calibration");
-        opMode.telemetry.update();
+//        opMode.telemetry.addLine ("Starting Gyro Calibration");
+//        opMode.telemetry.update();
         while(!IMU.isGyroCalibrated()) {}
-        opMode.telemetry.addLine ("Completed Gyro Calibration");
+//        opMode.telemetry.addLine ("Completed Gyro Calibration");
 /*        Orientation imu_orientation =
                 IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         double imu_radian = imu_orientation.firstAngle;
@@ -99,6 +99,14 @@ public class ChassisComponent implements Component {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
+
+    public void mecanumDriveAuto(double x, double y, double power){
+            double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+            topl.setPower(power*(x+y)/cap);
+            topr.setPower(power*(y-x)/cap);
+            rearl.setPower(power*(y-x)/cap);
+            rearr.setPower(power*(x+y)/cap);
+    }
 
 
     /*
@@ -154,7 +162,7 @@ public class ChassisComponent implements Component {
         max_abs_power = Math.max(max_abs_power, Math.abs(topl_power));
         max_abs_power = Math.max(max_abs_power, Math.abs(topr_power));
         max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
-        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearr_power));
 
         topl.setPower(power * topl_power / max_abs_power);
         topr.setPower(power * topr_power / max_abs_power);
@@ -264,25 +272,19 @@ public class ChassisComponent implements Component {
         opMode.telemetry.addData("robotAngle: ", robotAngle);
     }
 
+    /*
     public void logCurrentPosition () {
         opMode.telemetry.addData("CurrentPosition:", "topl=%7d", topl.getCurrentPosition());
     }
+
+     */
     public void setMotorPower(double topl, double topr, double rearl, double rearr){
         this.topl.setPower(topl);
         this.topr.setPower(topr);
         this.rearl.setPower(rearl);
         this.rearr.setPower(rearr);
     }
-    public double getCurrentX(){
-        return topl.getCurrentPosition();
-    }
-    public double getCurrentY(){
-        double yRight = topr.getCurrentPosition();
 
-        double yLeft = rearl.getCurrentPosition();
-
-        return (yRight + yLeft)/2;
-    }
     public void stop() {
         topr.setPower(0);
         topl.setPower(0);

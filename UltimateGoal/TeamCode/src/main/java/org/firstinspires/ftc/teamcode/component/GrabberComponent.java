@@ -24,7 +24,7 @@ public class GrabberComponent implements Component {
         claw = opmode.hardwareMap.get(Servo.class, "Claw");
         clawClose();
         armStraight();
-        opmode.telemetry.addData("GrabberComponent", "Initialized");
+//        opmode.telemetry.addData("GrabberComponent", "Initialized");
     }
 
     public void armUp(){
@@ -58,7 +58,7 @@ public class GrabberComponent implements Component {
         armDown();
         sleep(500);
         clawClose();
-        sleep(500);
+        sleep(750);
         armStraight();
     }
     public void safeWobbleDownAndRelease(){
