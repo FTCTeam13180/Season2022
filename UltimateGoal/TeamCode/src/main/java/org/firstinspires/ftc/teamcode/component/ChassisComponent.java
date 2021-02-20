@@ -99,73 +99,75 @@ public class ChassisComponent implements Component {
         rearr.setTargetPosition((int) (rearr.getCurrentPosition() + (cms * cntsPerCm)));
     }
 
-    public void mecanumDrive(double x, double y, boolean auto){
-        // need to roundoff near 1.0 values to avoid unnecessary veering
-        mecanumDrive(x,y,power_scale,auto);
-    }
 
-    public void mecanumDrive(double x, double y, double power, boolean auto){
-        if(!auto) {
-            if (x > 0.9) {
+
+    /*
+     * (x,y) are used to give the direction for mecanum drive.
+     * The directional value for each mechanum wheel comes by adding/subtracting x and y, in following pattern
+     * topl  -> y+x
+     * topr  -> y-x
+     * rearl -> y-x
+     * rearr -> y+x
+     * NOTE: Motor power can not be greater than 1.0, hence we scale all the directional values by max_abs value.
+     *
+     * Note For Teleop
+     * In teleop (x,y) direction of the joystick gives the general direction of the robot,
+     * while power control comes from hypotenuse of (x,y) values. If you press joystick only 50% through,
+     * power should be 50%.
+     *
+     * Note for Autonomous
+     * In autonomous x and y is the relative co-ordinate position on the field where we want to go. In general
+     * x,y are really large values. But scaling them down with max_abs value takes care of not mistakenly
+     * setting all motors to 1.0
+     */
+
+    public void mecanumDrive(double x, double y, double turn, double power, boolean teleop_optimizations){
+
+        if(teleop_optimizations) {
+            // need to roundoff near 1.0 values to avoid unnecessary veering
+            if (x > 0.96) {
                 x = 1.0;
                 y = 0;
-            } else if (x < -0.9) {
+            } else if (x < -0.96) {
                 x = -1.0;
                 y = 0;
-            } else if (y > 0.9) {
+            } else if (y > 0.96) {
                 y = 1.0;
                 x = 0;
-            } else if (y < -0.9) {
+            } else if (y < -0.96) {
                 y = -1.0;
                 x = 0;
             }
-        }
-        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
-        topl.setPower(power*(x+y)/cap);
-        topr.setPower(power*(y-x)/cap);
-        rearl.setPower(power*(y-x)/cap);
-        rearr.setPower(power*(x+y)/cap);
-    }
-    public void mecanumDrive(double x, double y, double power, boolean auto, int turn){
-        // need to roundoff near 1.0 values to avoid unnecessary veering
-        int lchange = 0;
-        int rchange = 0;
-        if(!auto) {
-            if (x > 0.9) {
-                x = 1.0;
-                y = 0;
-            } else if (x < -0.9) {
-                x = -1.0;
-                y = 0;
-            } else if (y > 0.9) {
-                y = 1.0;
-                x = 0;
-            } else if (y < -0.9) {
-                y = -1.0;
-                x = 0;
-            }
-        }
-        double cap = Math.max(Math.abs(x+y+1),Math.abs(y-x-1));
-        if (turn > 0)
-        {
-            lchange = 1;
-            rchange = -1;
-        }
-        else if (turn < 0)
-        {
-            lchange = -1;
-            rchange = 1;
+            // To turn fast/responsive make it 1.0 if it is above certain (e.g. 0.7) threshold
+            if (turn >= 0.8)
+                turn = 1.0;
+            else if (turn <= -0.8)
+                turn = -1.0;
         }
 
-        topl.setPower(power*(x+y+lchange)/cap);
-        topr.setPower(power*(y-x+rchange)/cap);
-        rearl.setPower(power*(y-x+lchange)/cap);
-        rearr.setPower(power*(x+y+rchange)/cap);
+        double topl_power = x + y + turn;
+        double topr_power = y - x - turn;
+        double rearl_power = y - x + turn;
+        double rearr_power = x + y - turn;
+
+        double max_abs_power = 0;
+        max_abs_power = Math.max(max_abs_power, Math.abs(topl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(topr_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+
+        topl.setPower(power * topl_power / max_abs_power);
+        topr.setPower(power * topr_power / max_abs_power);
+        rearl.setPower(power * rearl_power / max_abs_power);
+        rearr.setPower(power * rearr_power / max_abs_power);
     }
+
+
     public double getAngle(){
         double angle_correction= Math.PI/2;
         return IMU.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS).thirdAngle + angle_correction;
     }
+    /*
     public void fieldCentricDrive(double x, double y, boolean auto){
         fieldCentricDrive(x, y, power_scale, auto);
     }
@@ -186,7 +188,8 @@ public class ChassisComponent implements Component {
 
         mecanumDrive(newX, newY, power, auto);
     }
-    public void fieldCentricDrive(double x, double y, double power, boolean auto, int turn){
+    */
+    public void fieldCentricDrive(double x, double y, double power, boolean auto, double turn){
         double mag = Math.sqrt(x * x + y * y);
 
         double controlAngle = Math.atan2(y, x);
@@ -201,23 +204,26 @@ public class ChassisComponent implements Component {
         opMode.telemetry.addData("newX: ", newX);
         opMode.telemetry.addData("newY: ", newY);*/
 
-        mecanumDrive(newX, newY, power, auto, turn);
+        if (auto)
+            mecanumDrive(newX, newY, turn, power, false);
+        else
+            mecanumDrive(newX, newY, turn, power, true);
     }
 
     public void moveForward(double power){
-        mecanumDrive(0, Math.abs(power),false);
+        mecanumDrive(0, 1.0, 0, power,false);
     }
 
     public void moveBackward(double power){
-        mecanumDrive(0, -Math.abs(power),false);
+        mecanumDrive(0, -1.0, 0, power,false);
     }
 
     public void shiftRight(double power){
-        mecanumDrive(power, 0,false);
+        mecanumDrive(1.0, 0, 0, power,false);
     }
 
     public void shiftLeft(double power){
-        mecanumDrive(-power, 0,false);
+        mecanumDrive(-1, 0, 0, power,false);
     }
 
     public void spinRight(double power){
@@ -266,6 +272,16 @@ public class ChassisComponent implements Component {
         this.topr.setPower(topr);
         this.rearl.setPower(rearl);
         this.rearr.setPower(rearr);
+    }
+    public double getCurrentX(){
+        return topl.getCurrentPosition();
+    }
+    public double getCurrentY(){
+        double yRight = topr.getCurrentPosition();
+
+        double yLeft = rearl.getCurrentPosition();
+
+        return (yRight + yLeft)/2;
     }
     public void stop() {
         topr.setPower(0);

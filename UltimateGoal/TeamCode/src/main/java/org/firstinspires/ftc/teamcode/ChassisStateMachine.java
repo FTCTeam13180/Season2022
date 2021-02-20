@@ -144,35 +144,35 @@ public class ChassisStateMachine implements BasicCommand {
     public void pickUpRingsMovement(){
         spline = new Spline(new Waypoint(90,84,power));
         spline.add(new Waypoint(90, 180, power));
-        spline.add(new Waypoint(85, 198, power));
     }
     public void smoothSpline(int n){
-        /*
-        points = new ArrayList<Point>();
-        points.add(new Point(60*n,60*n,power));
-         */
-        /* old comment
-        points.add(new Point(120,120,power));
-        points.add(new Point(125,125,power));
-        points.add(new Point(130,135,power));
-        points.add(new Point(135,150,power));
-        points.add(new Point(140,170,power));
-        points.add(new Point(145,195,power));
-        points.add(new Point(150,225,power));
-        points.add(new Point(155,260,power));
-        */
-        spline = new Spline(new Waypoint(0*n,60*n,power));
+       int distance = 60;
+
+        //square
+        spline = new Spline(new Waypoint(distance*0,distance*n,power));
+      //  spline.add(new Waypoint(distance*n, distance*0, power ));
+        //spline.add(new Waypoint(distance*0, -distance*n, power ));
+        //spline.add(new Waypoint(-distance*n, distance*0, power ));
     }
 
-    public void moveToGoal(){
-        op.telemetry.addData("power",power);
-        //op.telemetry.update();
-        spline = new Spline(new Waypoint(98, 60, power));
-        spline.add(new Waypoint(150,120,power));
-        spline.add(new Waypoint(124,198,power));
+    public void moveToGoal(int instance){
+        if (instance == 1) {
+            op.telemetry.addData("power", power);
+            //op.telemetry.update();
+            spline = new Spline(new Waypoint(110, 55, power));
+            spline.add(new Waypoint(130, 75, power));
+            spline.add(new Waypoint(140, 90, power));
+            spline.add(new Waypoint(150, 120, power));
+            spline.add(new Waypoint(140, 150, power));
+            spline.add(new Waypoint(130, 170, power));
+            spline.add(new Waypoint(100, 183, power));
 
-        //destination
-        spline.add(new Waypoint(85,198,power));
+            //destination
+            spline.add(new Waypoint(85, 198, power));
+        }
+        else{
+            spline = new Spline(new Waypoint(85, 198, power));
+        }
     }
 
     public void moveToLaunchLine(){

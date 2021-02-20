@@ -25,7 +25,7 @@ public class Odometry{
     double last_X;
     double last_Y;
     double rampdown_cap = 60;
-    double ACCURACY_THRESHOLD = 5; //cm
+    double ACCURACY_THRESHOLD = 10; //cm
     double ACCURACY_THRESHOLD_RAMPDOWN= 2.5; //cm
 
 
@@ -74,7 +74,7 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-            chassisComp.mecanumDrive(x-global_X,y-global_Y, power * rampdown_factor, true);
+            chassisComp.mecanumDrive(x-global_X,y-global_Y, 0,power * rampdown_factor, true);
     }
     public void nextPoint(double x, double y, double power){
         double frontR = chassisComp.topr.getCurrentPosition();
@@ -86,7 +86,7 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-        chassisComp.mecanumDrive(x-global_X,y-global_Y, power, true);
+        chassisComp.mecanumDrive(x-global_X,y-global_Y, 0, power, true);
     }
 
     public static double normalizeTarget(double y, double x){
@@ -132,8 +132,9 @@ public class Odometry{
         opMode.telemetry.addData("counts frontR:",frontL);
     }
     public void displayPosition(){
-        opMode.telemetry.addLine("y:" + chassisComp.topr.getCurrentPosition());
-        opMode.telemetry.addLine("x:" + chassisComp.topl.getCurrentPosition());
+        opMode.telemetry.addLine("yRight: " + chassisComp.topr.getCurrentPosition());
+        opMode.telemetry.addLine("yLeft: " + chassisComp.rearl.getCurrentPosition());
+        opMode.telemetry.addLine("x: " + chassisComp.topl.getCurrentPosition());
         opMode.telemetry.update();
     }
 }

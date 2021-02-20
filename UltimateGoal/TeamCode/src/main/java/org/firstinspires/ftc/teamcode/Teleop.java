@@ -79,88 +79,34 @@ public class Teleop extends LinearOpMode {
 
          */
         while(opModeIsActive()){
-            telemetry.addData("counts frontL:",chassisComponent.topl.getCurrentPosition());
-            telemetry.addData("counts frontR:",chassisComponent.topr.getCurrentPosition());
-            telemetry.addData("counts rearL:",chassisComponent.rearl.getCurrentPosition());
-            telemetry.addData("counts rearR:",chassisComponent.rearr.getCurrentPosition());
 
-            telemetry.update();
-          /*  if(gamepad2.x) {
-                odometry.nextPoint(110,75,0.8);
-                sleep(1000);
-
-            }
-            else if(gamepad2.y){
-                odometry.nextPoint(50,135,0.8);
-                sleep(1000);
-            }
-            else if(gamepad2.a){
-                odometry.nextPoint(50,195,0.8);
-                sleep(1000);
-
-               // frontl: -42
-                //frontr: 14612
-
-            }
-            else if(gamepad2.b){
-                odometry.nextPoint(50,255,0.8);
-                sleep(1000);
-            } */
+            //
+            // gamepad 1
+            //
 
             if(gamepad1.a) {
                 chassisComponent.initIMU();
             }
-           /*if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
-                || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
-
-                if(Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1){
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false);
-                }
-                if (Math.abs(gamepad1.right_stick_x) > 0.1) {
-                    if (gamepad1.right_stick_x > 0) {
-                        chassisComponent.spinLeft(gamepad1.right_stick_x);
-                    }
-                    if (gamepad1.right_stick_x < 0) {
-                        chassisComponent.spinRight(gamepad1.right_stick_x);
-                    }
-                }
-            }*/
 
             if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
                     || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
-
-                if((Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1) && (gamepad1.right_stick_x > 0.3)) {
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false, -1);
-                }
-                else if ((Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1) && (gamepad1.right_stick_x < -0.3)) {
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false, 1);
-                }
-                else if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1) {
-                    chassisComponent.fieldCentricDrive(gamepad1.left_stick_x, -gamepad1.left_stick_y , 1,false);
-                }
-                else if (Math.abs(gamepad1.right_stick_x) > 0.1) {
-                    if (gamepad1.right_stick_x > 0) {
-                        chassisComponent.spinLeft(gamepad1.right_stick_x);
-                    }
-                    if (gamepad1.right_stick_x < 0) {
-                        chassisComponent.spinRight(gamepad1.right_stick_x);
-                    }
-                }
+                double x = gamepad1.left_stick_x;
+                double y = -gamepad1.left_stick_y; // note: joystick y is reversed.
+                double turn = -gamepad1.right_stick_x; //for driver specifically arnav who has practiced the other way
+                double power = Math.sqrt(x*x + y*y);
+                power = (power > 0) ? power : Math.abs(turn);
+                chassisComponent.fieldCentricDrive(x, y, power,false, turn);
             }
-
             else if (gamepad1.dpad_up) {
                 chassisComponent.moveForward(power*0.5);
             }
             else if (gamepad1.dpad_down) {
                 chassisComponent.moveBackward(power*0.5);
             }
-            //else if (gamepad1.dpad_right) {
-            //    chassisComponent.spinToXDegree(.261799);
-            //}
-
             else {
                chassisComponent.stop();
            }
+
             if(gamepad1.right_bumper){
                 intakeComponent.expel();
             }
@@ -171,8 +117,9 @@ public class Teleop extends LinearOpMode {
                 intakeComponent.stop();
             }
 
-
+            //
             //gamepad 2
+            //
 
             if(gamepad2.x){
                 stackerComponent.stackerDump();
