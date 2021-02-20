@@ -10,7 +10,6 @@ public class BlueAutonomous extends OpMode {
 
     @Override
     public void init() {
-        this.telemetry.setAutoClear(false);
         auto = new AutonomousTasks(this);
         auto.init();
     }

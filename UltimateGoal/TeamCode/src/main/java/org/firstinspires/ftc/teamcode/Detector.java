@@ -90,12 +90,10 @@ public class Detector {
                 recognitions=tfod.getUpdatedRecognitions();
             }
 
-            /*
             if (recognitions != null)
                 opMode.telemetry.addData("Recognitions: ", recognitions.toString());
             else
                 opMode.telemetry.addData("Recognitions: ", "null");
-                */
         }
 
         return recognitions;

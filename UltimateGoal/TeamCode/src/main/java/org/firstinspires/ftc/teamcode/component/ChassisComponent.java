@@ -58,8 +58,8 @@ public class ChassisComponent implements Component {
         topl.setDirection(DcMotorSimple.Direction.REVERSE);
         rearl.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//        opMode.telemetry.addData("Chassis Component", "Initialized");
-//        opMode.telemetry.update();
+        opMode.telemetry.addData("Chassis Component", "Initialized");
+        opMode.telemetry.update();
     }
 
     public void initIMU(){
@@ -74,10 +74,10 @@ public class ChassisComponent implements Component {
         IMU.initialize(param);
 
         // Wait for gyroscope to be calibrated
-//        opMode.telemetry.addLine ("Starting Gyro Calibration");
-//        opMode.telemetry.update();
+        opMode.telemetry.addLine ("Starting Gyro Calibration");
+        opMode.telemetry.update();
         while(!IMU.isGyroCalibrated()) {}
-//        opMode.telemetry.addLine ("Completed Gyro Calibration");
+        opMode.telemetry.addLine ("Completed Gyro Calibration");
 /*        Orientation imu_orientation =
                 IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
         double imu_radian = imu_orientation.firstAngle;
@@ -272,12 +272,9 @@ public class ChassisComponent implements Component {
         opMode.telemetry.addData("robotAngle: ", robotAngle);
     }
 
-    /*
     public void logCurrentPosition () {
         opMode.telemetry.addData("CurrentPosition:", "topl=%7d", topl.getCurrentPosition());
     }
-
-     */
     public void setMotorPower(double topl, double topr, double rearl, double rearr){
         this.topl.setPower(topl);
         this.topr.setPower(topr);
