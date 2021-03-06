@@ -7,7 +7,7 @@ public class GrabberComponent implements Component {
     private static final double ARM_DOWN = .85;
     private static final double ARM_STRAIGHT = 0;
     private static final double ARM_UP = 0;
-    private static final double CLAW_OPEN = 1;
+    private static final double CLAW_OPEN = 0.8;
     private static final double CLAW_CLOSE = 0;
 
     private Servo arm;
@@ -40,8 +40,10 @@ public class GrabberComponent implements Component {
         arm.setPosition(armPosition);
     }
     public void clawOpen(){
-        clawPosition = CLAW_OPEN;
-        claw.setPosition(clawPosition);
+        if(armPosition != ARM_UP) {
+            clawPosition = CLAW_OPEN;
+            claw.setPosition(clawPosition);
+        }
     }
     public void clawClose(){
         clawPosition = CLAW_CLOSE;
