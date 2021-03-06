@@ -103,11 +103,13 @@ public class ChassisStateMachine implements BasicCommand {
 
             if(rings==0){
                 //A
-              spline = new Spline(new Waypoint(80, 245, power));
+              spline = new Spline(new Waypoint(75, 240, power));
+                spline.add(new Waypoint(80,245,power));
             }
             else if(rings==1){
                 //B
                 spline = new Spline(new Waypoint(126,200,power));
+                spline.add(new Waypoint(126, 260, power));
                 spline.add(new Waypoint(126,273,power));
             }
             else if (rings == 4){
@@ -120,8 +122,8 @@ public class ChassisStateMachine implements BasicCommand {
 
     public void moveToSecondWobble(){
         if(rings == 0){
-            //starts from 80, 245
-            spline = new Spline(new Waypoint(100,225,power));
+            //starts from 60, 240
+            spline = new Spline(new Waypoint(60,220,power));
             //spline.add(new Waypoint(125,210,power));
            //spline.add(new Waypoint(135,200,power));
            //spline.add(new Waypoint(145,160,power));
@@ -158,8 +160,9 @@ public class ChassisStateMachine implements BasicCommand {
 
     public void pickUpRingsMovement(){
         spline = new Spline(new Waypoint(95,84,power));
-        spline.add(new Waypoint(80, 148, power));
-        spline.add(new Waypoint(80, 150     , power));
+        spline.add(new Waypoint(80, 155, power));
+        spline.add(new Waypoint(80, 170, power));
+        spline.add(new Waypoint(80,150,power));
     }
 
     public void ParkAtLaunchLine(){
