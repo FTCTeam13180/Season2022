@@ -267,6 +267,7 @@ public class AutonomousTasks{
                     state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2;
                     intakeComponent.expel();
                     stackerComponent.stackerUp();
+                    launcherComponent.shoot();
                     stackerComponent.sleep(400);
                     launchRingsAtHighGoal();
 
@@ -274,7 +275,6 @@ public class AutonomousTasks{
                     break;
                 }
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
-                    launcherComponent.shoot();
                     stackerComponent.stackerDown();
                     intakeComponent.in();
                     moveToPickUpRings();
