@@ -73,7 +73,8 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(135, 197, power));
         }
         else{
-            spline = new Spline(new Waypoint(135, 197, power)); //shooting point (135, 197)
+            spline = new Spline(new Waypoint(130, 192, power));
+            spline.add(new Waypoint(135, 197, power)); //shooting point (135, 197)
         }
     }
 

@@ -269,7 +269,6 @@ public class AutonomousTasks{
                     stackerComponent.stackerUp();
                     launcherComponent.shoot();
                     stackerComponent.sleep(400);
-                    launchRingsAtHighGoal();
 
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
