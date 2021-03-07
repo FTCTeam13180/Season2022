@@ -74,7 +74,7 @@ public class AutonomousTasks{
         chassisComponent = new ChassisComponent(op);
         chassisComponent.init();
         chassisComponent.initIMU();
-        odometry = new Odometry(op, chassisComponent,98,47);
+        odometry = new Odometry(op, chassisComponent,97,45);
 
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,op);
 
@@ -251,7 +251,12 @@ public class AutonomousTasks{
 
             case MOVE_TO_SECOND_WOBBLE:
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.STOP){
-                    state = State.PICK_UP_RINGS;
+                    if (numOfRings == 0 ){
+                        state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
+                    }
+                    else {
+                        state = State.PICK_UP_RINGS;
+                    }
                     grabWobble();
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
