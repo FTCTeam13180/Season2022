@@ -14,43 +14,27 @@ public class IntakeComponent implements Component {
     }
 
     DcMotor intake;
-    DcMotor intakeL;
-    DcMotor intakeR;
 
     public void init() {
         intake = opMode.hardwareMap.dcMotor.get("Intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         intake.setDirection(DcMotor.Direction.FORWARD);
 
-        intakeL = opMode.hardwareMap.dcMotor.get("IntakeL");
-        intakeL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        intakeL.setDirection(DcMotor.Direction.REVERSE);
-
-        intakeR = opMode.hardwareMap.dcMotor.get("IntakeR");
-        intakeR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        intakeR.setDirection(DcMotor.Direction.FORWARD);
-
         log_intake = opMode.telemetry.addData("Intake:", "Initialized");
     }
 
     public void in() {
         intake.setPower(INTAKE_POWER);
-        intakeL.setPower(INTAKE_POWER);
-        intakeR.setPower(INTAKE_POWER);
         log_intake.setValue("IN");
     }
 
     public void expel() {
         intake.setPower(-INTAKE_POWER);
-        intakeL.setPower(-INTAKE_POWER);
-        intakeR.setPower(-INTAKE_POWER);
         log_intake.setValue("EXPEL");
     }
 
     public void stop() {
         intake.setPower(0);
-        intakeL.setPower(0);
-        intakeR.setPower(0);
         log_intake.setValue("STOPPED");
     }
 
