@@ -10,8 +10,9 @@ public class LauncherComponent implements Component {
 
     private OpMode opmode;
     private DcMotor launcher;
-    private final double LAUNCHER_POWER = 1;
+    private final double LAUNCHER_POWER = 0.85;
     private final double Auto_Launcher_Power = 1;
+    private final double POWERSHOT_LAUNCHER_POWER = 0.75;
     private boolean finishedLaunching = false;
 
     // Telemetry Items
@@ -37,6 +38,10 @@ public class LauncherComponent implements Component {
         launcher.setPower(LAUNCHER_POWER);
         log_launcher.setValue("SHOOTING");
     }
+    public void powershotSoot() {
+        launcher.setPower(POWERSHOT_LAUNCHER_POWER);
+    }
+
     public void autoShoot(){
         launcher.setPower(Auto_Launcher_Power);
     }

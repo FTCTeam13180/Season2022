@@ -30,6 +30,8 @@ public class Teleop extends LinearOpMode {
 
     double power=1.0;
 
+    boolean powershot_mode = false;
+    boolean gamepad2_y_being_pressed = false;
 
     public void runOpMode(){
 
@@ -151,8 +153,20 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.safeWhackThree();
             }
 
+            if (gamepad2.y) {
+                if (!gamepad2_y_being_pressed) {
+                    gamepad2_y_being_pressed = true;
+                    powershot_mode = !powershot_mode;
+                }
+            }
+            else
+                gamepad2_y_being_pressed = false;
+
             if(gamepad2.right_stick_y < 0){
-                launcherComponent.shoot();
+                if (powershot_mode)
+                    launcherComponent.powershotSoot();
+                else
+                    launcherComponent.shoot();
             }
             else if (gamepad2.right_stick_y > 0){
                 launcherComponent.reverse();
