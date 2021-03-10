@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.component;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -11,7 +10,7 @@ public class LauncherComponent implements Component {
     private OpMode opmode;
     private DcMotor launcher;
     private final double LAUNCHER_POWER = 0.85;
-    private final double Auto_Launcher_Power = 1;
+    private final double Auto_Launcher_Power = 0.85;
     private final double POWERSHOT_LAUNCHER_POWER = 0.75;
     private boolean finishedLaunching = false;
 

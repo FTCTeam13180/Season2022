@@ -72,7 +72,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(130, 197, power));
         }
         else{
-            spline = new Spline(new Waypoint(130, 197, power)); //shooting point (108, 197)
+            spline = new Spline(new Waypoint(130, 197, power)); //shooting point (130, 105)
         }
     }
 
@@ -81,15 +81,15 @@ public class ChassisStateMachine implements BasicCommand {
         if(first){
             if(rings==0){
                 //A
-                spline  = new Spline(new Waypoint(115,185,power));
+                spline = new Spline(new Waypoint(115,185,power));
                 spline.add(new Waypoint(94, 183, power));
                 spline.add(new Waypoint(72, 194, power));
                 spline.add(new Waypoint(56, 214, power));
             }
             else if(rings==1){
                 //B
-                spline = new Spline(new Waypoint(120,180,power));
-                spline.add(new Waypoint(130,300,power));
+               // spline = new Spline(new Waypoint(120,180,power));
+                spline = new Spline(new Waypoint(130,300,power));
             }
             else if(rings == 4){
                 //C
@@ -102,12 +102,13 @@ public class ChassisStateMachine implements BasicCommand {
             if(rings==0){
                 //A
               spline = new Spline(new Waypoint(75, 235, power));
-                spline.add(new Waypoint(80,245,power));
+                spline.add(new Waypoint(80,235,power));
             }
             else if(rings==1){
                 //B
                 spline = new Spline(new Waypoint(126,200,power));
                 spline.add(new Waypoint(126, 260, power));
+                spline.add(new Waypoint(126, 270, power));
                 spline.add(new Waypoint(126,273,power));
             }
             else if (rings == 4){
@@ -126,19 +127,19 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(102, 129, power));
             spline.add(new Waypoint(102, 106, power));
             spline.add(new Waypoint(100, 89, power));
-            spline.add(new Waypoint(91,64,power));
+            spline.add(new Waypoint(88,70,power));
             //spline.add(new Waypoint(88,68,power));
         }
         if(rings == 1){
-            //starts from 120, 300
-            spline = new Spline(new Waypoint(135,275,power));
-            spline.add(new Waypoint(150,240,power));
-            spline.add(new Waypoint(160,195,power));
-            spline.add(new Waypoint(155,165,power));
-            spline.add(new Waypoint(135,130,power));
-            spline.add(new Waypoint(120,110,power));
-            spline.add(new Waypoint(105,90,power));
-            spline.add(new Waypoint(85,71,power));
+            //starts from 130, 300
+            spline = new Spline(new Waypoint(147,274,power));
+            spline.add(new Waypoint(158,235,power));
+            spline.add(new Waypoint(160,197,power));
+            spline.add(new Waypoint(155,163,power));
+            spline.add(new Waypoint(142,132,power));
+            spline.add(new Waypoint(127,108,power));
+            spline.add(new Waypoint(106,86,power));
+            spline.add(new Waypoint(88,70,power));
         }
         else if(rings == 4){
             //starts from 60, 340
@@ -163,12 +164,22 @@ public class ChassisStateMachine implements BasicCommand {
 
     public void ParkAtLaunchLine(){
         if (rings == 4){
-            spline.add(new Waypoint(80, 240, power));
-            spline = new Spline(new Waypoint(80,240,power));
+            spline = new Spline(new Waypoint(56, 214, power));
+            spline.add(new Waypoint(72, 194, power));
+            spline.add(new Waypoint(94, 183, power));
+            spline.add(new Waypoint(115,185,power));
+            spline.add(new Waypoint(130, 197, power));
+
+
         }
         else if(rings == 0){
-            spline = new Spline(new Waypoint(90,270,power));
-            spline.add(new Waypoint(100, 240, power));
+            //drop at 80, 235
+            spline = new Spline(new Waypoint(80, 224, power));
+            spline.add(new Waypoint(87, 211, power));
+            spline.add(new Waypoint(99, 208, power));
+            spline.add(new Waypoint(113,210,power));
+            spline.add(new Waypoint(126, 214, power));
+            spline.add(new Waypoint(134, 224, power));
         }
         else{
             spline = new Spline(new Waypoint(126, 240, power));
