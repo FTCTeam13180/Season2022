@@ -254,16 +254,16 @@ public class ChassisComponent implements Component {
         double robotAngle = getAngle();
         if (degree - robotAngle < 0)
         {
-            spinRight(.5);
-            while ((Math.abs(degree - robotAngle) > .09))
+            spinRight(.3);
+            while ((Math.abs(degree - robotAngle) > .03))
             {
                 robotAngle = getAngle();
             }
         }
         else
         {
-            spinLeft(.5);
-            while ((Math.abs(degree - robotAngle) > .09))
+            spinLeft(.3);
+            while ((Math.abs(degree - robotAngle) > .03))
             {
                 robotAngle = getAngle();
             }
