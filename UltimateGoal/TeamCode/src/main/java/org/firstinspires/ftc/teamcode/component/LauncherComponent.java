@@ -2,13 +2,15 @@ package org.firstinspires.ftc.teamcode.component;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class LauncherComponent implements Component {
 
     private OpMode opmode;
-    private DcMotor launcher;
+    private DcMotorEx launcher;
     private final double LAUNCHER_POWER = 0.85;
     private final double Auto_Launcher_Power = 0.85;
     private final double POWERSHOT_LAUNCHER_POWER = 0.75;
@@ -22,7 +24,7 @@ public class LauncherComponent implements Component {
     }
 
     public void init(){
-        launcher = opmode.hardwareMap.dcMotor.get("Launcher");
+        launcher = (DcMotorEx) opmode.hardwareMap.dcMotor.get("Launcher");
         launcher.setDirection(DcMotor.Direction.FORWARD);
         launcher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -37,7 +39,7 @@ public class LauncherComponent implements Component {
         launcher.setPower(LAUNCHER_POWER);
         log_launcher.setValue("SHOOTING");
     }
-    public void powershotSoot() {
+    public void powershotShoot() {
         launcher.setPower(POWERSHOT_LAUNCHER_POWER);
     }
 
@@ -51,6 +53,10 @@ public class LauncherComponent implements Component {
     public void stop(){
         launcher.setPower(0);
         log_launcher.setValue("STOPPED");
+    }
+    public double getRPM()
+    {
+        return (launcher.getVelocity());
     }
     public boolean isBusy(){
         return launcher.isBusy();

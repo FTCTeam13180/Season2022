@@ -164,7 +164,7 @@ public class Teleop extends LinearOpMode {
 
             if(gamepad2.right_stick_y < 0){
                 if (powershot_mode)
-                    launcherComponent.powershotSoot();
+                    launcherComponent.powershotShoot();
                 else
                     launcherComponent.shoot();
             }
