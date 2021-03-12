@@ -150,7 +150,9 @@ public class Teleop extends LinearOpMode {
                 // Do this only if launcher is also running to ensure the intent is to shoot rather than unjam.
                 if (gamepad2.right_stick_y < 0)
                     chassisComponent.stop();
-                stackerComponent.safeWhackThree();
+
+                smartWhack();
+                //stackerComponent.safeWhackThree();
             }
 
             if (gamepad2.y) {
@@ -165,8 +167,10 @@ public class Teleop extends LinearOpMode {
             if(gamepad2.right_stick_y < 0){
                 if (powershot_mode)
                     launcherComponent.powershotShoot();
-                else
-                    launcherComponent.shoot();
+                else {
+//                  launcherComponent.shoot();
+                    launcherComponent.setRPM(2000);
+                }
             }
             else if (gamepad2.right_stick_y > 0){
                 launcherComponent.reverse();
@@ -184,6 +188,7 @@ public class Teleop extends LinearOpMode {
             }
             if(Math.abs(gamepad2.left_stick_y) > 0.1 ){
                 if(gamepad2.left_stick_y < 0){
+                    grabberComponent.clawClose();
                     grabberComponent.armStraight();
                 }
                 if(gamepad2.left_stick_y > 0){
@@ -219,5 +224,39 @@ public class Teleop extends LinearOpMode {
         }
 
 
+    }
+
+    private final double MIN_SAFE_RPM = 1950;
+    private final double MAX_SAFE_RPM = 2050;
+
+    void smartWhack() {
+        int count = 3;
+        double rpm = 0;
+        double prev_rpm = 0;
+
+        ElapsedTime accel_time = new ElapsedTime();
+        ElapsedTime runtime = new ElapsedTime();
+
+        while (count > 0 && launcherComponent.isBusy()) {
+            prev_rpm = launcherComponent.getRPM();
+            accel_time.reset();
+            sleep(10);
+            rpm = launcherComponent.getRPM();
+
+            double acceleration = (rpm - prev_rpm)/accel_time.milliseconds();
+            double rpm_predicted = rpm + acceleration * 10;
+
+            this.telemetry.addData("", "Time: %.0f  RPM: %.0f PRED_RPM: %.0f", runtime.milliseconds(), rpm, rpm_predicted);
+
+            if (rpm_predicted >= MIN_SAFE_RPM && rpm_predicted <= MAX_SAFE_RPM) {
+                this.telemetry.addData("", "Time: %.0f  RPM: %.0f", runtime.milliseconds(), launcherComponent.getRPM());
+                stackerComponent.unsafeWhackerOut();
+                sleep(100);
+                stackerComponent.unsafeWhackerIn();
+                sleep(100);
+                count --;
+            }
+        }
+        return;
     }
 }
