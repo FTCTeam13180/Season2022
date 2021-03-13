@@ -218,7 +218,8 @@ public class AutonomousTasks{
 
             case INIT:
                 grabberComponent.armStraight();
-                launcherComponent.autoShoot();
+//                launcherComponent.autoShoot();
+                launcherComponent.setTargetRPM(2000);
                 stackerComponent.stackerUp();
                 state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
                 break;

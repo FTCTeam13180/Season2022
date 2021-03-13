@@ -34,7 +34,7 @@ public class SmartWhack {
         double rpm = 0;
         double prev_rpm = 0;
         double MIN_SAFE_RPM = launcher.getTargetRPM() - RPM_TOLERANCE;
-        double MAX_SAFE_RPM = launcher.getRPM() + RPM_TOLERANCE;
+        double MAX_SAFE_RPM = launcher.getTargetRPM() + RPM_TOLERANCE;
         double TIMEOUT = count * TIMEOUT_PER_RING;
 
         ElapsedTime accel_time = new ElapsedTime();
