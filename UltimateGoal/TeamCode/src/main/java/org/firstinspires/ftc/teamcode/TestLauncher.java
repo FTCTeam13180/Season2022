@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.text.SpannableString;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.component.ChassisComponent;
 import org.firstinspires.ftc.teamcode.component.LauncherComponent;
 import org.firstinspires.ftc.teamcode.component.StackerComponent;
 
@@ -41,7 +38,7 @@ public class TestLauncher extends LinearOpMode {
                 if (!gamepad2_left_bumper_being_pressed) {
                     gamepad2_left_bumper_being_pressed = true;
                     rpm += 100;
-                    launcherComp.setRPM(rpm);
+                    launcherComp.setTargetRPM(rpm);
                 }
             }
             else {

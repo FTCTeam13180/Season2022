@@ -58,6 +58,8 @@ public class Teleop extends LinearOpMode {
         stackerStateMachine = new StackerStateMachine(stackerComponent, op);
         log_angle = this.telemetry.addData("log_angle:", chassisComponent.getAngle() * 180 / Math.PI - 90);
 
+        SmartWhack smartWhack = new SmartWhack(this, launcherComponent, stackerComponent);
+
         waitForStart();
 
 
@@ -151,7 +153,12 @@ public class Teleop extends LinearOpMode {
                 if (gamepad2.right_stick_y < 0)
                     chassisComponent.stop();
 
-                smartWhack();
+                if (powershot_mode)
+                    smartWhack.whack(1);
+                else
+                    smartWhack.whack(3);
+
+//                smartWhack();
                 //stackerComponent.safeWhackThree();
             }
 
@@ -166,10 +173,11 @@ public class Teleop extends LinearOpMode {
 
             if(gamepad2.right_stick_y < 0){
                 if (powershot_mode)
-                    launcherComponent.powershotShoot();
+//                    launcherComponent.powershotShoot();
+                    launcherComponent.setTargetRPM(1750);
                 else {
 //                  launcherComponent.shoot();
-                    launcherComponent.setRPM(2000);
+                    launcherComponent.setTargetRPM(2000);
                 }
             }
             else if (gamepad2.right_stick_y > 0){
@@ -196,29 +204,6 @@ public class Teleop extends LinearOpMode {
                 }
             }
 
-            /* full shooting command
-                1. starting the launcher; setting it with a runtime of 10 sec
-                2. setting the number of whacks to 3
-                3. Stacker moves up
-                4. If the launcher has reached max speed; then start whacking
-                5. Once we're finished whacking, move the stacker (now empty) down
-                6. Stop the launcher
-             */
-/*
-            if(gamepad2.y){
-                runningTime = new ElapsedTime();
-                runningTime.reset();
-                launcherStateMachine.setRunningTime(10000);
-                launcherStateMachine.run();
-                stackerStateMachine.setWhacks(3);
-
-                if (launcherStateMachine.getState() == LauncherStateMachine.State.REACHED_MAX ){
-                    stackerStateMachine.run();
-                }
-                launcherStateMachine.stop();
-            }
-
-*/
 
             this.telemetry.update();
         }
@@ -226,6 +211,7 @@ public class Teleop extends LinearOpMode {
 
     }
 
+    /*
     private final double MIN_SAFE_RPM = 1950;
     private final double MAX_SAFE_RPM = 2050;
 
@@ -259,4 +245,6 @@ public class Teleop extends LinearOpMode {
         }
         return;
     }
+
+     */
 }

@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class LauncherComponent implements Component {
 
@@ -17,7 +16,7 @@ public class LauncherComponent implements Component {
     private boolean finishedLaunching = false;
     private boolean is_running = false;
 
-    private double set_rpm = 0;
+    private double target_rpm = 0;
 
     // Telemetry Items
     private Telemetry.Item log_launcher;
@@ -64,19 +63,23 @@ public class LauncherComponent implements Component {
     public double getRPM()
     {
         double rpm = launcher.getVelocity();
-        log_launcher.setValue("RPM Set: " + set_rpm + " Get:" + launcher.getVelocity());
+        log_launcher.setValue("RPM Set: " + target_rpm + " Get:" + launcher.getVelocity());
         return rpm;
     }
 
-    public void setRPM(double rpm)
+    public void setTargetRPM(double rpm)
     {
         if (rpm == 0)
             is_running = false;
         else
             is_running = true;
-        set_rpm = rpm;
-        log_launcher.setValue("RPM Set: " + set_rpm + " Get:" + launcher.getVelocity());
-        launcher.setVelocity(set_rpm);
+        target_rpm = rpm;
+        log_launcher.setValue("RPM Set: " + target_rpm + " Get:" + launcher.getVelocity());
+        launcher.setVelocity(target_rpm);
+    }
+
+    public double getTargetRPM() {
+        return target_rpm;
     }
 
     public boolean isBusy(){
