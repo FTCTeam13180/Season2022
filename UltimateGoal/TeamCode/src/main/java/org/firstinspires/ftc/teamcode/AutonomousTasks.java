@@ -44,6 +44,7 @@ public class AutonomousTasks{
 
     private StackerComponent stackerComponent;
     private StackerSerialTask stackerSerialTask;
+    private SmartWhack smartWhack;
 
     private GrabberComponent grabberComponent;
     private IntakeComponent intakeComponent;
@@ -90,6 +91,8 @@ public class AutonomousTasks{
         grabberComponent.init();
         intakeComponent = new IntakeComponent(op);
         intakeComponent.init();
+
+        smartWhack = new SmartWhack(op, launcherComponent, stackerComponent);
 
         detect = new Detector(op);
         detect.init();
@@ -189,7 +192,7 @@ public class AutonomousTasks{
 
     public void launchRingsAtHighGoal(){
         stackerComponent.sleep(100);
-        stackerComponent.safeWhackThree();
+        smartWhack.whack(4);
 
     }
 

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.LauncherComponent;
@@ -11,15 +11,22 @@ public class SmartWhack {
     private double RPM_TOLERANCE = 50;
     private double TIMEOUT_PER_RING = 500;
 
-    private LinearOpMode opmode;
+    private OpMode opmode;
     private LauncherComponent launcher;
     private StackerComponent stacker;
 
-    public SmartWhack (LinearOpMode op, LauncherComponent l, StackerComponent s)
+    public SmartWhack (OpMode op, LauncherComponent l, StackerComponent s)
     {
         opmode = op;
         launcher = l;
         stacker = s;
+    }
+    public void sleep(long milliseconds){
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     public void whack(int count)
@@ -32,11 +39,12 @@ public class SmartWhack {
 
         ElapsedTime accel_time = new ElapsedTime();
         ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
 
         while (count > 0 && launcher.isBusy() && runtime.milliseconds() < TIMEOUT) {
             prev_rpm = launcher.getRPM();
             accel_time.reset();
-            opmode.sleep(10);
+            sleep(10);
             rpm = launcher.getRPM();
 
             double acceleration = (rpm - prev_rpm)/accel_time.milliseconds();
@@ -47,9 +55,9 @@ public class SmartWhack {
             if (rpm_predicted >= MIN_SAFE_RPM && rpm_predicted <= MAX_SAFE_RPM) {
                 opmode.telemetry.addData("", "Time: %.0f  RPM: %.0f", runtime.milliseconds(), launcher.getRPM());
                 stacker.unsafeWhackerOut();
-                opmode.sleep(100);
+                sleep(100);
                 stacker.unsafeWhackerIn();
-                opmode.sleep(100);
+                sleep(100);
                 count --;
             }
         }
