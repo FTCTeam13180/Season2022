@@ -335,11 +335,11 @@ public class AutonomousTasks{
 
             case TURN:
                 stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2);
+                chassisComponent.spinToXDegree(-Math.PI/2, 0.03);
                 stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2);
+                chassisComponent.spinToXDegree(-Math.PI/2, 0.03);
                 stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2);
+                chassisComponent.spinToXDegree(-Math.PI/2, 0.03);
                 state = State.STOP;
             case STOP:
                 stop();
