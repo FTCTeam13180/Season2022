@@ -202,6 +202,9 @@ public class ChassisStateMachine implements BasicCommand {
         Waypoint targetPoint = spline.getTargetWaypoint();
         log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
 
+        // Fix Robot Angle
+//        chassisComp.spinToXDegree (0, 0.03);
+
         if (spline.movingToDestination())
         {
             odometry.nextPointRampdown(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
@@ -215,7 +218,7 @@ public class ChassisStateMachine implements BasicCommand {
 
         if(isFinished) {
             targetPoint.setReached();
-            chassisComp.spinToXDegree(0);
+            chassisComp.spinToXDegree(0, 0.3);
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
@@ -230,7 +233,7 @@ public class ChassisStateMachine implements BasicCommand {
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
             chassisComp.stop();
-            chassisComp.spinToXDegree(0);
+            chassisComp.spinToXDegree(0, 0.3);
             spline.setCorrected();
         } else {
             // Correction is not done yet. Continue correction
@@ -254,7 +257,7 @@ public class ChassisStateMachine implements BasicCommand {
             case EXECUTE:
                 execute();
                 if (spline.isCompleted()) {
-                    chassisComp.spinToXDegree(0);
+                    chassisComp.spinToXDegree(0, 0.3);
                     state = State.AUTO_CORRECT;
                 }
                 break;
