@@ -60,14 +60,14 @@ public class GrabberComponent implements Component {
         armDown();
         sleep(500);
         clawClose();
-        sleep(750);
+        sleep(350);
         armStraight();
     }
     public void safeWobbleDownAndRelease(){
         armDown();
         sleep(500);
         clawOpen();
-        sleep(500);
+        sleep(350);
         armStraight();
     }
 
