@@ -211,9 +211,20 @@ public class AutonomousTasks{
     5) Park on the white launch line
      */
 
+    boolean first_time_called = true;
+
     public void run(){
 
+        if (first_time_called)
+        {
+            first_time_called = false;
+            time.reset();
+        }
+
         log_autonomouTasks_state.setValue(state);
+        if (numOfRings == 4 && time.milliseconds() > 29500){
+            state = State.TURN;
+        }
         switch(state){
 
             case INIT:
@@ -313,6 +324,7 @@ public class AutonomousTasks{
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
                     moveToTargetZone(false);
                 }
+
                 chassisSerialMotion.run();
                 break;
 
