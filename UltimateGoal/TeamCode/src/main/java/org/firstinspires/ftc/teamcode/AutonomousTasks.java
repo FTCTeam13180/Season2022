@@ -143,7 +143,7 @@ public class AutonomousTasks{
     public void grabWobble(){
         //ToDo: odom code to reach second wobble goal
         //TODO: Change robot orientation as needed
-        stackerComponent.sleep(500);
+       // stackerComponent.sleep(500);
         grabberComponent.safeWobbleGrabAndUp();
     }
 
@@ -276,8 +276,6 @@ public class AutonomousTasks{
                     state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2;
                     intakeComponent.expel();
                     stackerComponent.stackerUp();
-                    launcherComponent.shoot();
-                    stackerComponent.sleep(400);
 
                     chassisSerialMotion.setState(ChassisStateMachine.State.INIT);
                     break;
@@ -299,6 +297,7 @@ public class AutonomousTasks{
                 }
                 if(chassisSerialMotion.getState() == ChassisStateMachine.State.INIT){
                     moveToHighGoalLaunchPosition(2);
+                    launcherComponent.shoot();
                 }
                 chassisSerialMotion.run();
                 break;
