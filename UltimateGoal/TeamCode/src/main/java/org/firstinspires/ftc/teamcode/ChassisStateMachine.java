@@ -135,7 +135,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(102, 129, power));
             spline.add(new Waypoint(102, 106, power));
             spline.add(new Waypoint(100, 89, power));
-            spline.add(new Waypoint(96,64,power));
+            spline.add(new Waypoint(93,64,power));
             //spline.add(new Waypoint(88,68,power));
         }
         if(rings == 1){
@@ -149,7 +149,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(156,100,power));
             spline.add(new Waypoint(136,83,power));
             spline.add(new Waypoint(114,72,power));
-            spline.add(new Waypoint( 96,64,power));
+            spline.add(new Waypoint( 93,64,power));
         }
         else if(rings == 4){
             //starts from 60, 355
@@ -160,7 +160,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(133,122,power));
             spline.add(new Waypoint(119,96,power));
             spline.add(new Waypoint(103, 73, power));
-            spline.add(new Waypoint(96,64,power));
+            spline.add(new Waypoint(93,64,power));
 
         }
     }
@@ -174,8 +174,8 @@ public class ChassisStateMachine implements BasicCommand {
         if (rings == 4) {
             spline = new Spline(new Waypoint(95, 84, power));
             spline.add(new Waypoint(80, 155, power));
-           // spline.add(new Waypoint(80, 175, power));
-            spline.add(new Waypoint(80, 185, power));
+            spline.add(new Waypoint(80, 175, power));
+          //  spline.add(new Waypoint(80, 185, power));
         }
     }
 
