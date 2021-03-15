@@ -29,7 +29,7 @@ public class Odometry{
     double last_X;
     double last_Y;
     double rampdown_cap = 60;
-    double ACCURACY_THRESHOLD = 5; //cm
+    double ACCURACY_THRESHOLD = 7.5; //cm
     double ACCURACY_THRESHOLD_RAMPDOWN= 1.5; //cm
 
     // Telemetry Items
@@ -74,7 +74,9 @@ public class Odometry{
 
         double rampdown_factor;
         //double rampstart_factor;
-        rampdown_factor = .5 * cm_to_target / rampdown_cap;
+        //rampdown_factor = .7 * cm_to_target / rampdown_cap;
+        rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;
+
         //rampstart_factor =
         //rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;
         rampdown_factor = Math.min(rampdown_factor, 1);

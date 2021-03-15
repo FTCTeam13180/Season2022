@@ -192,7 +192,7 @@ public class AutonomousTasks{
 
     public void launchRingsAtHighGoal(){
         stackerComponent.sleep(100);
-        smartWhack.whack(4);
+        smartWhack.whack(3);
 
     }
 
@@ -223,6 +223,7 @@ public class AutonomousTasks{
 
         log_autonomouTasks_state.setValue(state);
         if (numOfRings == 4 && time.milliseconds() > 29500){
+            grabberComponent.unsafeClawOpen();
             state = State.TURN;
         }
         switch(state){
@@ -345,12 +346,12 @@ public class AutonomousTasks{
                 break;
 
             case TURN:
-                stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2, 0.03);
-                stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2, 0.03);
-                stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2, 0.03);
+//                stackerComponent.sleep(200);
+                chassisComponent.spinToXDegree(-Math.PI/2, 0.03, 0.5);
+//                stackerComponent.sleep(200);
+                chassisComponent.spinToXDegree(-Math.PI/2, 0.02, 0.3);
+//                stackerComponent.sleep(200);
+//                chassisComponent.spinToXDegree(-Math.PI/2, 0.04, 0.5);
                 state = State.STOP;
             case STOP:
                 stop();

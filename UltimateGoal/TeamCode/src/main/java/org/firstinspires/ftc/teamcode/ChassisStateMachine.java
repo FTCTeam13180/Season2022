@@ -72,8 +72,11 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(130, 197, power)); //shooting point
         }
         else{
-            spline = new Spline(new Waypoint(125, 195, power));
-            spline.add(new Waypoint(130, 197, power)); //shooting point (130, 105)
+            // starting position (80, 165)
+            spline = new Spline(new Waypoint(90, 155, power));
+            spline.add(new Waypoint(101, 157, power));
+            spline.add(new Waypoint(115, 167, power));
+            spline.add(new Waypoint(130, 197, power)); //shooting point
         }
     }
 
@@ -91,7 +94,7 @@ public class ChassisStateMachine implements BasicCommand {
                 //B
                // spline = new Spline(new Waypoint(120,180,power));
 
-                spline = new Spline(new Waypoint(130,290,power));
+                spline = new Spline(new Waypoint(130,265,power));
                 spline.add(new Waypoint(130,300,power));
             }
             else if(rings == 4){
@@ -114,7 +117,7 @@ public class ChassisStateMachine implements BasicCommand {
             else if(rings==1){
                 //B
                 spline = new Spline(new Waypoint(126,200,power));
-                spline.add(new Waypoint(126, 270, power));
+                spline.add(new Waypoint(126, 240, power));
                 spline.add(new Waypoint(126,273,power));
             }
             else if (rings == 4){
@@ -174,7 +177,7 @@ public class ChassisStateMachine implements BasicCommand {
         if (rings == 4) {
             spline = new Spline(new Waypoint(95, 84, power));
             spline.add(new Waypoint(80, 155, power));
-            spline.add(new Waypoint(80, 175, power));
+            spline.add(new Waypoint(80, 165, power));
           //  spline.add(new Waypoint(80, 185, power));
         }
     }
@@ -220,7 +223,7 @@ public class ChassisStateMachine implements BasicCommand {
         log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
 
         // Fix Robot Angle
-        chassisComp.spinToXDegree (0, 0.04);
+        chassisComp.spinToXDegree (0, 0.05, 0.3);
 
         if (spline.movingToDestination())
         {
@@ -235,7 +238,7 @@ public class ChassisStateMachine implements BasicCommand {
 
         if(isFinished) {
             targetPoint.setReached();
-            chassisComp.spinToXDegree(0, 0.035);
+            chassisComp.spinToXDegree(0, 0.03, 0.3);
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
@@ -250,7 +253,7 @@ public class ChassisStateMachine implements BasicCommand {
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
             chassisComp.stop();
-            chassisComp.spinToXDegree(0, 0.035);
+            chassisComp.spinToXDegree(0, 0.03, 0.3);
             spline.setCorrected();
         } else {
             // Correction is not done yet. Continue correction
@@ -274,7 +277,7 @@ public class ChassisStateMachine implements BasicCommand {
             case EXECUTE:
                 execute();
                 if (spline.isCompleted()) {
-                    chassisComp.spinToXDegree(0, 0.03);
+//                    chassisComp.spinToXDegree(0, 0.03, 0.3);
                     state = State.AUTO_CORRECT;
                 }
                 break;

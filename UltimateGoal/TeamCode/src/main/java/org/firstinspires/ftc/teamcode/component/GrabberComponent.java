@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class GrabberComponent implements Component {
-    private static final double ARM_DOWN = .85;
+    private static final double ARM_DOWN = 1;
     private static final double ARM_STRAIGHT = 0;
     private static final double ARM_UP = 0;
     private static final double CLAW_OPEN = 0.8;
@@ -45,6 +45,12 @@ public class GrabberComponent implements Component {
             claw.setPosition(clawPosition);
         }
     }
+
+    public void unsafeClawOpen(){
+            clawPosition = CLAW_OPEN;
+            claw.setPosition(clawPosition);
+    }
+
     public void clawClose(){
         clawPosition = CLAW_CLOSE;
         claw.setPosition(clawPosition);
@@ -57,18 +63,26 @@ public class GrabberComponent implements Component {
         }
     }
     public void safeWobbleGrabAndUp(){
-        armDown();
-        sleep(500);
-        clawClose();
-        sleep(350);
+        if (armPosition != ARM_DOWN) {
+            armDown();
+            sleep(500);
+        }
+        if (clawPosition != CLAW_CLOSE) {
+            clawClose();
+            sleep(500);
+        }
         armStraight();
     }
     public void safeWobbleDownAndRelease(){
-        armDown();
-        sleep(500);
-        clawOpen();
-        sleep(350);
-        armStraight();
+        if (armPosition != ARM_DOWN) {
+            armDown();
+            sleep(500);
+        }
+        if (clawPosition != CLAW_OPEN) {
+            clawOpen();
+            sleep(350);
+        }
+//        armStraight();
     }
 
     //likely will not work - servo doesn't give any position between the ones that were set

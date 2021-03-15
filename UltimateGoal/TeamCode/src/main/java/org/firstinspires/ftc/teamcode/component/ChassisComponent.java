@@ -248,7 +248,7 @@ public class ChassisComponent implements Component {
         rearl.setPower(-Math.abs(power));
     }
 
-    public void spinToXDegree(double degree, double threshold)
+    public void spinToXDegree(double degree, double threshold, double power)
     {
         degree += Math.PI/2;
         double robotAngle = getAngle();
@@ -258,7 +258,7 @@ public class ChassisComponent implements Component {
 
         if (degree - robotAngle < 0)
         {
-            spinRight(.3);
+            spinRight(power);
             while ((Math.abs(degree - robotAngle) > threshold))
             {
                 robotAngle = getAngle();
@@ -266,7 +266,7 @@ public class ChassisComponent implements Component {
         }
         else
         {
-            spinLeft(.3);
+            spinLeft(power);
             while ((Math.abs(degree - robotAngle) > threshold))
             {
                 robotAngle = getAngle();
