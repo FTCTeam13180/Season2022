@@ -305,6 +305,8 @@ public class ChassisStateMachine implements BasicCommand {
         spline = new Spline(new Waypoint(98, 60, power));
         spline.add(new Waypoint(150,120,power));
         spline.add(new Waypoint(174,200,power));
+
+        //first powershot position: (168, 196)
     }
 
     public void shiftPowershot(int ps_ix){
