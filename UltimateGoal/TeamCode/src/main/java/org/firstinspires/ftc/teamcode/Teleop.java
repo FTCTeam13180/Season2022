@@ -162,10 +162,10 @@ public class Teleop extends LinearOpMode {
                 //stackerComponent.safeWhackThree();
             }
 
-            if (gamepad2.x) {
+            if (gamepad2.a) {
                 launcherComponent.setTargetRPM(2000);
                 stackerComponent.stackerUp();
-                //stackerComponent.sleep(200);
+                stackerComponent.sleep(200);
                 smartWhack.whack(4);
                 launcherComponent.stop();
             }
