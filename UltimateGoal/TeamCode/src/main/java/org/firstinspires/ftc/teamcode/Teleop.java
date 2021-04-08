@@ -162,14 +162,23 @@ public class Teleop extends LinearOpMode {
                 //stackerComponent.safeWhackThree();
             }
 
-            if (gamepad2.y) {
-                if (!gamepad2_y_being_pressed) {
-                    gamepad2_y_being_pressed = true;
-                    powershot_mode = !powershot_mode;
-                }
+            if (gamepad2.x) {
+                launcherComponent.setTargetRPM(2000);
+                stackerComponent.stackerUp();
+                //stackerComponent.sleep(200);
+                smartWhack.whack(4);
+                launcherComponent.stop();
             }
-            else
-                gamepad2_y_being_pressed = false;
+
+            if (gamepad2.y) {
+                    if (!gamepad2_y_being_pressed) {
+                        gamepad2_y_being_pressed = true;
+                        powershot_mode = !powershot_mode;
+                    }
+                }
+                else
+                    gamepad2_y_being_pressed = false;
+            }
 
             if(gamepad2.right_stick_y < 0){
                 if (powershot_mode)
@@ -247,4 +256,4 @@ public class Teleop extends LinearOpMode {
     }
 
      */
-}
+

@@ -30,7 +30,7 @@ public class Odometry{
     double last_Y;
     double rampdown_cap = 60;
     double ACCURACY_THRESHOLD = 7.5; //cm
-    double ACCURACY_THRESHOLD_RAMPDOWN= 1.5; //cm
+    double ACCURACY_THRESHOLD_RAMPDOWN= 3.5; //cm
 
     // Telemetry Items
     private Telemetry.Item log_global_X_Y;

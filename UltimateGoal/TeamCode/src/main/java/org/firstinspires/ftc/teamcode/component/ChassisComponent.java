@@ -13,8 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
  * Created by Yash Pradhan on 10/4/20
  */
 
-// Not really needed - Rohan
-
 public class ChassisComponent implements Component {
     private OpMode opMode;
 

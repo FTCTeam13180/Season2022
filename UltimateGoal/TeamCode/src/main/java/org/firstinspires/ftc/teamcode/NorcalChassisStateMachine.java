@@ -22,7 +22,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
     private double timeoutMs;
     private OpMode op;
     ElapsedTime runtime;
-    double power = 1.0;
+    double power = 0.75;
     private State state = State.INIT;
     private Spline spline;
     private int rings;

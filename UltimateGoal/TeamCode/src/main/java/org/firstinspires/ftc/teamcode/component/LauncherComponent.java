@@ -41,7 +41,7 @@ public class LauncherComponent implements Component {
     }
     public void powershotShoot() {
         is_running = true;
-        launcher.setPower(POWERSHOT_LAUNCHER_POWER);
+        launcher.setPower(POWERSHOT_LAUNCHER_POWER); //0.75
         log_launcher.setValue("SHOOTING");
     }
 
@@ -63,7 +63,7 @@ public class LauncherComponent implements Component {
     public double getRPM()
     {
         double rpm = launcher.getVelocity();
-        log_launcher.setValue("RPM Set: " + target_rpm + " Get:" + launcher.getVelocity());
+        log_launcher.setValue("RPM Set: " + target_rpm + " Get: " + launcher.getVelocity());
         return rpm;
     }
 
