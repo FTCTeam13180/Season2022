@@ -28,12 +28,12 @@ public class Teleop extends LinearOpMode {
     private StackerStateMachine stackerStateMachine;
     private ChassisComponent chassisComponent1;
 
-    double power=1.0;
+    double power = 1.0;
 
     boolean powershot_mode = false;
     boolean gamepad2_y_being_pressed = false;
 
-    public void runOpMode(){
+    public void runOpMode() {
 
         this.telemetry.setAutoClear(false);
 
@@ -51,8 +51,8 @@ public class Teleop extends LinearOpMode {
         intakeComponent = new IntakeComponent(this);
         intakeComponent.init();
 
-        odometry = new Odometry(this,chassisComponent,50,75);
-        odometry.init();
+//        odometry = new Odometry(this,chassisComponent,50,75);
+//        odometry.init();
 
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();
@@ -88,44 +88,41 @@ public class Teleop extends LinearOpMode {
             left stick - arm up/down based on stick up and down
 
          */
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
 
             //
             // gamepad 1
             //
 
-            if(gamepad1.a) {
+            if (gamepad1.a) {
                 chassisComponent.initIMU();
             }
-            if(gamepad1.x){log_angle.setValue(chassisComponent.getAngle() * 180 / Math.PI - 90);}
+            if (gamepad1.x) {
+                log_angle.setValue(chassisComponent.getAngle() * 180 / Math.PI - 90);
+            }
 
-                if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
                     || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
                 double x = gamepad1.left_stick_x;
                 double y = -gamepad1.left_stick_y; // note: joystick y is reversed.
                 double turn = -gamepad1.right_stick_x; //for driver specifically arnav who has practiced the other way
-                double power = Math.sqrt(x*x + y*y);
+                double power = Math.sqrt(x * x + y * y);
                 power = (power > 0) ? power : Math.abs(turn);
-                chassisComponent.fieldCentricDrive(x, y, power,false, turn);
+                chassisComponent.fieldCentricDrive(x, y, power, false, turn);
+            } else if (gamepad1.dpad_up) {
+                chassisComponent.moveForward(power * 0.5);
+            } else if (gamepad1.dpad_down) {
+                chassisComponent.moveBackward(power * 0.5);
+            } else {
+                chassisComponent.stop();
             }
-            else if (gamepad1.dpad_up) {
-                chassisComponent.moveForward(power*0.5);
-            }
-            else if (gamepad1.dpad_down) {
-                chassisComponent.moveBackward(power*0.5);
-            }
-            else {
-               chassisComponent.stop();
-           }
 
-            if(gamepad1.right_bumper){
+            if (gamepad1.right_bumper) {
                 intakeComponent.expel();
-            }
-            else if(gamepad1.left_bumper){
+            } else if (gamepad1.left_bumper) {
                 stackerComponent.stackerDown();
                 intakeComponent.in();
-            }
-            else {
+            } else {
                 intakeComponent.stop();
             }
 
@@ -133,16 +130,14 @@ public class Teleop extends LinearOpMode {
             //gamepad 2
             //
 
-            if(gamepad2.x){
+            if (gamepad2.x) {
                 stackerComponent.stackerDump();
             }
-            if (gamepad2.right_bumper){
+            if (gamepad2.right_bumper) {
                 stackerComponent.safeWhack();
-            }
-            else if(gamepad2.dpad_up){
+            } else if (gamepad2.dpad_up) {
                 stackerComponent.stackerUp();
-            }
-            else if (gamepad2.dpad_down){
+            } else if (gamepad2.dpad_down) {
                 stackerComponent.stackerDown();
             }
 
@@ -174,16 +169,14 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.y) {
-                    if (!gamepad2_y_being_pressed) {
-                        gamepad2_y_being_pressed = true;
-                        powershot_mode = !powershot_mode;
-                    }
+                if (!gamepad2_y_being_pressed) {
+                    gamepad2_y_being_pressed = true;
+                    powershot_mode = !powershot_mode;
                 }
-                else
-                    gamepad2_y_being_pressed = false;
-            }
+            } else
+                gamepad2_y_being_pressed = false;
 
-            if(gamepad2.right_stick_y < 0){
+            if (gamepad2.right_stick_y < 0) {
                 if (powershot_mode)
 //                    launcherComponent.powershotShoot();
                     launcherComponent.setTargetRPM(1750);
@@ -191,27 +184,24 @@ public class Teleop extends LinearOpMode {
 //                  launcherComponent.shoot();
                     launcherComponent.setTargetRPM(2000);
                 }
-            }
-            else if (gamepad2.right_stick_y > 0){
+            } else if (gamepad2.right_stick_y > 0) {
                 launcherComponent.reverse();
-            }
-            else {
+            } else {
                 launcherComponent.stop();
             }
 
             //wobble arm controls
-            if(gamepad2.dpad_left){
+            if (gamepad2.dpad_left) {
                 grabberComponent.clawOpen();
-            }
-            else if(gamepad2.dpad_right){
+            } else if (gamepad2.dpad_right) {
                 grabberComponent.clawClose();
             }
-            if(Math.abs(gamepad2.left_stick_y) > 0.1 ){
-                if(gamepad2.left_stick_y < 0){
+            if (Math.abs(gamepad2.left_stick_y) > 0.1) {
+                if (gamepad2.left_stick_y < 0) {
                     grabberComponent.clawClose();
                     grabberComponent.armStraight();
                 }
-                if(gamepad2.left_stick_y > 0){
+                if (gamepad2.left_stick_y > 0) {
                     grabberComponent.armDown();
                 }
             }
@@ -223,40 +213,4 @@ public class Teleop extends LinearOpMode {
 
     }
 
-    /*
-    private final double MIN_SAFE_RPM = 1950;
-    private final double MAX_SAFE_RPM = 2050;
-
-    void smartWhack() {
-        int count = 3;
-        double rpm = 0;
-        double prev_rpm = 0;
-
-        ElapsedTime accel_time = new ElapsedTime();
-        ElapsedTime runtime = new ElapsedTime();
-
-        while (count > 0 && launcherComponent.isBusy()) {
-            prev_rpm = launcherComponent.getRPM();
-            accel_time.reset();
-            sleep(10);
-            rpm = launcherComponent.getRPM();
-
-            double acceleration = (rpm - prev_rpm)/accel_time.milliseconds();
-            double rpm_predicted = rpm + acceleration * 10;
-
-            this.telemetry.addData("", "Time: %.0f  RPM: %.0f PRED_RPM: %.0f", runtime.milliseconds(), rpm, rpm_predicted);
-
-            if (rpm_predicted >= MIN_SAFE_RPM && rpm_predicted <= MAX_SAFE_RPM) {
-                this.telemetry.addData("", "Time: %.0f  RPM: %.0f", runtime.milliseconds(), launcherComponent.getRPM());
-                stackerComponent.unsafeWhackerOut();
-                sleep(100);
-                stackerComponent.unsafeWhackerIn();
-                sleep(100);
-                count --;
-            }
-        }
-        return;
-    }
-
-     */
-
+}
