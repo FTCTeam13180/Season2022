@@ -50,6 +50,7 @@ public class TestPowershot extends LinearOpMode {
         chassisComponent.init();
         chassisComponent.initIMU();
         odometry = new Odometry(this, chassisComponent, 97, 45);
+        odometry.init();
 
         telemetry.setAutoClear(false);
         ElapsedTime runtime = new ElapsedTime();

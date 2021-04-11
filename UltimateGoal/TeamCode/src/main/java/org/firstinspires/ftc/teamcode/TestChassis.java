@@ -15,6 +15,7 @@ public class TestChassis extends LinearOpMode {
         chassisComp=new ChassisComponent(this);
         chassisComp.init();
         odometry= new Odometry(this,chassisComp,80,160);
+        odometry.init();
 
         ElapsedTime runtime = new ElapsedTime();
         waitForStart();

@@ -22,10 +22,12 @@ public class TestOdometryModules extends LinearOpMode {
         chassisComponent.initIMU();
 
         odometry = new Odometry(this,chassisComponent,50,75);
+        odometry.init();
 
         waitForStart();
 
         while(opModeIsActive()){
+            odometry.readCurrentPosition();
             odometry.displayPosition();
         }
 

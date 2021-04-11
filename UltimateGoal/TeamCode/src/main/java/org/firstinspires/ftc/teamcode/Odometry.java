@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
@@ -13,6 +15,11 @@ public class Odometry{
 
     OpMode opMode;
     ChassisComponent chassisComp;
+
+    public DcMotor x_encoder;
+    public DcMotor y_right_encoder;
+    public DcMotor y_left_encoder;
+
     //constants
     double wheel_diameter = 3.8; //cm
     double cntsPerRotation = 1440;
@@ -36,19 +43,28 @@ public class Odometry{
     private Telemetry.Item log_global_X_Y;
 
 
-
     double y_cnts;
     double x_cnts;
 
-
-
-      Odometry (OpMode op, ChassisComponent chassisComponent,double i_x, double i_y){
+    Odometry (OpMode op, ChassisComponent chassisComponent,double i_x, double i_y){
         opMode=op;
         global_X = this.init_X = last_X = i_x;
         global_Y = this.init_Y = last_Y = i_y;
         chassisComp= chassisComponent;
         log_global_X_Y = opMode.telemetry.addData("global_X_Y:", "(%.1f, %.1f)", global_X, global_Y);
-      }
+    }
+
+    public void init(){
+        x_encoder = opMode.hardwareMap.dcMotor.get("x_encoder");
+        y_right_encoder = opMode.hardwareMap.dcMotor.get("y_right_encoder");
+        y_left_encoder = opMode.hardwareMap.dcMotor.get("Intake");
+
+        x_encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        y_right_encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        y_left_encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
+
     //______________________________________________________________________________________________
 
 
@@ -135,30 +151,26 @@ public class Odometry{
     }
 
     public void readCurrentPosition() {
-        currentXCounts = chassisComp.topl.getCurrentPosition();
-        currentYRightCounts = chassisComp.topr.getCurrentPosition();
-        currentYLeftCounts = chassisComp.rearl.getCurrentPosition();
+        currentXCounts = x_encoder.getCurrentPosition();
+        currentYRightCounts = y_right_encoder.getCurrentPosition();
+        // y Left encoder is installed in opposite direction so negate the value
+        currentYLeftCounts = - (y_left_encoder.getCurrentPosition());
 
         global_X = init_X + currentXCounts/cntsPerCm;
         global_Y= init_Y + (currentYRightCounts+currentYLeftCounts)/(2*cntsPerCm);
         log_global_X_Y.setValue("(%.1f, %.1f)", global_X, global_Y);
     }
 
-public double getCurrentX(){
-        return chassisComp.topl.getCurrentPosition();
+    public double getCurrentX(){
+        return x_encoder.getCurrentPosition();
     }
+
     public double getCurrentY(){
-        return chassisComp.topr.getCurrentPosition();
+        // y Left encoder is installed in opposite direction so negate the value
+        return (y_right_encoder.getCurrentPosition() - y_left_encoder.getCurrentPosition())/2;
     }
 
 
-        /*double yRight = chassisComp.topr.getCurrentPosition();
-
-        double yLeft = chassisComp.rearl.getCurrentPosition();
-
-        return (yRight + yLeft)/2;
-
-         */
     public void updateLog(String calledFrom)
     {
         /*

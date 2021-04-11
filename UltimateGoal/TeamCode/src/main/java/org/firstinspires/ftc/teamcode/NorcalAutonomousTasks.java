@@ -76,6 +76,7 @@ public class NorcalAutonomousTasks {
         chassisComponent.init();
         chassisComponent.initIMU();
         odometry = new Odometry(op, chassisComponent,97,45);
+        odometry.init();
 
         chassisSerialMotion = new NorcalChassisSerialMotion(odometry, chassisComponent,op);
 

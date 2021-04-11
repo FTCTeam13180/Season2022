@@ -19,6 +19,7 @@ public class TestRobotDance extends OpMode {
         chassisComponent.init();
         chassisComponent.initIMU();
         odometry = new Odometry(op, chassisComponent,98,47);
+        odometry.init();
 
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,op);
 

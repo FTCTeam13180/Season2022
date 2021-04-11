@@ -76,6 +76,7 @@ public class AutonomousTasks{
         chassisComponent.init();
         chassisComponent.initIMU();
         odometry = new Odometry(op, chassisComponent,97,45);
+        odometry.init();
 
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,op);
 

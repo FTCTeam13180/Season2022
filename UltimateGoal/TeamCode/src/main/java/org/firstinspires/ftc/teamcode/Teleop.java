@@ -52,6 +52,7 @@ public class Teleop extends LinearOpMode {
         intakeComponent.init();
 
         odometry = new Odometry(this,chassisComponent,50,75);
+        odometry.init();
 
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();

@@ -37,6 +37,7 @@ public class OdometryTest extends OpMode {
         chassisComponent.init();
         chassisComponent.initIMU();
         odometry = new Odometry(this,chassisComponent,0,0);
+        odometry.init();
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,this);
     }
 
