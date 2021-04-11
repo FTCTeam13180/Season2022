@@ -121,6 +121,7 @@ public class Teleop extends LinearOpMode {
                 intakeComponent.expel();
             }
             else if(gamepad1.left_bumper){
+                stackerComponent.stackerDown();
                 intakeComponent.in();
             }
             else {
@@ -168,6 +169,7 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.sleep(200);
                 smartWhack.whack(4);
                 launcherComponent.stop();
+                stackerComponent.stackerDown();
             }
 
             if (gamepad2.y) {
