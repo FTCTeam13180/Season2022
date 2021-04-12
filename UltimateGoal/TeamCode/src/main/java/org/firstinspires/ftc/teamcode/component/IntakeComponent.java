@@ -13,7 +13,7 @@ public class IntakeComponent implements Component {
         opMode = op;
     }
 
-    DcMotor intake;
+    public DcMotor intake;
 
     public void init() {
         intake = opMode.hardwareMap.dcMotor.get("Intake");

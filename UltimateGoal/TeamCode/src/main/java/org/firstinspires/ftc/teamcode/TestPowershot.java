@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+import org.firstinspires.ftc.teamcode.component.IntakeComponent;
 import org.firstinspires.ftc.teamcode.component.LauncherComponent;
 import org.firstinspires.ftc.teamcode.component.StackerComponent;
 
@@ -22,6 +23,7 @@ public class TestPowershot extends LinearOpMode {
     LauncherComponent launcherComp;
     StackerComponent stackerComponent;
     ChassisComponent chassisComponent;
+    IntakeComponent intakeComponent;
     Odometry odometry;
     Waypoint LEFT_STUMP;
     Waypoint MIDDLE_STUMP;
@@ -49,7 +51,8 @@ public class TestPowershot extends LinearOpMode {
         chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
         chassisComponent.initIMU();
-        odometry = new Odometry(this, chassisComponent, 97, 45);
+        intakeComponent = new IntakeComponent(this);
+        odometry = new Odometry(this, chassisComponent, intakeComponent, 97, 45);
         odometry.init();
 
         telemetry.setAutoClear(false);

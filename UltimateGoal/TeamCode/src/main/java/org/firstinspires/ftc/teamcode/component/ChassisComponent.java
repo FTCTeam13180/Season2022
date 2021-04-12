@@ -42,10 +42,10 @@ public class ChassisComponent implements Component {
         rearl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        topr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        topl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rearl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        topr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        topl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rearl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         topr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

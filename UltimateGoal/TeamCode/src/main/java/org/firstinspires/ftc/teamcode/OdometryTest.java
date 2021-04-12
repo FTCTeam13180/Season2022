@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+import org.firstinspires.ftc.teamcode.component.IntakeComponent;
 
 @Autonomous(name="Odometry Test",group="UltimateGoalAutonomous")
 public class OdometryTest extends OpMode {
@@ -27,6 +28,7 @@ public class OdometryTest extends OpMode {
     int numberOfRings=0; //just cuz
     ChassisSerialMotion chassisSerialMotion;
     ChassisComponent chassisComponent;
+    IntakeComponent intakeComponent;
 
     public void init(){
         telemetry.addLine("Initializing");
@@ -36,7 +38,8 @@ public class OdometryTest extends OpMode {
         chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
         chassisComponent.initIMU();
-        odometry = new Odometry(this,chassisComponent,0,0);
+        intakeComponent = new IntakeComponent(this);
+        odometry = new Odometry(this,chassisComponent, intakeComponent, 0,0);
         odometry.init();
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,this);
     }

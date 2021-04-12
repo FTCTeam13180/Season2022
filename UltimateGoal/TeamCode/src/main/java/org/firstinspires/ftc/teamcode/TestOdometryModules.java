@@ -14,14 +14,16 @@ import org.firstinspires.ftc.teamcode.component.StackerComponent;
 public class TestOdometryModules extends LinearOpMode {
     private OpMode op;
     private ChassisComponent chassisComponent;
+    private IntakeComponent intakeComponent;
     private Odometry odometry;
 
     public void runOpMode(){
         chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
         chassisComponent.initIMU();
+        intakeComponent = new IntakeComponent(this);
 
-        odometry = new Odometry(this,chassisComponent,50,75);
+        odometry = new Odometry(this,chassisComponent, intakeComponent, 50,75);
         odometry.init();
 
         waitForStart();

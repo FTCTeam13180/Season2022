@@ -75,7 +75,10 @@ public class AutonomousTasks{
         chassisComponent = new ChassisComponent(op);
         chassisComponent.init();
         chassisComponent.initIMU();
-        odometry = new Odometry(op, chassisComponent,97,45);
+        intakeComponent = new IntakeComponent(op);
+        intakeComponent.init();
+
+        odometry = new Odometry(op, chassisComponent, intakeComponent, 97,45);
         odometry.init();
 
         chassisSerialMotion = new ChassisSerialMotion(odometry, chassisComponent,op);
@@ -90,8 +93,6 @@ public class AutonomousTasks{
 
         grabberComponent = new GrabberComponent(op);
         grabberComponent.init();
-        intakeComponent = new IntakeComponent(op);
-        intakeComponent.init();
 
         smartWhack = new SmartWhack(op, launcherComponent, stackerComponent);
 

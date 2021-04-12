@@ -5,16 +5,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
+import org.firstinspires.ftc.teamcode.component.IntakeComponent;
 
 @TeleOp(name = "TestChassis", group ="teleop")
 public class TestChassis extends LinearOpMode {
 
     Odometry odometry;
     ChassisComponent chassisComp;
+    IntakeComponent intakeComp;
     public void runOpMode(){
         chassisComp=new ChassisComponent(this);
         chassisComp.init();
-        odometry= new Odometry(this,chassisComp,80,160);
+        intakeComp = new IntakeComponent(this);
+        odometry= new Odometry(this,chassisComp, intakeComp, 80,160);
         odometry.init();
 
         ElapsedTime runtime = new ElapsedTime();
