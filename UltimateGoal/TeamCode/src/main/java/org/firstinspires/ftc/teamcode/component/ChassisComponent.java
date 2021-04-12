@@ -200,7 +200,7 @@ public class ChassisComponent implements Component {
 
         double controlAngle = Math.atan2(y, x);
         double RobotAngle = getAngle(); // Corrected for IMU orientation on robot.
-        double newAngle = AngleUnit.normalizeRadians(controlAngle - RobotAngle + Math.PI/2);
+        double newAngle = AngleUnit.normalizeRadians(controlAngle - RobotAngle);
         double newY = Math.sin(newAngle) * mag;
         double newX = Math.cos(newAngle) * mag;
 
