@@ -50,7 +50,7 @@ public class SmartWhack {
             double acceleration = (rpm - prev_rpm)/accel_time.milliseconds();
             double rpm_predicted = rpm + acceleration * 10;
 
-            boolean go_for_whack = rpm >= MIN_SAFE_RPM && rpm_predicted <= MAX_SAFE_RPM;
+            boolean go_for_whack = rpm >= MIN_SAFE_RPM && rpm <= MAX_SAFE_RPM && rpm_predicted >= MIN_SAFE_RPM && rpm_predicted <= MAX_SAFE_RPM;
             opmode.telemetry.addData("", "Time: %.0f  RPM: %.0f PRED_RPM: %.0f", runtime.milliseconds(), rpm, rpm_predicted);
 
             if (go_for_whack) {
@@ -59,7 +59,7 @@ public class SmartWhack {
                 sleep(100);
                 stacker.unsafeWhackerIn();
                 sleep(100);
-                count --;
+                count--;
             }
         }
 
