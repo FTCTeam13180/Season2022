@@ -51,7 +51,8 @@ public class SmartWhack {
             double rpm_predicted = rpm + acceleration * 10;
 
             boolean go_for_whack = rpm >= MIN_SAFE_RPM && rpm <= MAX_SAFE_RPM && rpm_predicted >= MIN_SAFE_RPM && rpm_predicted <= MAX_SAFE_RPM;
-            opmode.telemetry.addData("", "Time: %.0f  RPM: %.0f PRED_RPM: %.0f", runtime.milliseconds(), rpm, rpm_predicted);
+            opmode.telemetry.addData("", "Time: %.0f  RPM: %.0f PRED_RPM: %.0f PID: %s",
+                    runtime.milliseconds(), rpm, rpm_predicted, launcher.getPIDFCoefficients().toString());
 
             if (go_for_whack) {
                 opmode.telemetry.addData("", "Time: %.0f  RPM: %.0f", runtime.milliseconds(), launcher.getRPM());

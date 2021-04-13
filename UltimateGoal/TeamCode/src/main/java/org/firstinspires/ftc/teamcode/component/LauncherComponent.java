@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.component;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -32,6 +33,8 @@ public class LauncherComponent implements Component {
         launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         log_launcher = opmode.telemetry.addData("Launcher:", "Initialized");
+//        PIDFCoefficients p = new PIDFCoefficients(100, 20, 0, 0);
+//        launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, p);
     }
 
     public void shoot(){
@@ -80,6 +83,10 @@ public class LauncherComponent implements Component {
 
     public double getTargetRPM() {
         return target_rpm;
+    }
+
+    public PIDFCoefficients getPIDFCoefficients(){
+        return launcher.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public boolean isBusy(){

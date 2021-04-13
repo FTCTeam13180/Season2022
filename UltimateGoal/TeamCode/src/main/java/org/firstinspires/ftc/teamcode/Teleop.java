@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.component.GrabberComponent;
 import org.firstinspires.ftc.teamcode.component.IntakeComponent;
 import org.firstinspires.ftc.teamcode.component.LauncherComponent;
 import org.firstinspires.ftc.teamcode.component.StackerComponent;
+import org.firstinspires.ftc.teamcode.component.WingsComponent;
 
 @TeleOp(name = "Teleop", group = "POC")
 public class Teleop extends LinearOpMode {
@@ -18,20 +19,17 @@ public class Teleop extends LinearOpMode {
     private IntakeComponent intakeComponent;
     private GrabberComponent grabberComponent;
     private LauncherComponent launcherComponent;
-    private LauncherStateMachine launcherStateMachine;
+    private WingsComponent wingsComponent;
     private Telemetry.Item log_angle;
 
-    Odometry odometry;
 
-    ElapsedTime runningTime;
     private StackerComponent stackerComponent;
-    private StackerStateMachine stackerStateMachine;
-    private ChassisComponent chassisComponent1;
 
     double power = 1.0;
 
     boolean powershot_mode = false;
     boolean gamepad2_y_being_pressed = false;
+    boolean gamepad1_x_being_pressed = false;
 
     public void runOpMode() {
 
@@ -46,17 +44,16 @@ public class Teleop extends LinearOpMode {
 
         launcherComponent = new LauncherComponent(this);
         launcherComponent.init();
-        launcherStateMachine = new LauncherStateMachine(launcherComponent, op);
 
         intakeComponent = new IntakeComponent(this);
         intakeComponent.init();
 
-//        odometry = new Odometry(this,chassisComponent, intakeComponent, 50,75);
-//        odometry.init();
+        wingsComponent = new WingsComponent(this);
+        wingsComponent.init();
+
 
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();
-        stackerStateMachine = new StackerStateMachine(stackerComponent, op);
         log_angle = this.telemetry.addData("log_angle:", chassisComponent.getAngle() * 180 / Math.PI - 90);
 
         SmartWhack smartWhack = new SmartWhack(this, launcherComponent, stackerComponent);
@@ -126,6 +123,16 @@ public class Teleop extends LinearOpMode {
                 intakeComponent.stop();
             }
 
+            // Wings Controls
+            if (gamepad1.x) {
+                if (!gamepad1_x_being_pressed) {
+                    gamepad1_x_being_pressed = true;
+                    wingsComponent.toggleWings();
+                }
+            } else
+                gamepad1_x_being_pressed = false;
+
+
             //
             //gamepad 2
             //
@@ -152,21 +159,12 @@ public class Teleop extends LinearOpMode {
 
                 if (powershot_mode)
                     smartWhack.whack(1);
-                else
+                else {
                     smartWhack.whack(3);
-
-//                smartWhack();
-                //stackerComponent.safeWhackThree();
+                    stackerComponent.stackerDown();
+                }
             }
 
-            if (gamepad2.a) {
-                launcherComponent.setTargetRPM(2000);
-                stackerComponent.stackerUp();
-                stackerComponent.sleep(200);
-                smartWhack.whack(4);
-                launcherComponent.stop();
-                stackerComponent.stackerDown();
-            }
 
             if (gamepad2.y) {
                 if (!gamepad2_y_being_pressed) {
@@ -178,10 +176,8 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.right_stick_y < 0) {
                 if (powershot_mode)
-//                    launcherComponent.powershotShoot();
                     launcherComponent.setTargetRPM(1750);
                 else {
-//                  launcherComponent.shoot();
                     launcherComponent.setTargetRPM(2000);
                 }
             } else if (gamepad2.right_stick_y > 0) {
