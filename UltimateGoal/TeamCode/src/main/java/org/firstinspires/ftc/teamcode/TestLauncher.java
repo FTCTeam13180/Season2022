@@ -31,6 +31,7 @@ public class TestLauncher extends LinearOpMode {
         chassisComponent = new ChassisComponent(this);
         chassisComponent.init();
         chassisComponent.initIMU();
+        SmartWhack smartWhack = new SmartWhack(this, launcherComp, stackerComponent);
 
         telemetry.setAutoClear(false);
         ElapsedTime runtime = new ElapsedTime();
@@ -39,6 +40,18 @@ public class TestLauncher extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+
+            if (Math.abs(gamepad2.left_stick_y) > 0.1 || Math.abs(gamepad2.left_stick_x) > 0.1
+                    || (Math.abs(gamepad2.right_stick_x) > 0.1)) {
+                double x = gamepad2.left_stick_x;
+                double y = -gamepad2.left_stick_y; // note: joystick y is reversed.
+                double turn = -gamepad2.right_stick_x; //for driver specifically arnav who has practiced the other way
+                double power = Math.sqrt(x * x + y * y);
+                power = (power > 0) ? power : Math.abs(turn);
+                chassisComponent.fieldCentricDrive(x, y, power * 0.5, false, turn);
+            } else {
+                chassisComponent.stop();
+            }
 
             if (gamepad2.left_bumper) {
                 if (!gamepad2_left_bumper_being_pressed) {
@@ -63,7 +76,7 @@ public class TestLauncher extends LinearOpMode {
 
             if (gamepad2.right_bumper){
                 this.telemetry.addData("", "RPM: %.0f ANGLE: %f",  launcherComp.getRPM(), chassisComponent.getAngle());
-                stackerComponent.safeWhack();
+                smartWhack.whack(1);
             }
             if(gamepad2.dpad_up){
                 stackerComponent.stackerUp();

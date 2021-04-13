@@ -64,12 +64,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //op.telemetry.addData("power", power);
             //op.telemetry.update();
             //start 97, 45
-            spline = new Spline(new Waypoint(120, 85, power));
-            spline.add(new Waypoint(130, 120, power));
-            spline.add(new Waypoint(126, 136, power));
-         //   spline.add(new Waypoint(135, 160, power));
-
-            spline.add(new Waypoint(130, 197, power)); //shooting point
+            spline = new Spline(new Waypoint(97, 60, power));
         }
         else{
             // starting position (80, 165)

@@ -233,7 +233,7 @@ public class NorcalAutonomousTasks {
             case INIT:
                 grabberComponent.armStraight();
 //                launcherComponent.autoShoot();
-                launcherComponent.setTargetRPM(2000);
+                launcherComponent.setTargetRPM(1820);
                 stackerComponent.stackerUp();
                 state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
                 break;
@@ -241,6 +241,7 @@ public class NorcalAutonomousTasks {
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
+                    chassisComponent.spinToXDegree(-0.08, .02, 0.5);
                     launchRingsAtHighGoal();
                     state = State.MOVE_TO_TARGET_ZONE;
                     break;
