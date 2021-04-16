@@ -227,7 +227,7 @@ public class NorcalAutonomousTasks {
         log_autonomouTasks_state.setValue(state);
         if (numOfRings == 4 && time.milliseconds() > 29500){
             grabberComponent.unsafeClawOpen();
-            state = State.TURN;
+       //     state = State.TURN;
         }
         switch(state){
 
@@ -371,7 +371,7 @@ public class NorcalAutonomousTasks {
 
             case PARK_AT_LAUNCH_LINE:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
-                    state = State.TURN;
+                    state = State.STOP;
                     launcherComponent.stop();
                     stackerComponent.stackerDown();
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
