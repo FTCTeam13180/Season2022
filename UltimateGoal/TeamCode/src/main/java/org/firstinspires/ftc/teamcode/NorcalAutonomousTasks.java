@@ -232,7 +232,7 @@ public class NorcalAutonomousTasks {
         switch(state){
 
             case INIT:
-                launcherComponent.setTargetRPM(1820);
+                launcherComponent.setTargetRPM(1700);
                 grabberComponent.armStraight();
                 stackerComponent.stackerUp();
                 if(numOfRings == 0){
