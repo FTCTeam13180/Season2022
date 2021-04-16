@@ -339,11 +339,13 @@ public class NorcalAutonomousTasks {
                     wobbleGoalTime = time.milliseconds();;
                     moveToSecondWobble();
                 }
-                if ((time.milliseconds() - wobbleGoalTime) > 500 && grabberComponent.isArmDown())
+                chassisSerialMotion.run();
+
+                if ((time.milliseconds() - wobbleGoalTime) > 1000 && grabberComponent.isArmDown())
                 {
                     grabberComponent.safeWobbleGrabAndUp();
                 }
-                chassisSerialMotion.run();
+
                 break;
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2:
