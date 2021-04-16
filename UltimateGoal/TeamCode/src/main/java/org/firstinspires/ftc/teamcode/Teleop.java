@@ -26,6 +26,10 @@ public class Teleop extends LinearOpMode {
     private StackerComponent stackerComponent;
 
     double power = 1.0;
+    private static double POWERSHOT_RPM = 1750;
+    private static double HIGHGOAL_RPM = 2000;
+    private static double RPM_TOLERANCE = 50;
+    private static double ONE_WHACK_TIMEOUT_MS = 1000;
 
     boolean powershot_mode = false;
     boolean gamepad2_y_being_pressed = false;
@@ -158,9 +162,9 @@ public class Teleop extends LinearOpMode {
                     chassisComponent.stop();
 
                 if (powershot_mode)
-                    smartWhack.whack(1);
+                    smartWhack.whack(1, POWERSHOT_RPM, RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
                 else {
-                    smartWhack.whack(3);
+                    smartWhack.whack(3, HIGHGOAL_RPM, RPM_TOLERANCE, 3*ONE_WHACK_TIMEOUT_MS);
                     stackerComponent.stackerDown();
                 }
             }
@@ -176,9 +180,9 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad2.right_stick_y < 0) {
                 if (powershot_mode)
-                    launcherComponent.setTargetRPM(1750);
+                    launcherComponent.setTargetRPM(POWERSHOT_RPM);
                 else {
-                    launcherComponent.setTargetRPM(2000);
+                    launcherComponent.setTargetRPM(HIGHGOAL_RPM);
                 }
             } else if (gamepad2.right_stick_y > 0) {
                 launcherComponent.reverse();

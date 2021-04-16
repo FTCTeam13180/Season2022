@@ -194,8 +194,7 @@ public class AutonomousTasks{
 
     public void launchRingsAtHighGoal(){
         stackerComponent.sleep(100);
-        smartWhack.whack(3);
-
+        smartWhack.whack(3, 2000, 50, 3000);
     }
 
 
