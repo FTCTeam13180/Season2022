@@ -412,11 +412,11 @@ public class NorcalAutonomousTasks {
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 stackerComponent.stackerUp();
-                chassisComponent.spinToXDegree(-0.26, .01, 0.3);
+                chassisComponent.spinToXDegree(-0.40, .01, 0.3);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.32, .01, 0.3);
+                chassisComponent.spinToXDegree(-0.46, .01, 0.3);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.38, .01, 0.3);
+                chassisComponent.spinToXDegree(-0.52, .01, 0.3);
                 smartWhack.whack(1);
 
                 state = State.MOVE_TO_TARGET_ZONE;
