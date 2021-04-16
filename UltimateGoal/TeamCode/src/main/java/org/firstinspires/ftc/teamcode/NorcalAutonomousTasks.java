@@ -233,7 +233,7 @@ public class NorcalAutonomousTasks {
         switch(state){
 
             case INIT:
-                launcherComponent.setTargetRPM(1700);
+                launcherComponent.setTargetRPM(1650);
                 grabberComponent.armStraight();
                 stackerComponent.stackerUp();
                 if(numOfRings == 0){
@@ -420,11 +420,11 @@ public class NorcalAutonomousTasks {
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 stackerComponent.stackerUp();
-                chassisComponent.spinToXDegree(-0.40, .01, 0.3);
+                chassisComponent.spinToXDegree(-0.36, .01, 0.2);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.46, .01, 0.3);
+                chassisComponent.spinToXDegree(-0.50, .01, 0.2);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.52, .01, 0.3);
+                chassisComponent.spinToXDegree(-0.64, .01, 0.2);
                 smartWhack.whack(1);
 
                 state = State.MOVE_TO_TARGET_ZONE;
