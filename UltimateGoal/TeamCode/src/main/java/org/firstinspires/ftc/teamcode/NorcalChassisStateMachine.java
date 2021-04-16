@@ -80,9 +80,9 @@ public class NorcalChassisStateMachine implements BasicCommand {
         if(first){
             if(rings==0){
                 //A
-                spline = new Spline(new Waypoint(115,185,power));
-                spline.add(new Waypoint(94, 183, power));
-                spline.add(new Waypoint(72, 194, power));
+                spline = new Spline(new Waypoint(73,202,power));
+           //     spline.add(new Waypoint(94, 183, power));
+             //   spline.add(new Waypoint(72, 194, power));
                 spline.add(new Waypoint(56, 214, power));
             }
             else if(rings==1){

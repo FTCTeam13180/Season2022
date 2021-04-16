@@ -309,6 +309,7 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     grabberComponent.safeWobbleDownAndRelease();
                         state = State.MOVE_TO_SECOND_WOBBLE;
+                        grabberComponent.armUp();
 
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
@@ -411,11 +412,11 @@ public class NorcalAutonomousTasks {
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 stackerComponent.stackerUp();
-                chassisComponent.spinToXDegree(-0.17, .02, 0.5);
+                chassisComponent.spinToXDegree(-0.17, .02, 0.3);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.23, .02, 0.5);
+                chassisComponent.spinToXDegree(-0.23, .02, 0.3);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.28, .02, 0.5);
+                chassisComponent.spinToXDegree(-0.28, .02, 0.3);
                 smartWhack.whack(1);
 
                 state = State.MOVE_TO_TARGET_ZONE;
