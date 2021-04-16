@@ -163,16 +163,16 @@ public class NorcalChassisStateMachine implements BasicCommand {
         }
     }
 
-    public void pickUpRingsMovement(){
-        if (rings == 1 || rings == 0) {
+    public void pickUpRingsMovement(int instance){
+        if (instance == 1) {
             spline = new Spline(new Waypoint(95,84,power));
-            spline.add(new Waypoint(80, 155, power));
-            spline.add(new Waypoint(80, 180, power));
+            spline.add(new Waypoint(89, 126, power));
+       //     spline.add(new Waypoint(80, 180, power));
         }
-        if (rings == 4) {
-            spline = new Spline(new Waypoint(95, 84, power));
-            spline.add(new Waypoint(80, 155, power));
-            spline.add(new Waypoint(80, 165, power));
+        if (instance == 2) {
+            spline = new Spline(new Waypoint(89, 150, power));
+        //    spline.add(new Waypoint(89, 12, power));
+      //      spline.add(new Waypoint(80, 165, power));
           //  spline.add(new Waypoint(80, 185, power));
         }
     }
@@ -297,9 +297,18 @@ public class NorcalChassisStateMachine implements BasicCommand {
 
 
     public void moveToPowerShot(){
-        spline = new Spline(new Waypoint(98, 60, power));
-        spline.add(new Waypoint(150,120,power));
-        spline.add(new Waypoint(174,200,power));
+        if(rings == 0){
+            spline = new Spline(new Waypoint(89, 197, power));
+        }
+        else if(rings == 1){
+           spline = new Spline(new Waypoint(89, 197, power));
+        }
+        else if(rings == 4){
+            spline = new Spline(new Waypoint(89, 197, power));
+        }
+       // spline = new Spline(new Waypoint(98, 60, power));
+       // spline.add(new Waypoint(150,120,power));
+       // spline.add(new Waypoint(174,200,power));
 
         //first powershot position: (168, 196)
     }

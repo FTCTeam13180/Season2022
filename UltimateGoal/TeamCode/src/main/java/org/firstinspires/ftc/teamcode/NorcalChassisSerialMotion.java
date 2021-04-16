@@ -20,7 +20,7 @@ public class NorcalChassisSerialMotion {
     }
     public void moveToTarget(int numRings,boolean first){ chassisStateMachine.moveToTargetZone(numRings,first); }
     public void moveToPowerShot(){chassisStateMachine.moveToPowerShot();}
-    public void moveToPickUpRings(){chassisStateMachine.pickUpRingsMovement();}
+    public void moveToPickUpRings(int instance){chassisStateMachine.pickUpRingsMovement(instance);}
     public void moveToWobble(){ chassisStateMachine.moveToWobble(); }
     public void moveToRings(){chassisStateMachine.moveToRings();}
     public void moveToGoal(int instance){chassisStateMachine.moveToGoal(instance);}
