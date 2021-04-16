@@ -217,6 +217,7 @@ public class NorcalAutonomousTasks {
     boolean first_time_called = true;
 
     public void run(){
+        double wobbleGoalTime = 0;
 
         if (first_time_called)
         {
@@ -309,7 +310,7 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     grabberComponent.safeWobbleDownAndRelease();
                         state = State.MOVE_TO_SECOND_WOBBLE;
-                        grabberComponent.armUp();
+//                        grabberComponent.safeWobbleGrabAndUp();
 
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
@@ -335,7 +336,12 @@ public class NorcalAutonomousTasks {
                     break;
                 }
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.INIT){
+                    wobbleGoalTime = time.milliseconds();;
                     moveToSecondWobble();
+                }
+                if ((time.milliseconds() - wobbleGoalTime) > 500 && grabberComponent.isArmDown())
+                {
+                    grabberComponent.safeWobbleGrabAndUp();
                 }
                 chassisSerialMotion.run();
                 break;

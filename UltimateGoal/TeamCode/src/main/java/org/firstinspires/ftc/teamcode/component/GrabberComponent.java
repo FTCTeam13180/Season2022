@@ -85,6 +85,9 @@ public class GrabberComponent implements Component {
 //        armStraight();
     }
 
+    public boolean isArmDown() {
+        return armPosition == ARM_DOWN;
+    }
     //likely will not work - servo doesn't give any position between the ones that were set
     /*public boolean isClawBusy(){
         if (clawr.getPosition() != clawPosition || clawr.getPosition() > CLAW_OPEN){
