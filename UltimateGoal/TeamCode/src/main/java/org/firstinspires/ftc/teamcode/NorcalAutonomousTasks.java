@@ -412,19 +412,11 @@ public class NorcalAutonomousTasks {
 
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 stackerComponent.stackerUp();
-<<<<<<< Updated upstream
-                chassisComponent.spinToXDegree(-0.17, .02, 0.3);
+                chassisComponent.spinToXDegree(-0.26, .01, 0.3);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.23, .02, 0.3);
+                chassisComponent.spinToXDegree(-0.32, .01, 0.3);
                 smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.28, .02, 0.3);
-=======
-                chassisComponent.spinToXDegree(-0.18, .02, 0.5);
-                smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.24, .02, 0.5);
-                smartWhack.whack(1);
-                chassisComponent.spinToXDegree(-0.29, .02, 0.5);
->>>>>>> Stashed changes
+                chassisComponent.spinToXDegree(-0.38, .01, 0.3);
                 smartWhack.whack(1);
 
                 state = State.MOVE_TO_TARGET_ZONE;
