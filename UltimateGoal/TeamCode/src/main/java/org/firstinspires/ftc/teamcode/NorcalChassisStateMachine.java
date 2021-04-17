@@ -90,7 +90,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
                // spline = new Spline(new Waypoint(120,180,power));
 
                 spline = new Spline(new Waypoint(130,265,power));
-                spline.add(new Waypoint(130,300,power));
+                spline.add(new Waypoint(116,290,power));
             }
             else if(rings == 4){
                 //C
@@ -137,17 +137,13 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //spline.add(new Waypoint(88,68,power));
         }
         if(rings == 1){
-            //starts from 130, 300
-            spline = new Spline(new Waypoint(157,275,power));
-            spline.add(new Waypoint(180,244,power));
-            spline.add(new Waypoint(191,208,power));
-            spline.add(new Waypoint(194,179,power));
-            spline.add(new Waypoint(189,147,power));
-            spline.add(new Waypoint(177,124,power));
-            spline.add(new Waypoint(156,100,power));
-            spline.add(new Waypoint(136,83,power));
-            spline.add(new Waypoint(114,72,power));
-            spline.add(new Waypoint( 93,64,power));
+            //starts from 116, 290
+            spline = new Spline(new Waypoint(130,247,power));
+            spline.add(new Waypoint(142,205,power));
+            spline.add(new Waypoint(142,162,power));
+            spline.add(new Waypoint(129,116,power));
+            spline.add(new Waypoint(93,63,power));
+
         }
         else if(rings == 4){
             //starts from 60, 355

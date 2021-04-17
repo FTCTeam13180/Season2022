@@ -70,10 +70,10 @@ public class SmartWhack {
     */
 
     public void whack (int count, double target_rpm, double rpm_tolerance, double timeout) {
-        for (int i=0; i<count; count++)
+        for (int i=0; i<count; i++)
         {
             double rpm = ensureTargetRPM(target_rpm, rpm_tolerance, timeout);
-            opmode.telemetry.addData("", "WHACK: %d TGT_RPM: %.0f, RPM: %.0f", count+1, target_rpm, rpm);
+            opmode.telemetry.addData("", "WHACK: %d TGT_RPM: %.0f, RPM: %.0f", i+1, target_rpm, rpm);
             stacker.unsafeWhackerOut();
             sleep(100);
             stacker.unsafeWhackerIn();
