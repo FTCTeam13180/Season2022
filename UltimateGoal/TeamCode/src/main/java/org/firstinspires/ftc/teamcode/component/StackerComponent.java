@@ -54,6 +54,15 @@ public class StackerComponent implements Component {
         stacker.setPosition(stackerPosition);
         log_stacker.setValue("DOWN");
     }
+
+    public boolean isStackerUp(){
+        return stackerPosition == STACKER_UP;
+    }
+
+    public boolean isStackerDown(){
+        return stackerPosition == STACKER_DOWN;
+    }
+
     public void sleep(long milliseconds){
         try {
             Thread.sleep(milliseconds);

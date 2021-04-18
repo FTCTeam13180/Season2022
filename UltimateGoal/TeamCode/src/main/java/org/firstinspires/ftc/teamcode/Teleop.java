@@ -121,7 +121,6 @@ public class Teleop extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 intakeComponent.expel();
             } else if (gamepad1.left_bumper) {
-                stackerComponent.stackerDown();
                 intakeComponent.in();
             } else {
                 intakeComponent.stop();
@@ -148,8 +147,10 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.safeWhack();
             } else if (gamepad2.dpad_up) {
                 stackerComponent.stackerUp();
+                wingsComponent.wingsUp();
             } else if (gamepad2.dpad_down) {
                 stackerComponent.stackerDown();
+                wingsComponent.wingsDown();
             }
 
             if (gamepad2.right_bumper) {
@@ -164,7 +165,7 @@ public class Teleop extends LinearOpMode {
                 if (powershot_mode)
                     smartWhack.whack(1, POWERSHOT_RPM, POWERSHOT_RPM + RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
                 else {
-                    smartWhack.whack(3, HIGHGOAL_RPM, HIGHGOAL_RPM + RPM_TOLERANCE, 3*ONE_WHACK_TIMEOUT_MS);
+                    smartWhack.whack(3, HIGHGOAL_RPM, HIGHGOAL_RPM + RPM_TOLERANCE, 1500);
                     stackerComponent.stackerDown();
                 }
             }

@@ -49,11 +49,11 @@ public class SmartWhack {
                 continue;
 
             accel_time.reset();
-            sleep(10);
+            sleep(100);
             rpm = launcher.getRPM();
 
             double acceleration = (rpm - prev_rpm) / accel_time.milliseconds();
-            double rpm_predicted = rpm + acceleration * 10;
+            double rpm_predicted = rpm + acceleration * 100;
 
             boolean go_for_whack = rpm >= min_rpm && rpm <= max_rpm &&
                     rpm_predicted >= min_rpm && rpm_predicted <= max_rpm;
@@ -77,7 +77,7 @@ public class SmartWhack {
             stacker.unsafeWhackerOut();
             sleep(100);
             stacker.unsafeWhackerIn();
-            sleep(100);
+            sleep(500);
             count--;
         }
 
