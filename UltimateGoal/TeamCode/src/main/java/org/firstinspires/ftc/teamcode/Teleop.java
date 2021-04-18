@@ -27,8 +27,8 @@ public class Teleop extends LinearOpMode {
 
     double power = 1.0;
     private static double POWERSHOT_RPM = 1750;
-    private static double HIGHGOAL_RPM = 2000;
-    private static double RPM_TOLERANCE = 50;
+    private static double HIGHGOAL_RPM = 1950;
+    private static double RPM_TOLERANCE = 20;
     private static double ONE_WHACK_TIMEOUT_MS = 1000;
 
     boolean powershot_mode = false;
@@ -144,7 +144,7 @@ public class Teleop extends LinearOpMode {
             if (gamepad2.x) {
                 stackerComponent.stackerDump();
             }
-            if (gamepad2.right_bumper) {
+            if (gamepad2.left_bumper) {
                 stackerComponent.safeWhack();
             } else if (gamepad2.dpad_up) {
                 stackerComponent.stackerUp();
@@ -152,7 +152,7 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.stackerDown();
             }
 
-            if (gamepad2.left_bumper) {
+            if (gamepad2.right_bumper) {
                 // Note: safeWhackThree sleeps for a while which introduces race condition between Driver 1 stopping
                 // the robot right before driver 2 presses safeWhackThree. Robot continues to move during safeWhackThree
                 // if driver 1 stop does not get registered in time.
@@ -162,9 +162,9 @@ public class Teleop extends LinearOpMode {
                     chassisComponent.stop();
 
                 if (powershot_mode)
-                    smartWhack.whack(1, POWERSHOT_RPM, RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
+                    smartWhack.whack(1, POWERSHOT_RPM, POWERSHOT_RPM + RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
                 else {
-                    smartWhack.whack(3, HIGHGOAL_RPM, RPM_TOLERANCE, 3*ONE_WHACK_TIMEOUT_MS);
+                    smartWhack.whack(3, HIGHGOAL_RPM, HIGHGOAL_RPM + RPM_TOLERANCE, 3*ONE_WHACK_TIMEOUT_MS);
                     stackerComponent.stackerDown();
                 }
             }

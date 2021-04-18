@@ -64,7 +64,10 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //op.telemetry.addData("power", power);
             //op.telemetry.update();
             //start 97, 45
-            spline = new Spline(new Waypoint(97, 60, power));
+//            spline = new Spline(new Waypoint(97, 60, 0.6 * power));
+            spline = new Spline(new Waypoint(89,130,power));
+            spline.add(new Waypoint(89, 126, power));
+
         }
         else{
             // starting position (80, 165)
@@ -161,15 +164,13 @@ public class NorcalChassisStateMachine implements BasicCommand {
 
     public void pickUpRingsMovement(int instance){
         if (instance == 1) {
-            spline = new Spline(new Waypoint(95,84,power));
-            spline.add(new Waypoint(89, 126, power));
-       //     spline.add(new Waypoint(80, 180, power));
+//            spline = new Spline(new Waypoint(95,84,power));
+//            spline.add(new Waypoint(89, 126, power));
+            spline = new Spline(new Waypoint(89,130,power));
+
         }
         if (instance == 2) {
-            spline = new Spline(new Waypoint(89, 150, power));
-        //    spline.add(new Waypoint(89, 12, power));
-      //      spline.add(new Waypoint(80, 165, power));
-          //  spline.add(new Waypoint(80, 185, power));
+            spline = new Spline(new Waypoint(89, 175, power));
         }
     }
 

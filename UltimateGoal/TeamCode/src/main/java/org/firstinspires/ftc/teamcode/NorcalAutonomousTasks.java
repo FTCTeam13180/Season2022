@@ -193,8 +193,8 @@ public class NorcalAutonomousTasks {
         chassisSerialMotion.moveToGoal(instance);
     }
 
-    public void launchRingsAtHighGoal(int num, double target_rpm, double rpm_tolerance, double timeout){
-        smartWhack.whack(num, target_rpm, rpm_tolerance, timeout);
+    public void launchRingsAtHighGoal(int num, double min_rpm, double max_rpm, double timeout){
+        smartWhack.whack(num, min_rpm, max_rpm, timeout);
     }
 
 
@@ -228,18 +228,18 @@ public class NorcalAutonomousTasks {
         log_autonomouTasks_state.setValue(state);
         if (numOfRings == 4 && time.milliseconds() > 29500){
             grabberComponent.unsafeClawOpen();
-       //     state = State.TURN;
         }
         switch(state){
 
             case INIT:
-                launcherComponent.setTargetRPM(1650);
                 grabberComponent.armStraight();
                 stackerComponent.stackerUp();
                 if(numOfRings == 0){
+                    launcherComponent.setTargetRPM(1650);
                     state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 }
                 else{
+                    launcherComponent.setTargetRPM(1850);
                     state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
                 }
                 break;
@@ -247,15 +247,12 @@ public class NorcalAutonomousTasks {
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
-                    chassisComponent.spinToXDegree(-0.08, .02, 0.5);
+                    chassisComponent.spinToXDegree(-0.15, .005, 0.1);
                     if(numOfRings == 1){
-                        launchRingsAtHighGoal(1, 1900, 10, 1000);
+                        launchRingsAtHighGoal(1, 1850, 1880, 1000);
                     }
                     else if(numOfRings == 4){
-
-                            launchRingsAtHighGoal(3, 1900, 10, 3000);
-
-
+                            launchRingsAtHighGoal(3, 1850, 1880, 2000);
                     }
                     state = State.PICK_UP_1_RING;
                     break;
@@ -270,17 +267,18 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
 
                     if(numOfRings == 1) {
+                        intakeComponent.stop();
                         state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                     }
                     else if(numOfRings == 4 && numRingFromPile == 1){
                         numRingFromPile++;
+                        intakeComponent.expel();
+                        stackerComponent.stackerUp();;
                         state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2;
                     }
                     else {
                         state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                     }
-             //       intakeComponent.expel();
-              //      stackerComponent.stackerUp();
 
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
@@ -297,15 +295,14 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP) {
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
-               //    intakeComponent.expel();
 
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
                 }
                 if(chassisSerialMotion.getState()==NorcalChassisStateMachine.State.INIT){
                     stackerComponent.stackerUp();
-                    chassisComponent.spinToXDegree(-0.08, .02, 0.5);
-                    launchRingsAtHighGoal(1, 1850, 50, 1000);
+                    chassisComponent.spinToXDegree(-0.15, .005, 0.1);
+                    launchRingsAtHighGoal(1, 1850, 1900, 1000);
                     stackerComponent.stackerDown();
                     intakeComponent.in();
                     moveToPickUpRings(2);
@@ -324,7 +321,6 @@ public class NorcalAutonomousTasks {
                     break;
                 }
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.INIT){
-                    launcherComponent.stop();
                     stackerComponent.stackerDown();
                     moveToTargetZone(true);
                 }
@@ -333,7 +329,7 @@ public class NorcalAutonomousTasks {
 
             case MOVE_TO_SECOND_WOBBLE:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
-                        state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
+                    state = State.MOVE_SECOND_WOBBLE_TO_TARGET_ZONE;
 
                     grabWobble();
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
@@ -353,18 +349,13 @@ public class NorcalAutonomousTasks {
                 break;
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2:
-                if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
-                    state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
-                        //after picking up 1 ring from pile
-                        launchRingsAtHighGoal(1, 1700, 10, 1000);
+                chassisComponent.spinToXDegree(-0.15, .005, 0.1);
+                launchRingsAtHighGoal(1, 1880, 1920, 1000);
+                stackerComponent.stackerDown();
+                intakeComponent.in();
+                state = State.PICK_UP_3_RINGS;
 
-                    chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
-                    break;
-                }
-                if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.INIT){
-                    launcherComponent.shoot();
-                }
-                chassisSerialMotion.run();
+                chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                 break;
 
             case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
@@ -385,7 +376,6 @@ public class NorcalAutonomousTasks {
             case PARK_AT_LAUNCH_LINE:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     state = State.STOP;
-                    launcherComponent.stop();
                     stackerComponent.stackerDown();
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
@@ -398,18 +388,6 @@ public class NorcalAutonomousTasks {
                 intakeComponent.stop();
                 break;
 
-            case TURN:
-//                stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2, 0.03, 0.5);
-//                stackerComponent.sleep(200);
-                chassisComponent.spinToXDegree(-Math.PI/2, 0.02, 0.3);
-//                stackerComponent.sleep(200);
-//                chassisComponent.spinToXDegree(-Math.PI/2, 0.04, 0.5);
-                state = State.STOP;
-            case STOP:
-                stop();
-                break;
-
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
@@ -418,6 +396,7 @@ public class NorcalAutonomousTasks {
                 }
 
                 if(chassisSerialMotion.getState()==NorcalChassisStateMachine.State.INIT){
+                    intakeComponent.stop();
                     moveToPowerShotLaunchPosition();
                 }
                 chassisSerialMotion.run();
@@ -428,15 +407,15 @@ public class NorcalAutonomousTasks {
                 if (powershot_count == 1) {
                     stackerComponent.stackerUp();
                     chassisComponent.spinToXDegree(-0.39, .005, 0.1);
-                    smartWhack.whack(1, 1650, 10, 2000);
+                    smartWhack.whack(1, 1850, 1860, 2000);
                 }
                 else if (powershot_count == 2) {
                     chassisComponent.spinToXDegree(-0.48, .005, 0.1);
-                    smartWhack.whack(1, 1660, 10, 2000);
+                    smartWhack.whack(1, 1850, 1860, 2000);
                 }
                 else {
                     chassisComponent.spinToXDegree(-0.58, .005, 0.1);
-                    smartWhack.whack(1, 1680, 10, 2000);
+                    smartWhack.whack(1, 1850, 1860, 2000);
                     state = State.MOVE_TO_TARGET_ZONE;
                     launcherComponent.stop();
                 }
