@@ -71,13 +71,13 @@ public class SmartWhack {
 
         }
 
-        //unsafe whach for remaining.
+        //unsafe whack for remaining.
         while (count > 0) {
             opmode.telemetry.addData("", "Count: %d  TGT_RPM: %.0f, RPM: %.0f", count, target_rpm, launcher.getRPM());
             stacker.unsafeWhackerOut();
             sleep(100);
             stacker.unsafeWhackerIn();
-            sleep(500);
+            sleep(300);
             count--;
         }
 

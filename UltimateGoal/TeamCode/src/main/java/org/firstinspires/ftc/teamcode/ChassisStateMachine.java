@@ -138,7 +138,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(102, 129, power));
             spline.add(new Waypoint(102, 106, power));
             spline.add(new Waypoint(100, 89, power));
-            spline.add(new Waypoint(93,64,power));
+            spline.add(new Waypoint(90,64,power));
             //spline.add(new Waypoint(88,68,power));
         }
         if(rings == 1){
@@ -152,7 +152,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(156,100,power));
             spline.add(new Waypoint(136,83,power));
             spline.add(new Waypoint(114,72,power));
-            spline.add(new Waypoint( 93,64,power));
+            spline.add(new Waypoint( 90,64,power));
         }
         else if(rings == 4){
             //starts from 60, 355
@@ -163,7 +163,7 @@ public class ChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(133,122,power));
             spline.add(new Waypoint(119,96,power));
             spline.add(new Waypoint(103, 73, power));
-            spline.add(new Waypoint(93,64,power));
+            spline.add(new Waypoint(90,64,power));
 
         }
     }
@@ -223,7 +223,7 @@ public class ChassisStateMachine implements BasicCommand {
         log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
 
         // Fix Robot Angle
-        chassisComp.spinToXDegree (0, 0.05, 0.3);
+        chassisComp.spinToXDegree (0, 0.05, 0.1);
 
         if (spline.movingToDestination())
         {
@@ -238,7 +238,7 @@ public class ChassisStateMachine implements BasicCommand {
 
         if(isFinished) {
             targetPoint.setReached();
-            chassisComp.spinToXDegree(0, 0.03, 0.3);
+            chassisComp.spinToXDegree(0, 0.03, 0.1);
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
@@ -253,7 +253,7 @@ public class ChassisStateMachine implements BasicCommand {
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
             chassisComp.stop();
-            chassisComp.spinToXDegree(0, 0.03, 0.3);
+            chassisComp.spinToXDegree(0, 0.03, 0.1);
             spline.setCorrected();
         } else {
             // Correction is not done yet. Continue correction

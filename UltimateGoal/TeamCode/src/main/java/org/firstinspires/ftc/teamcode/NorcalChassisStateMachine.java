@@ -22,7 +22,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
     private double timeoutMs;
     private OpMode op;
     ElapsedTime runtime;
-    double power = 0.75;
+    double power = 1.0;
     private State state = State.INIT;
     private Spline spline;
     private int rings;
@@ -65,8 +65,8 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //op.telemetry.update();
             //start 97, 45
 //            spline = new Spline(new Waypoint(97, 60, 0.6 * power));
-            spline = new Spline(new Waypoint(89,130,power));
-            spline.add(new Waypoint(89, 126, power));
+            spline = new Spline(new Waypoint(97,90,power));
+            spline.add(new Waypoint(89,110,power));
 
         }
         else{
@@ -131,33 +131,30 @@ public class NorcalChassisStateMachine implements BasicCommand {
     public void moveToSecondWobble(){
         if(rings == 0){
             //starts from 60, 240
-            spline = new Spline(new Waypoint(77,184,power));
-            spline.add(new Waypoint(96,157,power));
-            spline.add(new Waypoint(102, 129, power));
-            spline.add(new Waypoint(102, 106, power));
-            spline.add(new Waypoint(100, 89, power));
-            spline.add(new Waypoint(93,64,power));
-            //spline.add(new Waypoint(88,68,power));
+            spline = new Spline(new Waypoint(96,196,power));
+            spline.add(new Waypoint(117,160,power));
+            spline.add(new Waypoint(121, 124, power));
+            spline.add(new Waypoint(118, 90, power));
+            spline.add(new Waypoint(90,64,power));
         }
         if(rings == 1){
             //starts from 116, 290
-            spline = new Spline(new Waypoint(130,247,power));
-            spline.add(new Waypoint(142,205,power));
-            spline.add(new Waypoint(142,162,power));
-            spline.add(new Waypoint(129,116,power));
-            spline.add(new Waypoint(93,63,power));
+            spline = new Spline(new Waypoint(130,232,power));
+            spline.add(new Waypoint(136,185,power));
+            spline.add(new Waypoint(131,128,power));
+            spline.add(new Waypoint(118,90,power));
+            spline.add(new Waypoint(90,64,power));
 
         }
         else if(rings == 4){
-            //starts from 60, 355
-            spline = new Spline(new Waypoint(108,305,power));
-            spline.add(new Waypoint(142,246,power));
+            //starts from 60, 348
+            spline = new Spline(new Waypoint(88,276,power));
+            spline.add(new Waypoint(106,207,power));
             spline.add(new Waypoint(151,202,power));
-            spline.add(new Waypoint(147,161,power));
-            spline.add(new Waypoint(133,122,power));
-            spline.add(new Waypoint(119,96,power));
-            spline.add(new Waypoint(103, 73, power));
-            spline.add(new Waypoint(93,64,power));
+            spline.add(new Waypoint(117,160,power));
+            spline.add(new Waypoint(121, 124, power));
+            spline.add(new Waypoint(118, 90, power));
+            spline.add(new Waypoint(90,64,power));
 
         }
     }
@@ -166,7 +163,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         if (instance == 1) {
 //            spline = new Spline(new Waypoint(95,84,power));
 //            spline.add(new Waypoint(89, 126, power));
-            spline = new Spline(new Waypoint(89,130,power));
+            spline = new Spline(new Waypoint(89,140,power));
 
         }
         if (instance == 2) {
@@ -215,7 +212,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
 
         // Fix Robot Angle
-        chassisComp.spinToXDegree (0, 0.05, 0.3);
+        chassisComp.spinToXDegree (0, 0.05, 0.1);
 
         if (spline.movingToDestination())
         {
@@ -230,7 +227,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
 
         if(isFinished) {
             targetPoint.setReached();
-            chassisComp.spinToXDegree(0, 0.03, 0.3);
+            chassisComp.spinToXDegree(0, 0.03, 0.1);
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
@@ -245,12 +242,12 @@ public class NorcalChassisStateMachine implements BasicCommand {
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
             chassisComp.stop();
-            chassisComp.spinToXDegree(0, 0.03, 0.3);
+            chassisComp.spinToXDegree(0, 0.03, 0.1);
             spline.setCorrected();
         } else {
             // Correction is not done yet. Continue correction
             Waypoint destination = spline.getDestination();
-            odometry.nextPointRampdown(destination.getX(),destination.getY(),destination.getPower());
+            odometry.nextPointRampdown(destination.getX(),destination.getY(), 0.5 * destination.getPower());
         }
     }
 

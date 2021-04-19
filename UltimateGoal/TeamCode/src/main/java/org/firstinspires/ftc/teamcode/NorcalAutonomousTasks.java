@@ -247,7 +247,7 @@ public class NorcalAutonomousTasks {
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
-                    chassisComponent.spinToXDegree(-0.15, .005, 0.1);
+                    chassisComponent.spinToXDegree(-0.20, .005, 0.2);
                     if(numOfRings == 1){
                         launchRingsAtHighGoal(1, 1850, 1880, 1000);
                     }
@@ -301,7 +301,7 @@ public class NorcalAutonomousTasks {
                 }
                 if(chassisSerialMotion.getState()==NorcalChassisStateMachine.State.INIT){
                     stackerComponent.stackerUp();
-                    chassisComponent.spinToXDegree(-0.15, .005, 0.1);
+                    chassisComponent.spinToXDegree(-0.15, .005, 0.2);
                     launchRingsAtHighGoal(1, 1850, 1900, 1000);
                     stackerComponent.stackerDown();
                     intakeComponent.in();
@@ -315,7 +315,7 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     grabberComponent.safeWobbleDownAndRelease();
                         state = State.MOVE_TO_SECOND_WOBBLE;
-//                        grabberComponent.safeWobbleGrabAndUp();
+//                  grabberComponent.safeWobbleGrabAndUp();
 
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
@@ -336,20 +336,20 @@ public class NorcalAutonomousTasks {
                     break;
                 }
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.INIT){
-                    wobbleGoalTime = time.milliseconds();;
+  //                  wobbleGoalTime = time.milliseconds();;
                     moveToSecondWobble();
                 }
                 chassisSerialMotion.run();
 
-                if ((time.milliseconds() - wobbleGoalTime) > 1000 && grabberComponent.isArmDown())
-                {
-                    grabberComponent.safeWobbleGrabAndUp();
-                }
+               // if ((time.milliseconds() - wobbleGoalTime) > 1000 && grabberComponent.isArmDown())
+                //{
+                  //  grabberComponent.safeWobbleGrabAndUp();
+                //}
 
                 break;
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2:
-                chassisComponent.spinToXDegree(-0.15, .005, 0.1);
+                chassisComponent.spinToXDegree(-0.15, .005, 0.2);
                 launchRingsAtHighGoal(1, 1880, 1920, 1000);
                 stackerComponent.stackerDown();
                 intakeComponent.in();
@@ -361,7 +361,7 @@ public class NorcalAutonomousTasks {
             case MOVE_SECOND_WOBBLE_TO_TARGET_ZONE:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     grabberComponent.safeWobbleDownAndRelease();
-                    grabberComponent.armStraight();
+                    // grabberComponent.armStraight();
                     state = State.PARK_AT_LAUNCH_LINE;
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
@@ -377,6 +377,7 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     state = State.STOP;
                     stackerComponent.stackerDown();
+                    grabberComponent.safeWobbleGrabAndUp();
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
                 }
@@ -391,12 +392,12 @@ public class NorcalAutonomousTasks {
             case MOVE_TO_POWER_SHOT_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
+                    intakeComponent.stop();
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
                 }
 
                 if(chassisSerialMotion.getState()==NorcalChassisStateMachine.State.INIT){
-                    intakeComponent.stop();
                     moveToPowerShotLaunchPosition();
                 }
                 chassisSerialMotion.run();
@@ -406,16 +407,16 @@ public class NorcalAutonomousTasks {
                 powershot_count++;
                 if (powershot_count == 1) {
                     stackerComponent.stackerUp();
-                    chassisComponent.spinToXDegree(-0.39, .005, 0.1);
-                    smartWhack.whack(1, 1850, 1860, 2000);
+                    chassisComponent.spinToXDegree(-0.40, .005, 0.1);
+                    smartWhack.whack(1, 1650, 1680, 1000);
                 }
                 else if (powershot_count == 2) {
-                    chassisComponent.spinToXDegree(-0.48, .005, 0.1);
-                    smartWhack.whack(1, 1850, 1860, 2000);
+                    chassisComponent.spinToXDegree(-0.49, .005, 0.1);
+                    smartWhack.whack(1, 1650, 1680, 1000);
                 }
                 else {
                     chassisComponent.spinToXDegree(-0.58, .005, 0.1);
-                    smartWhack.whack(1, 1850, 1860, 2000);
+                    smartWhack.whack(1, 1650, 1680, 1000);
                     state = State.MOVE_TO_TARGET_ZONE;
                     launcherComponent.stop();
                 }
