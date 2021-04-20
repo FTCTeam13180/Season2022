@@ -29,6 +29,8 @@ public class NorcalChassisStateMachine implements BasicCommand {
     private int check = 0;
     private AutoPositionCorrector autoPositionCorrector;
     private boolean isFinished;
+    private double prevX = 97;
+    private double prevY = 45;
 
     private Telemetry.Item log_target_X_Y;
 
@@ -223,15 +225,19 @@ public class NorcalChassisStateMachine implements BasicCommand {
         if (spline.movingToDestination())
         {
             odometry.nextPointRampdown(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
+            //odometry.nextPointv2(prevX, prevY, targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
             isFinished = odometry.isFinishedRampdown(targetPoint.getX(),targetPoint.getY());
         }
         else
         {
             odometry.nextPoint(targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
+            //odometry.nextPointv2(prevX, prevY, targetPoint.getX(),targetPoint.getY(),targetPoint.getPower());
             isFinished = odometry.isFinished(targetPoint.getX(),targetPoint.getY());
         }
 
         if(isFinished) {
+            //prevX = targetPoint.getX();
+            //prevY = targetPoint.getY();
             targetPoint.setReached();
             chassisComp.spinToXDegree(0, 0.03, 0.3);
             //op.telemetry.addData("finished: ",i);

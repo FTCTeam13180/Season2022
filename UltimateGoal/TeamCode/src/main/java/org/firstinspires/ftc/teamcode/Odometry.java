@@ -40,6 +40,7 @@ public class Odometry{
     double rampdown_cap = 60;
     double ACCURACY_THRESHOLD = 7.5; //cm
     double ACCURACY_THRESHOLD_RAMPDOWN= 3.5; //cm
+    double r = 3;
 
     // Telemetry Items
     private Telemetry.Item log_global_X_Y;
@@ -136,7 +137,48 @@ public class Odometry{
         theta =-theta;
         return (theta<0)? 2*Math.PI+theta: theta;
     }
-
+    public void nextPointv2(double start_x, double start_y, double last_x, double last_y, double power)
+    {
+        double slope = (last_y - start_y) / (last_x - start_x);
+        double c = start_y - start_x * slope;
+        nextPointCalled(slope, c, last_x, last_y, power);
+    }
+    public void nextPointCalled(double m, double c, double last_x, double last_y, double power){
+        readCurrentPosition();
+        double x1;
+        double y1;
+        double x2;
+        double y2;
+        double x_to_put;
+        double y_to_put;
+        double a = global_X;
+        double b = global_Y;
+        double constant = c - b;
+        double d = m * m + 1;
+        double e = 2 * constant * m - 2 * a;
+        double f  = a * a + constant * constant - r * r;
+        //while ((e * e - 4 * d * f) < 0)
+        //    r += .5;
+        //while ((e * e - 4 * d * f) >= 0)
+        //    r -= .1;
+        //r += .1;
+        x1 = (-e + Math.sqrt(e*e - 4*d*f)) / (2*d);
+        y1 = m*x1 + c;
+        x2 = (-e - Math.sqrt(e*e - 4*d*f)) / (2*d);
+        y2 = m*x2 + c;
+        double distance1 = Math.sqrt(Math.pow((last_x - x1), 2) + Math.pow((last_y - y1), 2));
+        double distance2 = Math.sqrt(Math.pow((last_x - x2), 2) + Math.pow((last_y - y2), 2));
+        if (distance1 <= distance2){
+            x_to_put = x1;
+            y_to_put = y1;
+        }
+        else {
+            x_to_put = x2;
+            y_to_put = y2;
+        }
+        chassisComp.mecanumDriveAuto(x_to_put-a,y_to_put-b, power);
+        opMode.telemetry.addData("x_to_put, y_to_put, x_to_put-a, y_to_put-b, m, c:", "(%.1f, %.1f, %.1f, %.1f, %.1f, %.1f)", x_to_put, y_to_put, x_to_put-a, y_to_put - b, m, c);
+    }
     public boolean isFinished(double x, double y) {
         readCurrentPosition();
 //        global_X = init_X + getCurrentX()/cntsPerCm;
