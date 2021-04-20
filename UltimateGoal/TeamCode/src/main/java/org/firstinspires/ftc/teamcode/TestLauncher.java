@@ -76,7 +76,7 @@ public class TestLauncher extends LinearOpMode {
 
             if (gamepad2.right_bumper){
                 this.telemetry.addData("", "RPM: %.0f ANGLE: %f",  launcherComp.getRPM(), chassisComponent.getAngle());
-                smartWhack.whack(1, rpm, 50, 3000);
+                smartWhack.whack(1, rpm, rpm+50, 3000);
             }
             if(gamepad2.dpad_up){
                 stackerComponent.stackerUp();

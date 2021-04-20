@@ -271,7 +271,8 @@ public class ChassisComponent implements Component {
             }
         }
         stop();
-        opMode.telemetry.addData("robotAngle: ", robotAngle);
+        opMode.telemetry.addData("", "tgt_angle: %.4f robot_angle: %.4f",
+                degree - Math.PI/2, robotAngle - Math.PI/2);
     }
 
     /*
