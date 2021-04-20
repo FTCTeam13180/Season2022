@@ -65,8 +65,9 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //op.telemetry.update();
             //start 97, 45
 //            spline = new Spline(new Waypoint(97, 60, 0.6 * power));
-            spline = new Spline(new Waypoint(97,90,power));
-            spline.add(new Waypoint(89,110,power));
+            spline = new Spline(new Waypoint(105,68,power));
+            spline.add(new Waypoint(98, 90, power));
+            spline.add(new Waypoint(89,113,power*0.7));
 
         }
         else{
@@ -97,10 +98,10 @@ public class NorcalChassisStateMachine implements BasicCommand {
             }
             else if(rings == 4){
                 //C
-                spline = new Spline(new Waypoint(105, 213, power));
-                spline.add(new Waypoint(85, 240, power));
-                spline.add(new Waypoint(75, 260, power));
-                spline.add(new Waypoint(70, 285, power));
+                spline = new Spline(new Waypoint(74, 240, power));
+//                spline.add(new Waypoint(85, 240, power));
+//                spline.add(new Waypoint(75, 260, power));
+                spline.add(new Waypoint(66, 285, power));
                 spline.add(new Waypoint(60,348,power));
 
             }
@@ -120,10 +121,10 @@ public class NorcalChassisStateMachine implements BasicCommand {
             }
             else if (rings == 4){
                 //C
-                spline = new Spline(new Waypoint(110,235,power));
-                spline.add(new Waypoint(93,263,power));
-                spline.add(new Waypoint(85,290,power));
-                spline.add(new Waypoint(80,345,power));
+                spline = new Spline(new Waypoint(83,222,power));
+//                spline.add(new Waypoint(93,263,power));
+                spline.add(new Waypoint(78,282,power));
+                spline.add(new Waypoint(74,335,0.7 * power));
             }
         }
     }
@@ -148,14 +149,12 @@ public class NorcalChassisStateMachine implements BasicCommand {
         }
         else if(rings == 4){
             //starts from 60, 348
-            spline = new Spline(new Waypoint(88,276,power));
-            spline.add(new Waypoint(106,207,power));
-            spline.add(new Waypoint(151,202,power));
-            spline.add(new Waypoint(117,160,power));
-            spline.add(new Waypoint(121, 124, power));
-            spline.add(new Waypoint(118, 90, power));
-            spline.add(new Waypoint(90,64,power));
-
+            spline = new Spline(new Waypoint(85,275,power));
+            spline.add(new Waypoint(106,206,power));
+            spline.add(new Waypoint(111,156,power));
+            spline.add(new Waypoint(111, 121, power));
+            spline.add(new Waypoint(107, 93, 0.75 * power));
+            spline.add(new Waypoint(90,64, 0.5 * power));
         }
     }
 

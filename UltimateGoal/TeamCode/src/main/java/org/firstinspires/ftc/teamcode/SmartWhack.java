@@ -42,10 +42,10 @@ public class SmartWhack {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
 
-        while (count > 0 && runtime.milliseconds() < timeout) {
+        while (count > 0) {
             prev_rpm = launcher.getRPM();
 
-            if (prev_rpm < min_rpm || prev_rpm > max_rpm)
+            if ((prev_rpm < min_rpm || prev_rpm > max_rpm) && runtime.milliseconds() < timeout)
                 continue;
 
             accel_time.reset();
@@ -55,8 +55,9 @@ public class SmartWhack {
             double acceleration = (rpm - prev_rpm) / accel_time.milliseconds();
             double rpm_predicted = rpm + acceleration * 100;
 
-            boolean go_for_whack = rpm >= min_rpm && rpm <= max_rpm &&
-                    rpm_predicted >= min_rpm && rpm_predicted <= max_rpm;
+            boolean go_for_whack = (rpm >= min_rpm && rpm <= max_rpm &&
+                                    rpm_predicted >= min_rpm && rpm_predicted <= max_rpm)
+                                    || runtime.milliseconds() >= timeout;
 
             if (go_for_whack) {
                 opmode.telemetry.addData("Safe", "Count: %d  TGT: %.0f, PRED: %.0f, RPM: %.0f", count, target_rpm, rpm_predicted, launcher.getRPM());
@@ -68,17 +69,6 @@ public class SmartWhack {
             } else {
                 opmode.telemetry.addData("USafe", "Count: %d  TGT: %.0f, PRED: %.0f, RPM: %.0f", count, target_rpm, rpm_predicted, launcher.getRPM());
             }
-
-        }
-
-        //unsafe whack for remaining.
-        while (count > 0) {
-            opmode.telemetry.addData("", "Count: %d  TGT_RPM: %.0f, RPM: %.0f", count, target_rpm, launcher.getRPM());
-            stacker.unsafeWhackerOut();
-            sleep(100);
-            stacker.unsafeWhackerIn();
-            sleep(300);
-            count--;
         }
 
         return;
