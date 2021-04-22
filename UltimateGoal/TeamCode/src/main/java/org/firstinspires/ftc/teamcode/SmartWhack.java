@@ -43,31 +43,36 @@ public class SmartWhack {
         runtime.reset();
 
         while (count > 0) {
+            accel_time.reset();
             prev_rpm = launcher.getRPM();
 
-            if ((prev_rpm < min_rpm || prev_rpm > max_rpm) && runtime.milliseconds() < timeout)
-                continue;
+            boolean timed_out = runtime.milliseconds() >= timeout;
 
-            accel_time.reset();
-            sleep(100);
+            if ((prev_rpm < min_rpm || prev_rpm > max_rpm) && !timed_out) {
+                continue;
+            }
+
+            sleep(10);
             rpm = launcher.getRPM();
 
             double acceleration = (rpm - prev_rpm) / accel_time.milliseconds();
-            double rpm_predicted = rpm + acceleration * 100;
+            double rpm_predicted = rpm + acceleration * 10;
 
-            boolean go_for_whack = (rpm >= min_rpm && rpm <= max_rpm &&
-                                    rpm_predicted >= min_rpm && rpm_predicted <= max_rpm)
-                                    || runtime.milliseconds() >= timeout;
+            boolean go_for_whack = (rpm >= min_rpm && rpm <= max_rpm
+                                    && rpm_predicted >= min_rpm && rpm_predicted <= max_rpm)
+                                    || timed_out;
 
             if (go_for_whack) {
-                opmode.telemetry.addData("Safe", "Count: %d  TGT: %.0f, PRED: %.0f, RPM: %.0f", count, target_rpm, rpm_predicted, launcher.getRPM());
+                if (timed_out)
+                    opmode.telemetry.addData("Timedout", "Count: %d  TGT: %.0f, PRED: %.0f, RPM: %.0f", count, target_rpm, rpm_predicted, launcher.getRPM());
+                else
+                    opmode.telemetry.addData("Safe", "Count: %d  TGT: %.0f, PRED: %.0f, RPM: %.0f", count, target_rpm, rpm_predicted, launcher.getRPM());
+
                 stacker.unsafeWhackerOut();
                 sleep(100);
                 stacker.unsafeWhackerIn();
                 sleep(100);
                 count--;
-            } else {
-                opmode.telemetry.addData("USafe", "Count: %d  TGT: %.0f, PRED: %.0f, RPM: %.0f", count, target_rpm, rpm_predicted, launcher.getRPM());
             }
         }
 
