@@ -199,10 +199,10 @@ public class NorcalAutonomousTasks {
     }
 
     public void launchRingsAtHighGoal(int num){
-        launcherComponent.setTargetRPM(1700);
+      //  launcherComponent.setTargetRPM(1670);
         chassisComponent.spinToXDegree(-0.18, .005, 0.1);
         while (num > 0) {
-            smartWhack.whack(1, 1700, 1750, 350);
+            smartWhack.whack(1, 1650, 1690, 1000);
             num--;
         }
     }
@@ -242,16 +242,16 @@ public class NorcalAutonomousTasks {
         switch(state){
 
             case INIT:
-                grabberComponent.armStraight();
-                stackerComponent.stackerUp();
                 if(numOfRings == 0){
                     launcherComponent.setTargetRPM(1650);
                     state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 }
                 else{
-                    launcherComponent.setTargetRPM(1850);
+                    launcherComponent.setTargetRPM(1670);
                     state = State.MOVE_TO_HIGH_GOAL_LAUNCH_POSITION;
                 }
+                grabberComponent.armStraight();
+                stackerComponent.stackerUp();
                 break;
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
@@ -262,6 +262,7 @@ public class NorcalAutonomousTasks {
                         launchRingsAtHighGoal(1);
                     }
                     else if(numOfRings == 4){
+                        stackerComponent.sleep(1000);
                         launchRingsAtHighGoal(3);
 /*
                         smartWhack.whack(1, 1700, 1750, 350);
@@ -435,12 +436,12 @@ public class NorcalAutonomousTasks {
                 }
                 else if (powershot_count == 2) {
                     chassisComponent.spinToXDegree(-0.49, .005, 0.1);
-                    smartWhack.whack(1, 1650, 1680, 350);
+                    smartWhack.whack(1, 1600, 1640, 350);
 //                    stackerComponent.safeWhack();
                 }
                 else {
                     chassisComponent.spinToXDegree(-0.59, .005, 0.1);
-                    smartWhack.whack(1, 1650, 1680, 350);
+                    smartWhack.whack(1, 1600, 1640, 350);
 //                    stackerComponent.safeWhack();
                     state = State.MOVE_TO_TARGET_ZONE;
                     launcherComponent.stop();

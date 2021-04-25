@@ -32,11 +32,12 @@ public class SmartWhack {
 
     public void whack(int count, double min_rpm, double max_rpm, double timeout)
     {
+        long delay = 100;
         double rpm = 0;
         double prev_rpm = 0;
 
         double target_rpm = (min_rpm + max_rpm) / 2;
-        launcher.setTargetRPM(target_rpm);
+//        launcher.setTargetRPM(target_rpm);
 
         ElapsedTime accel_time = new ElapsedTime();
         ElapsedTime runtime = new ElapsedTime();
@@ -52,11 +53,11 @@ public class SmartWhack {
                 continue;
             }
 
-            sleep(10);
+            sleep(delay);
             rpm = launcher.getRPM();
 
             double acceleration = (rpm - prev_rpm) / accel_time.milliseconds();
-            double rpm_predicted = rpm + acceleration * 10;
+            double rpm_predicted = rpm + acceleration * delay;
 
             boolean go_for_whack = (rpm >= min_rpm && rpm <= max_rpm
                                     && rpm_predicted >= min_rpm && rpm_predicted <= max_rpm)
