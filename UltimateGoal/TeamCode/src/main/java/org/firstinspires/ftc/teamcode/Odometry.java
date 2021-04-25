@@ -98,7 +98,7 @@ public class Odometry{
         double rampdown_factor;
         //double rampstart_factor;
         //rampdown_factor = .7 * cm_to_target / rampdown_cap;
-        rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;
+        rampdown_factor = 1.5 * (Math.log(cm_to_target/rampdown_cap) + 1);
 
         //rampstart_factor =
         //rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;

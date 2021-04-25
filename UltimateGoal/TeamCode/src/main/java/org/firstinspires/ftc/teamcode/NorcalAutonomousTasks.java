@@ -428,14 +428,14 @@ public class NorcalAutonomousTasks {
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 powershot_count++;
                 if (powershot_count == 1) {
-                    launcherComponent.setTargetRPM(1650);
+                    launcherComponent.setTargetRPM(1570);
                     stackerComponent.stackerUp();
-                    chassisComponent.spinToXDegree(-0.40, .005, 0.1);
+                    chassisComponent.spinToXDegree(-0.39, .005, 0.1);
                     smartWhack.whack(1, 1650, 1680, 350);
 //                    stackerComponent.safeWhack();
                 }
                 else if (powershot_count == 2) {
-                    chassisComponent.spinToXDegree(-0.49, .005, 0.1);
+                    chassisComponent.spinToXDegree(-0.48, .005, 0.1);
                     smartWhack.whack(1, 1600, 1640, 350);
 //                    stackerComponent.safeWhack();
                 }

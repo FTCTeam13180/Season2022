@@ -154,10 +154,10 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //starts from 60, 348
             spline = new Spline(new Waypoint(93,275,power));
             spline.add(new Waypoint(106,206,power));
-            //spline.add(new Waypoint(111,156,power));
+            //spline.add(new Waypoint(111,156,power));w
             spline.add(new Waypoint(111, 121, power));
-            spline.add(new Waypoint(107, 93, 0.75 * power));
-            spline.add(new Waypoint(90,64, 0.5 * power));
+            spline.add(new Waypoint(107, 93, power));
+            spline.add(new Waypoint(90,64, power));
         }
     }
 
@@ -216,7 +216,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
 
         // Fix Robot Angle
-        chassisComp.spinToXDegree (0, 0.05, 0.1);
+        chassisComp.spinToXDegree (0, 0.09, 0.3);
 
         if (spline.movingToDestination())
         {
@@ -231,7 +231,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
 
         if(isFinished) {
             targetPoint.setReached();
-            chassisComp.spinToXDegree(0, 0.03, 0.1);
+            chassisComp.spinToXDegree(0, 0.09, 0.3);
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
@@ -246,7 +246,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
             chassisComp.stop();
-            chassisComp.spinToXDegree(0, 0.03, 0.1);
+            chassisComp.spinToXDegree(0, 0.03, .1);
             spline.setCorrected();
         } else {
             // Correction is not done yet. Continue correction
