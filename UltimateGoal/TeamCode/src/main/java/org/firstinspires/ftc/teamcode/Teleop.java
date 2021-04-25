@@ -140,11 +140,14 @@ public class Teleop extends LinearOpMode {
             //gamepad 2
             //
 
-            if (gamepad2.x) {
+            if (gamepad2.a) {
                 stackerComponent.stackerDump();
             }
-            if (gamepad2.left_bumper) {
-                stackerComponent.safeWhack();
+            if (gamepad2.right_bumper) {
+                if (powershot_mode)
+                    smartWhack.whack(1, POWERSHOT_RPM, POWERSHOT_RPM + RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
+                else
+                    stackerComponent.safeWhack();
             } else if (gamepad2.dpad_up) {
                 stackerComponent.stackerUp();
                 wingsComponent.wingsUp();
@@ -153,7 +156,8 @@ public class Teleop extends LinearOpMode {
                 wingsComponent.wingsDown();
             }
 
-            if (gamepad2.right_bumper) {
+            /*
+            if (gamepad2.left_bumper) {
                 // Note: safeWhackThree sleeps for a while which introduces race condition between Driver 1 stopping
                 // the robot right before driver 2 presses safeWhackThree. Robot continues to move during safeWhackThree
                 // if driver 1 stop does not get registered in time.
@@ -169,6 +173,8 @@ public class Teleop extends LinearOpMode {
                     stackerComponent.stackerDown();
                 }
             }
+
+             */
 
 
             if (gamepad2.y) {

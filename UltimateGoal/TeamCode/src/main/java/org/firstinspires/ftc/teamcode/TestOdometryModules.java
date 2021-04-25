@@ -22,6 +22,7 @@ public class TestOdometryModules extends LinearOpMode {
         chassisComponent.init();
         chassisComponent.initIMU();
         intakeComponent = new IntakeComponent(this);
+        intakeComponent.init();
 
         odometry = new Odometry(this,chassisComponent, intakeComponent, 50,75);
         odometry.init();
