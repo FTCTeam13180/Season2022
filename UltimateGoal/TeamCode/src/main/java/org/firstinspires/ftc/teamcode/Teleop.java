@@ -26,10 +26,10 @@ public class Teleop extends LinearOpMode {
     private StackerComponent stackerComponent;
 
     double power = 1.0;
-    private static double POWERSHOT_RPM = 1750;
-    private static double HIGHGOAL_RPM = 1950;
+    private static double POWERSHOT_RPM = 1650;
+    private static double HIGHGOAL_RPM = 1850;
     private static double RPM_TOLERANCE = 20;
-    private static double ONE_WHACK_TIMEOUT_MS = 1000;
+    private static double ONE_WHACK_TIMEOUT_MS = 350;
 
     boolean powershot_mode = false;
     boolean gamepad2_y_being_pressed = false;
