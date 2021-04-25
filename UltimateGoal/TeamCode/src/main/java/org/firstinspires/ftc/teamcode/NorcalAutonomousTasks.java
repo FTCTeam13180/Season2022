@@ -134,6 +134,7 @@ public class NorcalAutonomousTasks {
             numOfRings = 0;
         }
 //        op.telemetry.addData("Number of rings = ", numOfRings);
+        chassisSerialMotion.setNumOfRings(numOfRings);
         log_num_OfRings.setValue(numOfRings);
     }
 
@@ -151,7 +152,7 @@ public class NorcalAutonomousTasks {
     }
 
     public void moveToTargetZone(boolean first) {
-        chassisSerialMotion.moveToTarget(numOfRings,first);
+        chassisSerialMotion.moveToTarget(first);
     }
     public void shiftPowershot(int ps) {
         chassisSerialMotion.shiftPowershot(ps);
@@ -195,6 +196,15 @@ public class NorcalAutonomousTasks {
 
     public void launchRingsAtHighGoal(int num, double min_rpm, double max_rpm, double timeout){
         smartWhack.whack(num, min_rpm, max_rpm, timeout);
+    }
+
+    public void launchRingsAtHighGoal(int num){
+        launcherComponent.setTargetRPM(1700);
+        chassisComponent.spinToXDegree(-0.18, .005, 0.1);
+        while (num > 0) {
+            smartWhack.whack(1, 1700, 1750, 350);
+            num--;
+        }
     }
 
 
@@ -247,24 +257,18 @@ public class NorcalAutonomousTasks {
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION:
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
-                    chassisComponent.spinToXDegree(-0.15, .005, 0.2);
+//                    chassisComponent.spinToXDegree(-0.15, .005, 0.2);
                     if(numOfRings == 1){
-                        launchRingsAtHighGoal(1, 1850, 1880, 1000);
+                        launchRingsAtHighGoal(1);
                     }
                     else if(numOfRings == 4){
-                        //launchRingsAtHighGoal(3, 1850, 1880, 2000);
-                        /*
-                        launcherComponent.setTargetRPM(1800);
-                        stackerComponent.safeWhack();
-                        stackerComponent.sleep(300);
-                        stackerComponent.safeWhack();
-                        stackerComponent.sleep(500);
-                        stackerComponent.safeWhack();
-                        stackerComponent.sleep(100);
-                         */
-                        smartWhack.whack(1, 1740, 1790, 300);
-                        smartWhack.whack(1, 1740, 1790, 300);
-                        smartWhack.whack(1, 1740, 1790, 300);
+                        launchRingsAtHighGoal(3);
+/*
+                        smartWhack.whack(1, 1700, 1750, 350);
+                        smartWhack.whack(1, 1700, 1750, 350);
+                        smartWhack.whack(1, 1700, 1750, 350);
+
+ */
                     }
                     state = State.PICK_UP_1_RING;
                     break;
@@ -365,8 +369,8 @@ public class NorcalAutonomousTasks {
 
             case MOVE_TO_HIGH_GOAL_LAUNCH_POSITION_2:
                 stackerComponent.stackerUp();;
-                chassisComponent.spinToXDegree(-0.15, .005, 0.2);
-                launchRingsAtHighGoal(1, 1850, 1920, 1000);
+//                chassisComponent.spinToXDegree(-0.15, .005, 0.2);
+                launchRingsAtHighGoal(1);
                 stackerComponent.stackerDown();
                 intakeComponent.in();
                 state = State.PICK_UP_3_RINGS;
@@ -426,18 +430,18 @@ public class NorcalAutonomousTasks {
                     launcherComponent.setTargetRPM(1650);
                     stackerComponent.stackerUp();
                     chassisComponent.spinToXDegree(-0.40, .005, 0.1);
-//                    smartWhack.whack(1, 1650, 1680, 1000);
-                    stackerComponent.safeWhack();
+                    smartWhack.whack(1, 1650, 1680, 350);
+//                    stackerComponent.safeWhack();
                 }
                 else if (powershot_count == 2) {
                     chassisComponent.spinToXDegree(-0.49, .005, 0.1);
-//                    smartWhack.whack(1, 1650, 1680, 1000);
-                    stackerComponent.safeWhack();
+                    smartWhack.whack(1, 1650, 1680, 350);
+//                    stackerComponent.safeWhack();
                 }
                 else {
-                    chassisComponent.spinToXDegree(-0.58, .005, 0.1);
-//                    smartWhack.whack(1, 1650, 1680, 1000);
-                    stackerComponent.safeWhack();
+                    chassisComponent.spinToXDegree(-0.59, .005, 0.1);
+                    smartWhack.whack(1, 1650, 1680, 350);
+//                    stackerComponent.safeWhack();
                     state = State.MOVE_TO_TARGET_ZONE;
                     launcherComponent.stop();
                 }

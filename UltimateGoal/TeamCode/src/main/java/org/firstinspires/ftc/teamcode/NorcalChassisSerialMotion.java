@@ -18,7 +18,8 @@ public class NorcalChassisSerialMotion {
         chassisStateMachine = new NorcalChassisStateMachine(odometry, chassisComponent,opMode);
 
     }
-    public void moveToTarget(int numRings,boolean first){ chassisStateMachine.moveToTargetZone(numRings,first); }
+    public void setNumOfRings(int numOfRings){ chassisStateMachine.setNumOfRings(numOfRings);}
+    public void moveToTarget(boolean first){ chassisStateMachine.moveToTargetZone(first); }
     public void moveToPowerShot(){chassisStateMachine.moveToPowerShot();}
     public void moveToPickUpRings(int instance){chassisStateMachine.pickUpRingsMovement(instance);}
     public void moveToWobble(){ chassisStateMachine.moveToWobble(); }

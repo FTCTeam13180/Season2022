@@ -46,6 +46,11 @@ public class NorcalChassisStateMachine implements BasicCommand {
         return state;
     }
     public void setState(State st){ state = st; }
+
+    public void setNumOfRings (int r) {
+        rings = r;
+    }
+
     public void smoothSpline(int n){
         int distance = 60;
 
@@ -79,8 +84,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         }
     }
 
-    public void moveToTargetZone(int numRings,boolean first){
-        rings = numRings;
+    public void moveToTargetZone(boolean first){
         if(first){
             if(rings==0){
                 //A
@@ -292,7 +296,9 @@ public class NorcalChassisStateMachine implements BasicCommand {
 
     public void moveToPowerShot(){
         if(rings == 0){
-            spline = new Spline(new Waypoint(89, 197, power));
+            spline = new Spline(new Waypoint(105,68,power));
+            spline.add(new Waypoint(112, 121, power));
+            spline.add(new Waypoint(89, 197, power));
         }
         else if(rings == 1){
            spline = new Spline(new Waypoint(89, 197, power));
