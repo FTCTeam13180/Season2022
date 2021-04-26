@@ -156,8 +156,8 @@ public class NorcalChassisStateMachine implements BasicCommand {
             spline.add(new Waypoint(106,206,power));
             //spline.add(new Waypoint(111,156,power));w
             spline.add(new Waypoint(111, 121, power));
-            spline.add(new Waypoint(107, 93, power));
-            spline.add(new Waypoint(90,64, power));
+            spline.add(new Waypoint(107, 93, 0.75 * power));
+            spline.add(new Waypoint(90,64, 0.5 * power));
         }
     }
 

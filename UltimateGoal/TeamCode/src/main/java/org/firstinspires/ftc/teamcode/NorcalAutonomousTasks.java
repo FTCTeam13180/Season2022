@@ -259,6 +259,7 @@ public class NorcalAutonomousTasks {
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
 //                    chassisComponent.spinToXDegree(-0.15, .005, 0.2);
                     if(numOfRings == 1){
+                        stackerComponent.sleep(1000);
                         launchRingsAtHighGoal(1);
                     }
                     else if(numOfRings == 4){
@@ -440,7 +441,7 @@ public class NorcalAutonomousTasks {
 //                    stackerComponent.safeWhack();
                 }
                 else {
-                    chassisComponent.spinToXDegree(-0.59, .005, 0.1);
+                    chassisComponent.spinToXDegree(numOfRings == 1 ? -0.58 : -0.59, .005, 0.1);
                     smartWhack.whack(1, 1600, 1640, 350);
 //                    stackerComponent.safeWhack();
                     state = State.MOVE_TO_TARGET_ZONE;
