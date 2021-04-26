@@ -290,6 +290,9 @@ public class NorcalAutonomousTasks {
                     }
 //                    else if(numOfRings == 4 && numRingFromPile == 1){
                     else if(numOfRings == 4){
+                        // give enough time for intake to flush all rings into the box
+                        stackerComponent.sleep(1000);
+                        intakeComponent.stop();
  //                       numRingFromPile++;
 //                        intakeComponent.expel();
 //                        intakeComponent.stop();
@@ -429,7 +432,7 @@ public class NorcalAutonomousTasks {
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 powershot_count++;
                 if (powershot_count == 1) {
-                    launcherComponent.setTargetRPM(1570);
+                    launcherComponent.setTargetRPM(1550);
                     stackerComponent.stackerUp();
                     chassisComponent.spinToXDegree(-0.39, .005, 0.1);
                     smartWhack.whack(1, 1650, 1680, 350);
