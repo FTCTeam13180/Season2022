@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.component;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -15,11 +17,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 public class ChassisComponent implements Component {
     private OpMode opMode;
+    public DcMotorEx topl;
+    public DcMotorEx topr;
+    public DcMotorEx rearr;
+    public DcMotorEx rearl;
 
-    public DcMotor topl;
-    public DcMotor topr;
-    public DcMotor rearr;
-    public DcMotor rearl;
+    public VoltageSensor volts;
+
     BNO055IMU IMU;
     //no gear reduction ratio as of now
     final static double power_scale = 1;
@@ -31,11 +35,16 @@ public class ChassisComponent implements Component {
         opMode = op;
     }
 
+    public double getBatteryVoltage() {
+        return volts.getVoltage();
+    }
+
     public void init(){
-        topr = opMode.hardwareMap.dcMotor.get("TopR");
-        topl = opMode.hardwareMap.dcMotor.get("TopL");
-        rearr = opMode.hardwareMap.dcMotor.get("BackR");
-        rearl = opMode.hardwareMap.dcMotor.get("BackL");
+        volts = opMode.hardwareMap.voltageSensor.iterator().next();
+        topr = (DcMotorEx)opMode.hardwareMap.dcMotor.get("TopR");
+        topl = (DcMotorEx)opMode.hardwareMap.dcMotor.get("TopL");
+        rearr = (DcMotorEx)opMode.hardwareMap.dcMotor.get("BackR");
+        rearl = (DcMotorEx)opMode.hardwareMap.dcMotor.get("BackL");
 
         topr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
