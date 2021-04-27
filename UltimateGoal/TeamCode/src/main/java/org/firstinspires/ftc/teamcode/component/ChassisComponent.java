@@ -115,6 +115,40 @@ public class ChassisComponent implements Component {
             rearr.setPower(power*(x+y)/cap);
     }
 
+    public void mecanumDriveAuto(double x, double y, double power, double degree, double threshold){
+        degree += Math.PI/2;
+        double robotAngle = getAngle();
+        double turn_power = 0;
+
+        if (Math.abs(degree - robotAngle) <= threshold)
+            turn_power = 0;
+        else {
+            if (degree - robotAngle < 0)
+                turn_power = 0.1;
+            else
+                turn_power = -0.1;
+        }
+
+        double cap = Math.max(Math.abs(x+y),Math.abs(y-x));
+        double topl_power = ((x+y)/cap + turn_power);
+        double topr_power = ((y-x)/cap - turn_power);
+        double rearl_power = ((y-x)/cap + turn_power);
+        double rearr_power = ((x+y)/cap - turn_power);
+
+        double max_abs_power = 0;
+        max_abs_power = Math.max(max_abs_power, Math.abs(topl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(topr_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearl_power));
+        max_abs_power = Math.max(max_abs_power, Math.abs(rearr_power));
+
+        topl.setPower(power*topl_power/max_abs_power);
+        topr.setPower(power*topr_power/max_abs_power);
+        rearl.setPower(power*rearl_power/max_abs_power);
+        rearr.setPower(power*rearr_power/max_abs_power);
+
+    }
+
+
 
     /*
      * (x,y) are used to give the direction for mecanum drive.
