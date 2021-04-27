@@ -108,6 +108,14 @@ public class NorcalChassisStateMachine implements BasicCommand {
                 spline.add(new Waypoint(66, 285, power));
                 spline.add(new Waypoint(60,348,power));
 
+                 /*
+                spline = new Spline(new Waypoint(100, 224, 0.7 * power));
+                spline.add(new Waypoint(106, 268, 0.7 * power));
+                spline.add(new Waypoint(96, 302, 0.7 * power));
+                spline.add(new Waypoint(82, 325, 0.7 * power));
+                spline.add(new Waypoint(60,348, 0.7 * power));
+                  */
+
             }
         }
         else{
@@ -156,7 +164,16 @@ public class NorcalChassisStateMachine implements BasicCommand {
             //spline.add(new Waypoint(111,156,power));w
             spline.add(new Waypoint(111, 121, 0.9 * power));
             spline.add(new Waypoint(107, 93, 0.75 * power));
-            spline.add(new Waypoint(85,64, 0.5 * power));
+            spline.add(new Waypoint(90,64, 0.5 * power));
+
+             /*
+            spline = new Spline(new Waypoint(109,277, 0.7 * power));
+            spline.add(new Waypoint(135,213,0.7 * power));
+            spline.add(new Waypoint(141, 158, 0.7 * power));
+            spline.add(new Waypoint(125, 103, 0.7 * power));
+            spline.add(new Waypoint(85,64, 0.7 * power));
+              */
+
         }
     }
 
@@ -181,21 +198,19 @@ public class NorcalChassisStateMachine implements BasicCommand {
 //            spline.add(new Waypoint(94, 183, power));
 //            spline.add(new Waypoint(115,185,power));
 //            spline.add(new Waypoint(130, 197, power));
-
-
-
         }
         else if(rings == 0){
             //drop at 80, 235
             spline = new Spline(new Waypoint(80, 224, power));
-            spline.add(new Waypoint(87, 211, power));
-            spline.add(new Waypoint(99, 208, power));
-            spline.add(new Waypoint(113,210,power));
-            spline.add(new Waypoint(126, 214, power));
+//            spline.add(new Waypoint(87, 211, power));
+//            spline.add(new Waypoint(99, 208, power));
+//            spline.add(new Waypoint(113,210,power));
+//            spline.add(new Waypoint(126, 214, power));
             spline.add(new Waypoint(134, 224, power));
         }
         else{
-            spline = new Spline(new Waypoint(126, 240, power));
+//            spline = new Spline(new Waypoint(126, 240, power));
+            spline = new Spline(new Waypoint(134, 224, power));
         }
     }
 
@@ -215,7 +230,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         log_target_X_Y.setValue("(%.1f, %.1f)", targetPoint.getX(), targetPoint.getY());
 
         // Fix Robot Angle
-        chassisComp.spinToXDegree (0, 0.09, 0.3);
+        // chassisComp.spinToXDegree (0, 0.09, 0.3);
 
         if (spline.movingToDestination())
         {
@@ -230,7 +245,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
 
         if(isFinished) {
             targetPoint.setReached();
-            chassisComp.spinToXDegree(0, 0.09, 0.3);
+//            chassisComp.spinToXDegree(0, 0.005, 0.1);
             //op.telemetry.addData("finished: ",i);
 
             //op.telemetry.update();
@@ -245,7 +260,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
         if (autoPositionCorrector.correctionDone()) {
             // Correction is done. Stop the robot.
             chassisComp.stop();
-            chassisComp.spinToXDegree(0, 0.03, .1);
+//            chassisComp.spinToXDegree(0, 0.005, .1);
             spline.setCorrected();
         } else {
             // Correction is not done yet. Continue correction
@@ -269,7 +284,7 @@ public class NorcalChassisStateMachine implements BasicCommand {
             case EXECUTE:
                 execute();
                 if (spline.isCompleted()) {
-//                    chassisComp.spinToXDegree(0, 0.03, 0.3);
+                    chassisComp.spinToXDegree(0, 0.005, 0.1);
                     state = State.AUTO_CORRECT;
                 }
                 break;

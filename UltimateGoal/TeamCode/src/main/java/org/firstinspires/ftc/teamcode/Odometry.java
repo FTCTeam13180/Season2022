@@ -109,7 +109,7 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-            chassisComp.mecanumDriveAuto(x-global_X,y-global_Y,power * rampdown_factor);
+            chassisComp.mecanumDriveAuto(x-global_X,y-global_Y,power * rampdown_factor, 0, 0.005);
     }
     public void nextPoint(double x, double y, double power){
         readCurrentPosition();
@@ -122,7 +122,7 @@ public class Odometry{
         //opMode.telemetry.addData("target_x: ", x);
         //opMode.telemetry.addData("target_y: ", y);
         //opMode.telemetry.update();
-        chassisComp.mecanumDriveAuto(x-global_X,y-global_Y, power);
+        chassisComp.mecanumDriveAuto(x-global_X,y-global_Y, power, 0, 0.005);
     }
 
     public static double normalizeTarget(double y, double x){
