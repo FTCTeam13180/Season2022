@@ -97,12 +97,12 @@ public class Odometry{
         double rampdown_factor;
         //double rampstart_factor;
         //rampdown_factor = .7 * cm_to_target / rampdown_cap;
-        rampdown_factor = 0.8*(Math.log(cm_to_target/rampdown_cap) + 1);
+        rampdown_factor = 1.5*(Math.log(cm_to_target/rampdown_cap) + 1);
 
         //rampstart_factor =
         //rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;
         rampdown_factor = Math.min(rampdown_factor, 1);
-        rampdown_factor = Math.max(rampdown_factor, .4);
+        rampdown_factor = Math.max(rampdown_factor, .15);
         //opMode.telemetry.addData("global_Y: ", global_Y);
         //opMode.telemetry.addData("global_X: ", global_X);
         //opMode.telemetry.addData("target_x: ", x);
