@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.component.GrabberComponent;
 import org.firstinspires.ftc.teamcode.component.IntakeComponent;
 import org.firstinspires.ftc.teamcode.component.LauncherComponent;
 import org.firstinspires.ftc.teamcode.component.StackerComponent;
+import org.firstinspires.ftc.teamcode.component.WingsComponent;
 
 import java.util.List;
 
@@ -49,6 +50,8 @@ public class NorcalAutonomousTasks {
 
     private GrabberComponent grabberComponent;
     private IntakeComponent intakeComponent;
+    private WingsComponent wingsComponent;
+
     private Detector detect;
 
     ElapsedTime time;
@@ -94,6 +97,9 @@ public class NorcalAutonomousTasks {
 
         grabberComponent = new GrabberComponent(op);
         grabberComponent.init();
+
+        wingsComponent = new WingsComponent(op);
+        wingsComponent.init();
 
         smartWhack = new SmartWhack(op, launcherComponent, stackerComponent);
 
@@ -423,6 +429,7 @@ public class NorcalAutonomousTasks {
                     launcherComponent.setTargetRPM(1600);
                     stackerComponent.stackerUp();
                    // chassisComponent.spinToXDegree(-0.39, .005, 0.1);
+                    stackerComponent.sleep(100);
                     smartWhack.whack(1, 1600, 1650, 350);
 //                    stackerComponent.safeWhack();
                 }
