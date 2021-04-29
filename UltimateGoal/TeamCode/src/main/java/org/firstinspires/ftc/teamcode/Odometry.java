@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.component.ChassisComponent;
@@ -98,7 +97,7 @@ public class Odometry{
         double rampdown_factor;
         //double rampstart_factor;
         //rampdown_factor = .7 * cm_to_target / rampdown_cap;
-        rampdown_factor = 1.5 * (Math.log(cm_to_target/rampdown_cap) + 1);
+        rampdown_factor = 0.8*(Math.log(cm_to_target/rampdown_cap) + 1);
 
         //rampstart_factor =
         //rampdown_factor = Math.log(cm_to_target/rampdown_cap) + 1;

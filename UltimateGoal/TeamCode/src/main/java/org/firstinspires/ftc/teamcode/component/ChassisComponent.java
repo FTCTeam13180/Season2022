@@ -124,9 +124,9 @@ public class ChassisComponent implements Component {
             turn_power = 0;
         else {
             if (degree - robotAngle < 0)
-                turn_power = 0.1;
+                turn_power = 0.05;
             else
-                turn_power = -0.1;
+                turn_power = -0.05;
         }
 
         double cap = Math.max(Math.abs(x+y),Math.abs(y-x));

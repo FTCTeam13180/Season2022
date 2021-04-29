@@ -236,14 +236,15 @@ public class NorcalAutonomousTasks {
         }
 
         log_autonomouTasks_state.setValue(state);
- //       if (numOfRings == 4 && time.milliseconds() > 29500){
- //           grabberComponent.unsafeClawOpen();
- //       }
+        if (numOfRings == 4 && time.milliseconds() > 29800) {
+            grabberComponent.safeWobbleDownAndRelease();
+            state = State.PARK_AT_LAUNCH_LINE;
+        }
         switch(state){
 
             case INIT:
                 if(numOfRings == 0){
-                    launcherComponent.setTargetRPM(1550);
+                    launcherComponent.setTargetRPM(1650);
                     state = State.MOVE_TO_POWER_SHOT_LAUNCH_POSITION;
                 }
                 else{
@@ -419,20 +420,20 @@ public class NorcalAutonomousTasks {
             case LAUNCH_RINGS_AT_POWER_SHOTS:
                 powershot_count++;
                 if (powershot_count == 1) {
-                    launcherComponent.setTargetRPM(1550);
+                    launcherComponent.setTargetRPM(1600);
                     stackerComponent.stackerUp();
-                    chassisComponent.spinToXDegree(-0.39, .005, 0.1);
-                    smartWhack.whack(1, 1550, 1600, 350);
+                   // chassisComponent.spinToXDegree(-0.39, .005, 0.1);
+                    smartWhack.whack(1, 1600, 1650, 350);
 //                    stackerComponent.safeWhack();
                 }
                 else if (powershot_count == 2) {
-                    chassisComponent.spinToXDegree(-0.48, .005, 0.1);
-                    smartWhack.whack(1, 1550, 1600, 350);
+                    chassisComponent.spinToXDegree(-0.09, .005, 0.1);
+                    smartWhack.whack(1, 1600, 1650, 350);
 //                    stackerComponent.safeWhack();
                 }
                 else {
-                    chassisComponent.spinToXDegree(numOfRings == 1 ? -0.58 : -0.59, .005, 0.1);
-                    smartWhack.whack(1, 1550, 1600, 350);
+                    chassisComponent.spinToXDegree(numOfRings == 1 ? -0.18 : -0.19, .005, 0.1);
+                    smartWhack.whack(1, 1600, 1650, 350);
 //                    stackerComponent.safeWhack();
                     chassisComponent.spinToXDegree(0, .01, 0.3);
                     if (numOfRings == 0)
