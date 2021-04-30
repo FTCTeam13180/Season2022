@@ -411,6 +411,7 @@ public class NorcalAutonomousTasks {
                 if(chassisSerialMotion.getState() == NorcalChassisStateMachine.State.STOP){
                     state = State.LAUNCH_RINGS_AT_POWER_SHOTS;
                     intakeComponent.stop();
+                    stackerComponent.stackerUp();
                     chassisSerialMotion.setState(NorcalChassisStateMachine.State.INIT);
                     break;
                 }
@@ -427,9 +428,8 @@ public class NorcalAutonomousTasks {
                 powershot_count++;
                 if (powershot_count == 1) {
                     launcherComponent.setTargetRPM(1600);
-                    stackerComponent.stackerUp();
                    // chassisComponent.spinToXDegree(-0.39, .005, 0.1);
-                    stackerComponent.sleep(100);
+                    stackerComponent.sleep(200);
                     smartWhack.whack(1, 1600, 1650, 350);
 //                    stackerComponent.safeWhack();
                 }
