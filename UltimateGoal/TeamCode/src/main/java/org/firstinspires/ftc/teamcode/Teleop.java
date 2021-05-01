@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,7 +23,7 @@ public class Teleop extends LinearOpMode {
     private WingsComponent wingsComponent;
     private Telemetry.Item log_angle;
 
-
+    private ElapsedTime stackerTime;
     private StackerComponent stackerComponent;
 
     double power = 1.0;
@@ -55,6 +56,8 @@ public class Teleop extends LinearOpMode {
         wingsComponent = new WingsComponent(this);
         wingsComponent.init();
 
+        stackerTime = new ElapsedTime();
+        stackerTime.reset();
 
         stackerComponent = new StackerComponent(this);
         stackerComponent.init();
@@ -144,11 +147,14 @@ public class Teleop extends LinearOpMode {
                 stackerComponent.stackerDump();
             }
             if (gamepad2.right_bumper) {
-                if (powershot_mode)
-                    smartWhack.whack(1, POWERSHOT_RPM, POWERSHOT_RPM + RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
-                else
-                    stackerComponent.safeWhack();
+                if(stackerTime.milliseconds() > 200) {
+                    if (powershot_mode)
+                        smartWhack.whack(1, POWERSHOT_RPM, POWERSHOT_RPM + RPM_TOLERANCE, ONE_WHACK_TIMEOUT_MS);
+                    else
+                        stackerComponent.safeWhack();
+                }
             } else if (gamepad2.dpad_up) {
+                stackerTime.reset();
                 stackerComponent.stackerUp();
                 wingsComponent.wingsUp();
             } else if (gamepad2.dpad_down) {
