@@ -11,22 +11,37 @@ import org.firstinspires.ftc.teamcode.component.IntakeComponent;
 public class TestChassis extends LinearOpMode {
 
     Odometry odometry;
-    ChassisComponent chassisComp;
+    ChassisComponent chassisComponent;
     IntakeComponent intakeComp;
     public void runOpMode(){
-        chassisComp=new ChassisComponent(this);
-        chassisComp.init();
+        chassisComponent =new ChassisComponent(this);
+        chassisComponent.init();
         intakeComp = new IntakeComponent(this);
-        odometry= new Odometry(this,chassisComp, intakeComp, 80,160);
-        odometry.init();
+        //odometry= new Odometry(this,chassisComp, intakeComp, 80,160);
+        //odometry.init();
 
         ElapsedTime runtime = new ElapsedTime();
         waitForStart();
         runtime.reset();
 
         while(opModeIsActive()){
-            odometry.nextPoint(180,160, 0.5);
-            telemetry.update();
+            //odometry.nextPoint(180,160, 0.5);
+            //telemetry.update();
+            if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1
+                    || (Math.abs(gamepad1.right_stick_x) > 0.1)) {
+                double x = gamepad1.left_stick_x;
+                double y = -gamepad1.left_stick_y; // note: joystick y is reversed.
+                double turn = -gamepad1.right_stick_x; //for driver specifically arnav who has practiced the other way
+                double power = Math.sqrt(x * x + y * y);
+                power = (power > 0) ? power : Math.abs(turn);
+                chassisComponent.fieldCentricDrive(x, y, power, false, turn);
+            } else if (gamepad1.dpad_up) {
+                chassisComponent.moveForward(0.5);
+            } else if (gamepad1.dpad_down) {
+                chassisComponent.moveBackward(0.5);
+            } else {
+                chassisComponent.stop();
+            }
 
         }
     }
